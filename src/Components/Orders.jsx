@@ -49,14 +49,11 @@ const rows = [
     ),
 ];
 
-function preventDefault(event) {
-    event.preventDefault();
-}
 
 export default function Orders() {
     const navigate = useNavigate();
     return (
-        <React.Fragment>
+        <div style={{overflow:'auto'}}>
             <Title>Recent Orders</Title>
             <Table size="small">
                 <TableHead>
@@ -83,6 +80,6 @@ export default function Orders() {
             <Link color="primary"  onClick={()=> navigate('/coustomerLists')} sx={{ mt: 3 }}>
                 See more orders
             </Link>
-        </React.Fragment>
+        </div>
     );
 }

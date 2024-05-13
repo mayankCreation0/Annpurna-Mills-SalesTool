@@ -12,9 +12,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ToggleColorMode from './ToggleColorMode';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleAuth } from '../Redux/Reducer';
+import Cookies from 'js-cookie';
 
 const logoStyle = {
     width: '140px',
@@ -28,40 +30,30 @@ function Navbar({ mode, toggleColorMode }) {
     const dispatch = useDispatch();
     const auth = useSelector((state) => state.auth);
 
+    
+
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
     };
     const handleLogout = ()=>{
+        Cookies.remove('token', { path: '/login' });
         dispatch(handleAuth(false));
         navigate('/login')
     }
-    const scrollToSection = (sectionId) => {
-        const sectionElement = document.getElementById(sectionId);
-        const offset = 128;
-        if (sectionElement) {
-            const targetScroll = sectionElement.offsetTop - offset;
-            sectionElement.scrollIntoView({ behavior: 'smooth' });
-            window.scrollTo({
-                top: targetScroll,
-                behavior: 'smooth',
-            });
-            setOpen(false);
-        }
-    };
+
 
     return (
         <>
-            {auth ? <div>
+            {auth ? <div style={{position:"absolute"}}>
                 <AppBar
-                    position="absolute"
+                    maxWidth="100%"
                     sx={{
                         boxShadow: 0,
-                        bgcolor: 'transparent',
+                        bgcolor: 'coral',
                         backgroundImage: 'none',
-                        mt: 2,
                     }}
                 >
-                    <Container maxWidth="lg">
+                    <Container maxWidth="100%">
                         <Toolbar
                             variant="regular"
                             sx={(theme) => ({
@@ -69,7 +61,6 @@ function Navbar({ mode, toggleColorMode }) {
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
                                 flexShrink: 0,
-                                borderRadius: '999px',
                                 bgcolor:
                                     theme.palette.mode === 'light'
                                         ? 'rgba(255, 255, 255, 0.4)'
@@ -119,6 +110,7 @@ function Navbar({ mode, toggleColorMode }) {
                                         </Typography>
                                     </MenuItem>
                                 </Box>
+                                
                             </Box>
                             <Box
                                 sx={{
@@ -168,42 +160,23 @@ function Navbar({ mode, toggleColorMode }) {
                                         >
                                             <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
                                         </Box>
-                                        <MenuItem onClick={() => scrollToSection('features')}>
-                                            Features
+                                        <MenuItem onClick={() => navigate('./CoustomerLists')}>
+                                            Coustomer List
                                         </MenuItem>
-                                        <MenuItem onClick={() => scrollToSection('testimonials')}>
-                                            Testimonials
+                                        <MenuItem onClick={() => navigate('/form')}>
+                                            Add Coustomer
                                         </MenuItem>
-                                        <MenuItem onClick={() => scrollToSection('highlights')}>
-                                            Highlights
-                                        </MenuItem>
-                                        <MenuItem onClick={() => scrollToSection('pricing')}>
-                                            Pricing
-                                        </MenuItem>
-                                        <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
                                         <Divider />
                                         <MenuItem>
                                             <Button
                                                 color="primary"
                                                 variant="contained"
+                                                size="small"
                                                 component="a"
-                                                href="/material-ui/getting-started/templates/sign-up/"
+                                                onClick={() => handleLogout()}
                                                 target="_blank"
-                                                sx={{ width: '100%' }}
                                             >
-                                                Sign up
-                                            </Button>
-                                        </MenuItem>
-                                        <MenuItem>
-                                            <Button
-                                                color="primary"
-                                                variant="outlined"
-                                                component="a"
-                                                href="/material-ui/getting-started/templates/sign-in/"
-                                                target="_blank"
-                                                sx={{ width: '100%' }}
-                                            >
-                                                Sign in
+                                                Log out
                                             </Button>
                                         </MenuItem>
                                     </Box>
