@@ -71,3 +71,18 @@ export const getDetailsById = async (id, dispatch)=>{
     }
    
 }
+
+export const deleteData = async(id,dispatch)=>{
+    dispatch(handleLoading(true));
+    const token = Cookies.get('token');
+    try {
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        }
+        const res = await axios.delete(`http://localhost:8080/user/delete/${id}`,{headers}) 
+        dispatch(handleLoading(false))
+        return res
+    } catch (error) {
+        dispatch(handleLoading(false))
+    }
+}

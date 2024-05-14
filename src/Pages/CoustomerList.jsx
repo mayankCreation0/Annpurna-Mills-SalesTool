@@ -12,11 +12,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
-import { getList } from '../Helpers/apis';
-import { Typography, MenuItem, Select, TextField } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { deleteData, getList } from '../Helpers/apis';
+import { Typography, MenuItem, Select, TextField, Snackbar, Alert } from '@mui/material';
 import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import TransitionsModal from '../Components/Modal';
 
 const columns = [
   { id: '_id', label: 'ID', minWidth: 50 },
@@ -30,6 +32,7 @@ const columns = [
 ];
 
 export default function CoustomerList() {
+  const [open, setOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [customers, setCustomers] = React.useState([]);
@@ -37,11 +40,12 @@ export default function CoustomerList() {
   const [filterValue, setFilterValue] = React.useState(null);
   const [searchInput, setSearchInput] = React.useState(null);
   const [searchValue, setSearchValue] = React.useState(null);
+  const [snackBarOpen, setSnackBarOpen] = React.useState(false)
+  const [severity, setSeverity] = React.useState("")
+  const [message, setMessage] = React.useState("")
+  const [selectedId, setSelectedId] = React.useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  React.useEffect(() => {
-    fetchData();
-  }, []);
 
   const fetchData = async (searchInput, filterValue, sortBy) => {
     try {
@@ -57,12 +61,31 @@ export default function CoustomerList() {
       }
       // Fetch data with the constructed query string
       const response = await getList(queryString, dispatch);
-      setCustomers(response.data); // Assuming your API returns data in the correct format
+      setCustomers(response.data);
     } catch (error) {
       console.error('Error fetching customer data:', error);
     }
   };
+  const handleDelete = async (id) => {
+    setSelectedId(id);
+    setOpen(true);
+  };
 
+  const handleConfirm = async () => {
+    setOpen(false);
+    await deleteData(selectedId,dispatch);
+    setSnackBarOpen(true);
+    setMessage('Customer Deleted Successfully');
+    setSeverity('success');
+    fetchData(); 
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -70,7 +93,6 @@ export default function CoustomerList() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-    // Pass searchInput, filterValue, and sortBy to fetchData
     fetchData(searchInput, filterValue, sortBy);
   };
 
@@ -82,7 +104,6 @@ export default function CoustomerList() {
       setSortBy(columnId);
       fetchData(searchInput, filterValue, columnId);
     }
-    // Pass searchInput, filterValue, and sortBy to fetchData
 
   };
 
@@ -93,15 +114,23 @@ export default function CoustomerList() {
   const handleView = (id) => {
   navigate(`/view/${id}`);
   };
-  const handleDelete = (id) => {
-    // Handle delete action (implementation depends on your specific needs)
-    // You might want to confirm deletion with a dialog before proceeding.
-  };
+  // const handleDelete = async(id) => {
+  //   await deleteData(id, dispatch);
+  //   setSnackBarOpen(true);
+  //   setSeverity('success');
+  //   setMessage('Costoumer Deleted Successfully');
+  //   fetchData()
+  // };
   const handleSearch = () => {
     setSearchInput(searchValue)
     fetchData(searchValue, filterValue, sortBy);
     setSearchInput(null)
   }
+
+  React.useEffect(() => {
+    fetchData();
+  }, []);
+
 
   return (
     <Paper sx={{ width: '100%', top: '65px', position: 'absolute' }}>
@@ -241,8 +270,33 @@ export default function CoustomerList() {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{ display: 'flex', justifyContent: 'flex-end' }} // Align pagination to the right
+        sx={{ display: 'flex', justifyContent: 'flex-end' }} 
       />
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={1000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        onClose={handleClose}
+       
+      >
+        <Alert
+          severity={severity}
+          sx={{ width: '100%' }}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={handleClose}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        >
+          {message}
+        </Alert>
+      </Snackbar>
+      <TransitionsModal open={open} handleClose={() => setOpen(false)} handleConfirm={handleConfirm} />
     </Paper>
   );
 }
