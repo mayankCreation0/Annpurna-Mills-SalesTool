@@ -10,8 +10,10 @@ import {
     FormControl,
     InputLabel,
     Select,
+    IconButton,
     CircularProgress,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/system';
 import { postFormData } from '../Helpers/apis';
 import { useNavigate } from 'react-router-dom';
@@ -60,6 +62,12 @@ const FormPage = () => {
             ...prevData,
             [e.target.name]: e.target.value,
         }));
+    };
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
     };
 
     const handleSubmit = async (e) => {
@@ -235,8 +243,23 @@ const FormPage = () => {
                 open={open}
                 autoHideDuration={1000}
                 anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                onClose={handleClose}
+
             >
-                <Alert severity={severity} sx={{ width: '100%' }}>
+                <Alert
+                    severity={severity}
+                    sx={{ width: '100%' }}
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={handleClose}
+                        >
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    }
+                >
                     {message}
                 </Alert>
             </Snackbar>
