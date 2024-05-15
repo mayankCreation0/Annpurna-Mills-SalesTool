@@ -77,7 +77,7 @@ export default function Orders() {
                     ))}
                 </TableBody>
             </Table>
-            <Link color="primary"  onClick={()=> navigate('/coustomerLists')} sx={{ mt: 3 }}>
+            <Link color="primary"  onClick={()=> navigate('/customerLists')} sx={{ mt: 3 }}>
                 See more orders
             </Link>
         </div>

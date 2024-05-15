@@ -94,11 +94,11 @@ function Navbar({ mode, toggleColorMode }) {
                                 />
                                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                                     <MenuItem
-                                        onClick={() => navigate('./CoustomerLists')}
+                                        onClick={() => navigate('./CustomerLists')}
                                         sx={{ py: '6px', px: '12px' }}
                                     >
                                         <Typography variant="body2" color="text.primary">
-                                            Coustomer List
+                                            Customer List
                                         </Typography>
                                     </MenuItem>
                                     <MenuItem
@@ -106,7 +106,7 @@ function Navbar({ mode, toggleColorMode }) {
                                         sx={{ py: '6px', px: '12px' }}
                                     >
                                         <Typography variant="body2" color="text.primary">
-                                            Add Coustomer
+                                            Add Customer
                                         </Typography>
                                     </MenuItem>
                                 </Box>
@@ -160,11 +160,11 @@ function Navbar({ mode, toggleColorMode }) {
                                         >
                                             <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
                                         </Box>
-                                        <MenuItem onClick={() => navigate('./CoustomerLists')}>
-                                            Coustomer List
+                                        <MenuItem onClick={() => navigate('./CustomerLists')}>
+                                            Customer List
                                         </MenuItem>
                                         <MenuItem onClick={() => navigate('/form')}>
-                                            Add Coustomer
+                                            Add Customer
                                         </MenuItem>
                                         <Divider />
                                         <MenuItem>

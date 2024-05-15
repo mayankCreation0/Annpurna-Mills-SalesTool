@@ -29,7 +29,7 @@ const columns = [
   { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
 
-export default function CoustomerList() {
+export default function CustomerList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [customers, setCustomers] = React.useState([]);

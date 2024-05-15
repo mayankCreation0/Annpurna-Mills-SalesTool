@@ -10,24 +10,25 @@ import {
     FormControl,
     InputLabel,
     Select,
+    CircularProgress,
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { postFormData } from '../Helpers/apis';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const FormContainer = styled('div')({
     maxWidth: '90vw',
     margin: 'auto',
     padding: '2rem',
-    border: 'none', // Remove border for a cleaner look
+    border: 'none',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#f0f2f5', // Light background color for better readability
+    boxShadow:"0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)"
+    // backgroundColor: '#f0f2f5',
 });
 
 const FormHeading = styled(Typography)({
-    fontSize: '1.25rem',
+    fontSize: '1.5rem',
     fontWeight: 'bold',
     marginBottom: '1rem',
     textAlign: 'center',
@@ -52,6 +53,7 @@ const FormPage = () => {
     });
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const loading = useSelector((state)=>state.loading)
 
     const handleChange = (e) => {
         setFormData((prevData) => ({
@@ -67,7 +69,7 @@ const FormPage = () => {
             setOpen(true);
             setSeverity('success');
             setMessage('Form data submitted successfully');
-            navigate('/coustomerLists');
+            navigate('/customerLists');
         } else {
             setOpen(true);
             setSeverity('error');
@@ -76,25 +78,23 @@ const FormPage = () => {
     };
 
     return (
-        <FormContainer>
-            <FormHeading variant="h6">Form Title</FormHeading> {/* Replace with your desired title */}
+        <FormContainer sx={{position:'relative',top:"100px"}}>
+            <FormHeading variant="h6">Add Customers Data</FormHeading>
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
                             name="Name"
                             label="Name"
+                            variant="outlined"
                             value={formData.Name}
                             onChange={handleChange}
                             fullWidth
                             required
-                            InputLabelProps={{
-                                shrink: true, // Reduce label movement on focus
-                            }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth variant="outlined" size="small">
                             <InputLabel id="gender-label">Gender</InputLabel>
                             <Select
                                 labelId="gender-label"
@@ -110,60 +110,7 @@ const FormPage = () => {
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
-                            <InputLabel id="status-label">Status</InputLabel>
-                            <Select
-                                labelId="status-label"
-                                name="Status"
-                                value={formData.Status}
-                                onChange={handleChange}
-                                label="Status"
-                            >
-                                <MenuItem value="Active">Active</MenuItem>
-                                <MenuItem value="Completed">Completed</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            name="Address"
-                            label="Address"
-                            value={formData.Address}
-                            onChange={handleChange}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            type="number"
-                            name="Amount"
-                            label="Amount"
-                            value={formData.Amount}
-                            onChange={handleChange}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            type="number"
-                            name="Rate"
-                            label="Rate"
-                            value={formData.Rate}
-                            onChange={handleChange}
-                            fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth variant="outlined" size='small'>
                             <InputLabel id="category-label">Category</InputLabel>
                             <Select
                                 labelId="category-label"
@@ -182,15 +129,61 @@ const FormPage = () => {
                         </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth variant="outlined" size='small'>
+                            <InputLabel id="status-label">Status</InputLabel>
+                            <Select
+                                labelId="status-label"
+                                name="Status"
+                                value={formData.Status}
+                                onChange={handleChange}
+                                label="Status"
+                            >
+                                <MenuItem value="Active">Active</MenuItem>
+                                <MenuItem value="Completed">Completed</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            name="Address"
+                            label="Address"
+                            variant="outlined"
+                            value={formData.Address}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            type="number"
+                            name="Amount"
+                            label="Amount"
+                            variant="outlined"
+                            value={formData.Amount}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            type="number"
+                            name="Rate"
+                            label="Rate"
+                            variant="outlined"
+                            value={formData.Rate}
+                            onChange={handleChange}
+                            fullWidth
+                        />
+                    </Grid>
+                    
+                    <Grid item xs={12} sm={6}>
                         <TextField
                             name="Weight"
                             label="Weight"
+                            variant="outlined"
                             value={formData.Weight}
                             onChange={handleChange}
                             fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -198,6 +191,7 @@ const FormPage = () => {
                             type="date"
                             name="Date"
                             label="Date"
+                            variant="outlined"
                             value={formData.Date}
                             onChange={handleChange}
                             fullWidth
@@ -210,33 +204,31 @@ const FormPage = () => {
                         <TextField
                             name="PhoneNumber"
                             label="Phone Number"
+                            variant="outlined"
                             value={formData.PhoneNumber}
                             onChange={handleChange}
                             fullWidth
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             name="Remarks"
                             label="Remarks"
+                            variant="outlined"
                             value={formData.Remarks}
                             onChange={handleChange}
                             fullWidth
-                            multiline
                             rows={4}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Button type="submit" variant="contained" color="primary">
-                            Submit
-                        </Button>
-                    </Grid>
+                    <Grid item xs={12} display={'flex'} justifyContent="center" alignItems="center" gap={1}>
+                    <Button type="submit" variant="outlined" color="primary" size="large">
+                    {loading ? (
+                        <CircularProgress />
+                    ) : "Submit"}
+                    </Button>
+                    <Button variant='text' onClick={()=>{navigate('/home')}}>Back</Button>
+                </Grid>
                 </Grid>
             </form>
             <Snackbar

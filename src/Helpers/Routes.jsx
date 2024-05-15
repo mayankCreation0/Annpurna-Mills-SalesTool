@@ -5,7 +5,7 @@ import LoginPage from '../Pages/login'
 import Home from '../Pages/Home'
 import Navbar from '../Components/Navbar'
 import FormPage from '../Pages/FormPage'
-import CoustomerList from '../Pages/CoustomerList'
+import CustomerList from '../Pages/CustomerList'
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux'
 import { handleAuth } from '../Redux/Reducer'
@@ -27,7 +27,7 @@ const AllRoutes = ({ mode, toggleColorMode }) => {
         <Routes>
             <Route path='/login' element={<LoginPage />} />
             <Route path='/home' element={<PrivateRoutes><Home /></PrivateRoutes>} />
-            <Route path='/coustomerLists' element={<PrivateRoutes><CoustomerList /></PrivateRoutes>} />
+            <Route path='/customerLists' element={<PrivateRoutes><CustomerList /></PrivateRoutes>} />
             <Route path='/form' element={<PrivateRoutes><FormPage /></PrivateRoutes>} />
             <Route path='/view/:id' element={<PrivateRoutes><ViewPage /></PrivateRoutes>} />
             <Route path='/edit/:id' element={<PrivateRoutes><EditPage /></PrivateRoutes>} />
