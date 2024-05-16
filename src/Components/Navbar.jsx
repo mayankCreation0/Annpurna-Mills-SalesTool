@@ -12,15 +12,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ToggleColorMode from './ToggleColorMode';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleAuth } from '../Redux/Reducer';
 import Cookies from 'js-cookie';
+import logo from '../Assets/ams-high-resolution-logo-normal.png'
 
 const logoStyle = {
-    width: '140px',
-    height: 'auto',
+    width: '100px',
+    height: 'inherit',
     cursor: 'pointer',
 };
 
@@ -49,8 +49,8 @@ function Navbar({ mode, toggleColorMode }) {
                     maxWidth="100%"
                     sx={{
                         boxShadow: 0,
-                        bgcolor: 'coral',
-                        backgroundImage: 'none',
+                        // bgcolor: 'coral',
+                        // backgroundImage: 'none',
                     }}
                 >
                     <Container maxWidth="100%">
@@ -85,9 +85,7 @@ function Navbar({ mode, toggleColorMode }) {
                                 }}
                             >
                                 <img
-                                    src={
-                                        'https://assets-global.website-files.com/61ed56ae9da9fd7e0ef0a967/61f12e6faf73568658154dae_SitemarkDefault.svg'
-                                    }
+                                    src={logo}
                                     style={logoStyle}
                                     alt="logo of sitemark"
                                     onClick={()=>navigate('/home')}

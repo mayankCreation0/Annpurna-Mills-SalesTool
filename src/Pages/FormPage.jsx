@@ -88,7 +88,7 @@ const FormPage = () => {
     return (
         <FormContainer sx={{position:'relative',top:"100px"}}>
             <FormHeading variant="h6">Add Customers Data</FormHeading>
-            <form onSubmit={handleSubmit}>
+            <form component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <TextField
@@ -99,6 +99,7 @@ const FormPage = () => {
                             onChange={handleChange}
                             fullWidth
                             required
+                            autoFocus
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
