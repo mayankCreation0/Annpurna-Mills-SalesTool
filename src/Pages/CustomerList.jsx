@@ -13,25 +13,27 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { deleteData, getList } from '../Helpers/apis';
 import { Typography, MenuItem, Select, TextField, Snackbar, Alert } from '@mui/material';
 import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import TransitionsModal from '../Components/Modal';
+import Navbar from '../Components/Navbar';
 
 const columns = [
   { id: '_id', label: 'ID', minWidth: 50 },
   { id: 'Name', label: 'Name', minWidth: 100 },
   { id: 'Date', label: 'Date', minWidth: 100 },
   { id: 'Category', label: 'Category', minWidth: 100 },
-  { id: 'Status', label: 'Status', minWidth: 100 },
+  { id: 'Status', label: 'Status', minWidth: 50 },
   { id: 'Amount', label: 'Amount', minWidth: 50 },
-  { id: 'Address', label: 'Address', minWidth: 150 },
+  { id: 'Address', label: 'Address', minWidth: 100 },
   { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
 
-export default function CoustomerList() {
+export default function CoustomerList({ mode, toggleColorMode }) {
   const [open, setOpen] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -73,11 +75,11 @@ export default function CoustomerList() {
 
   const handleConfirm = async () => {
     setOpen(false);
-    await deleteData(selectedId,dispatch);
+    await deleteData(selectedId, dispatch);
     setSnackBarOpen(true);
     setMessage('Customer Deleted Successfully');
     setSeverity('success');
-    fetchData(); 
+    fetchData();
   };
 
   const handleClose = (event, reason) => {
@@ -106,21 +108,29 @@ export default function CoustomerList() {
     }
 
   };
-
+  const calculateTenure = (startDate) => {
+    const currentDate = new Date();
+    const start = new Date(startDate);
+    const diffInMonths = (currentDate.getFullYear() - start.getFullYear()) * 12 + (currentDate.getMonth() - start.getMonth());
+    if (diffInMonths < 12) {
+      return { color: '#3f51b5', text: `${diffInMonths} months`, backgroundColor: '#f3e5f5', fontSize: '12px', borderRadius: '8px' };
+    } else if (diffInMonths < 24) {
+      return { color: '#f57c00', text: '1 year', backgroundColor: '#fff3e0', fontSize: '12px', borderRadius: '8px' };
+    } else if (diffInMonths < 36) {
+      return { color: '#f57c00', text: '2 years', backgroundColor: '#fff3e0', fontSize: '12px', borderRadius: '8px' };
+    } else if (diffInMonths < 48) {
+      return { color: '#d32f2f', text: '3 years', backgroundColor: '#ffcdd2', fontSize: '12px', borderRadius: '8px' };
+    } else {
+      return { color: '#d32f2f', text: 'More than 3 years', backgroundColor: '#ef9a9a', fontSize: '12px', borderRadius: '8px' };
+    }
+  };
   const handleEdit = (id) => {
     navigate(`/view/${id}`);
   };
 
   const handleView = (id) => {
-  navigate(`/view/${id}`);
+    navigate(`/view/${id}`);
   };
-  // const handleDelete = async(id) => {
-  //   await deleteData(id, dispatch);
-  //   setSnackBarOpen(true);
-  //   setSeverity('success');
-  //   setMessage('Costoumer Deleted Successfully');
-  //   fetchData()
-  // };
   const handleSearch = () => {
     setSearchInput(searchValue)
     fetchData(searchValue, filterValue, sortBy);
@@ -132,17 +142,18 @@ export default function CoustomerList() {
   }, []);
 
 
-  return (
-    <Paper sx={{ width: '100%', top: '65px', position: 'absolute' }}>
-      <div style={{ display: 'flex', alignItems: 'center', margin: '1rem' }}>
+  return (<>
+    <Navbar mode={mode} toggleColorMode={toggleColorMode} />
+    <Paper sx={{ width: '100%', height: "100%", marginTop: '64px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', margin: 'auto', padding: ".4rem" }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TextField
             label="Search Name"
             variant="outlined"
-            onChange={(e)=>setSearchValue(e.target.value)}
+            onChange={(e) => setSearchValue(e.target.value)}
             sx={{ width: '250px', marginRight: '1rem' }}
           />
-          <IconButton color="primary" aria-label="search" sx={{ml:"-30px"}} onClick={handleSearch}>
+          <IconButton color="primary" aria-label="search" sx={{ ml: "-30px" }} onClick={handleSearch}>
             <SearchIcon />
           </IconButton>
         </div>
@@ -155,7 +166,7 @@ export default function CoustomerList() {
             fetchData(searchInput, e.target.value, sortBy);
           }}
           IconComponent={FilterList}
-          style={{ marginLeft: '1rem' }}
+          style={{ marginLeft: '1rem', height: "2.5rem" }}
         >
           <MenuItem value="">All</MenuItem>
           <MenuItem value="Gold">Gold</MenuItem>
@@ -166,7 +177,7 @@ export default function CoustomerList() {
           <MenuItem value="Others">Others</MenuItem>
         </Select>
       </div>
-      <TableContainer sx={{ maxHeight: "70vh" }}>
+      <TableContainer sx={{ maxHeight: "75.6vh" }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -214,47 +225,80 @@ export default function CoustomerList() {
                         ? customer._id.slice(-6)
                         : column.id === 'Date'
                           ? new Date(customer.Date).toLocaleDateString('en-IN')
-                          : column.id === 'Status' ? (
-                            <span
-                              style={{
-                                color:
-                                  customer.Status === 'Active'
-                                    ? 'white'
-                                    : customer.Status === 'Renew'
+                          : column.id === 'Name'
+                            ? (
+                              <>
+                                {column.id === 'Name' && (
+                                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                      {customer.Name}
+                                    </div>
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: calculateTenure(customer.Date).backgroundColor,
+                                        borderRadius: calculateTenure(customer.Date).borderRadius,
+                                        padding: '5px 10px',
+                                        marginTop: '5px',
+                                      }}
+                                    >
+                                      <AccessTimeIcon style={{ marginRight: '5px', color: '#757575' }} /> {/* Add the Material UI icon */}
+                                      <span
+                                        style={{
+                                          color: calculateTenure(customer.Date).color,
+                                          fontWeight: 'bold',
+                                          fontSize: calculateTenure(customer.Date).fontSize,
+                                        }}
+                                      >
+                                        {calculateTenure(customer.Date).text}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            )
+                            : column.id === 'Status' ? (
+                              <span
+                                style={{
+                                  color:
+                                    customer.Status === 'Active'
                                       ? 'white'
-                                      : customer.Status === 'Completed'
+                                      : customer.Status === 'Renew'
                                         ? 'white'
-                                        : 'inherit',
-                                backgroundColor:
-                                  customer.Status === 'Active'
-                                    ? 'green'
-                                    : customer.Status === 'Renew'
-                                      ? 'blue'
-                                      : customer.Status === 'Completed'
-                                        ? 'red'
-                                        : 'inherit',
-                                padding: '4px 8px',
-                                borderRadius: '4px',
-                                display: 'inline-block',
-                              }}
-                            >
-                              {customer.Status}
-                            </span>
-                          ) : column.id === 'actions' ? (
-                            <div style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}>
-                              <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
-                                <EditIcon />
-                              </IconButton>
-                              <IconButton color="secondary" onClick={() => handleView(customer._id)}>
-                                <VisibilityIcon />
-                              </IconButton>
-                              <IconButton color="error" onClick={() => handleDelete(customer._id)}>
-                                <DeleteIcon />
-                              </IconButton>
-                            </div>
-                          ) : (
-                            customer[column.id]
-                          )}
+                                        : customer.Status === 'Completed'
+                                          ? 'white'
+                                          : 'inherit',
+                                  backgroundColor:
+                                    customer.Status === 'Active'
+                                      ? 'green'
+                                      : customer.Status === 'Renew'
+                                        ? 'blue'
+                                        : customer.Status === 'Completed'
+                                          ? 'red'
+                                          : 'inherit',
+                                  padding: '4px 8px',
+                                  borderRadius: '4px',
+                                  display: 'inline-block',
+                                }}
+                              >
+                                {customer.Status}
+                              </span>
+                            ) :column.id === 'Amount'?(<span>₹{customer.Amount}</span>): column.id === 'actions' ? (
+                              <div style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}>
+                                <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
+                                  <EditIcon />
+                                </IconButton>
+                                <IconButton color="secondary" onClick={() => handleView(customer._id)}>
+                                  <VisibilityIcon />
+                                </IconButton>
+                                <IconButton color="error" onClick={() => handleDelete(customer._id)}>
+                                  <DeleteIcon />
+                                </IconButton>
+                              </div>
+                            ) : (
+                              customer[column.id]
+                            )}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -270,14 +314,14 @@ export default function CoustomerList() {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{ display: 'flex', justifyContent: 'flex-end' }} 
+        sx={{ display: 'flex', justifyContent: 'flex-end' }}
       />
       <Snackbar
         open={snackBarOpen}
         autoHideDuration={1000}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         onClose={handleClose}
-       
+
       >
         <Alert
           severity={severity}
@@ -297,6 +341,6 @@ export default function CoustomerList() {
         </Alert>
       </Snackbar>
       <TransitionsModal open={open} handleClose={() => setOpen(false)} handleConfirm={handleConfirm} />
-    </Paper>
+    </Paper></>
   );
 }

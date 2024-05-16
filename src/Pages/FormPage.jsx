@@ -18,6 +18,7 @@ import { styled } from '@mui/system';
 import { postFormData } from '../Helpers/apis';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import Navbar from '../Components/Navbar';
 
 const FormContainer = styled('div')({
     maxWidth: '90vw',
@@ -25,7 +26,7 @@ const FormContainer = styled('div')({
     padding: '2rem',
     border: 'none',
     borderRadius: '8px',
-    boxShadow:"0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)"
+    boxShadow:"4px 4px 12px -2.5px rgba(85, 166, 246, 0.15),4px 4px 12px -2.5px rgba(85, 166, 246, 0.15),4px 4px 12px -2.5px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)"
     // backgroundColor: '#f0f2f5',
 });
 
@@ -36,7 +37,7 @@ const FormHeading = styled(Typography)({
     textAlign: 'center',
 });
 
-const FormPage = () => {
+const FormPage = ({ mode, toggleColorMode }) => {
     const [open, setOpen] = React.useState(false);
     const [severity, setSeverity] = React.useState('');
     const [message, setMessage] = React.useState('');
@@ -86,7 +87,9 @@ const FormPage = () => {
     };
 
     return (
-        <FormContainer sx={{position:'relative',top:"100px"}}>
+        <>
+        <Navbar mode={mode} toggleColorMode={toggleColorMode} />
+        <FormContainer sx={{position:'relative',top:"90px"}}>
             <FormHeading variant="h6">Add Customers Data</FormHeading>
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
@@ -99,6 +102,7 @@ const FormPage = () => {
                             onChange={handleChange}
                             fullWidth
                             required
+                            placeholder='Your name'
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -264,6 +268,7 @@ const FormPage = () => {
                 </Alert>
             </Snackbar>
         </FormContainer>
+        </>
     );
 };
 

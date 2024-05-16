@@ -1,10 +1,12 @@
 import React from 'react'
 import Dashboard from '../Components/Dashboard'
+import Navbar from '../Components/Navbar'
 
-const Home = () => {
+const Home = ({ mode, toggleColorMode }) => {
   return (
     <div>
-      <Dashboard/>
+      <Navbar mode={mode} toggleColorMode={toggleColorMode} />
+      <Dashboard />
     </div>
   )
 }
