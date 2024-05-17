@@ -3,7 +3,6 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 import PrivateRoutes from './privateRoutes'
 import LoginPage from '../Pages/login'
 import Home from '../Pages/Home'
-import Navbar from '../Components/Navbar'
 import FormPage from '../Pages/FormPage'
 import CustomerList from '../Pages/CustomerList'
 import Cookies from 'js-cookie';
@@ -23,14 +22,14 @@ const AllRoutes = ({ mode, toggleColorMode }) => {
     },[dispatch, navigate])
 
     return (<>
-        <Navbar mode={mode} toggleColorMode={toggleColorMode} />
+        {/* <Navbar mode={mode} toggleColorMode={toggleColorMode} /> */}
         <Routes>
             <Route path='/login' element={<LoginPage />} />
-            <Route path='/home' element={<PrivateRoutes><Home /></PrivateRoutes>} />
-            <Route path='/customerLists' element={<PrivateRoutes><CustomerList /></PrivateRoutes>} />
-            <Route path='/form' element={<PrivateRoutes><FormPage /></PrivateRoutes>} />
-            <Route path='/view/:id' element={<PrivateRoutes><ViewPage /></PrivateRoutes>} />
-            <Route path='/edit/:id' element={<PrivateRoutes><EditPage /></PrivateRoutes>} />
+            <Route path='/home' element={<PrivateRoutes><Home mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
+            <Route path='/customerLists' element={<PrivateRoutes><CustomerList mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
+            <Route path='/form' element={<PrivateRoutes><FormPage mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
+            <Route path='/view/:id' element={<PrivateRoutes><ViewPage mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
+            <Route path='/edit/:id' element={<PrivateRoutes><EditPage mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
         </Routes></>
     )
 }

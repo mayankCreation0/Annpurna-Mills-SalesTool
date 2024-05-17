@@ -11,6 +11,8 @@ import Typography from '@mui/material/Typography';
 import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
+import PeopleIcon from '@mui/icons-material/People';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ToggleColorMode from './ToggleColorMode';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +22,7 @@ import logo from '../Assets/ams-high-resolution-logo-normal.png'
 
 const logoStyle = {
     width: '100px',
-    height: 'inherit',
+    height: '3.5rem',
     cursor: 'pointer',
 };
 
@@ -30,12 +32,12 @@ function Navbar({ mode, toggleColorMode }) {
     const dispatch = useDispatch();
     const auth = useSelector((state) => state.auth);
 
-    
+
 
     const toggleDrawer = (newOpen) => () => {
         setOpen(newOpen);
     };
-    const handleLogout = ()=>{
+    const handleLogout = () => {
         Cookies.remove('token', { path: '/login' });
         dispatch(handleAuth(false));
         navigate('/login')
@@ -44,13 +46,13 @@ function Navbar({ mode, toggleColorMode }) {
 
     return (
         <>
-            {auth ? <div style={{position:"absolute"}}>
+            {auth ? <div>
                 <AppBar
                     maxWidth="100%"
                     sx={{
                         boxShadow: 0,
                         // bgcolor: 'coral',
-                        // backgroundImage: 'none',
+                        backgroundImage: 'none',
                     }}
                 >
                     <Container maxWidth="100%">
@@ -88,13 +90,14 @@ function Navbar({ mode, toggleColorMode }) {
                                     src={logo}
                                     style={logoStyle}
                                     alt="logo of sitemark"
-                                    onClick={()=>navigate('/home')}
+                                    onClick={() => navigate('/home')}
                                 />
                                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                                     <MenuItem
-                                        onClick={() => navigate('./CustomerLists')}
+                                        onClick={() => navigate('/CustomerLists')}
                                         sx={{ py: '6px', px: '12px' }}
                                     >
+                                        <PeopleIcon />
                                         <Typography variant="body2" color="text.primary">
                                             Customer List
                                         </Typography>
@@ -103,12 +106,13 @@ function Navbar({ mode, toggleColorMode }) {
                                         onClick={() => navigate('/form')}
                                         sx={{ py: '6px', px: '12px' }}
                                     >
+                                        <AddCircleIcon />
                                         <Typography variant="body2" color="text.primary">
                                             Add Customer
                                         </Typography>
                                     </MenuItem>
                                 </Box>
-                                
+
                             </Box>
                             <Box
                                 sx={{
@@ -123,7 +127,7 @@ function Navbar({ mode, toggleColorMode }) {
                                     variant="contained"
                                     size="small"
                                     component="a"
-                                    onClick={()=> handleLogout()}
+                                    onClick={() => handleLogout()}
                                     target="_blank"
                                 >
                                     Log out
@@ -158,7 +162,7 @@ function Navbar({ mode, toggleColorMode }) {
                                         >
                                             <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
                                         </Box>
-                                        <MenuItem onClick={() => navigate('./CustomerLists')}>
+                                        <MenuItem onClick={() => navigate('/CustomerLists')}>
                                             Customer List
                                         </MenuItem>
                                         <MenuItem onClick={() => navigate('/form')}>

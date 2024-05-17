@@ -13,25 +13,27 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { deleteData, getList } from '../Helpers/apis';
 import { Typography, MenuItem, Select, TextField, Snackbar, Alert, Backdrop, CircularProgress } from '@mui/material';
 import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import TransitionsModal from '../Components/Modal';
+import Navbar from '../Components/Navbar';
 
 const columns = [
   { id: '_id', label: 'ID', minWidth: 50 },
   { id: 'Name', label: 'Name', minWidth: 100 },
   { id: 'Date', label: 'Date', minWidth: 100 },
   { id: 'Category', label: 'Category', minWidth: 100 },
-  { id: 'Status', label: 'Status', minWidth: 100 },
+  { id: 'Status', label: 'Status', minWidth: 50 },
   { id: 'Amount', label: 'Amount', minWidth: 50 },
-  { id: 'Address', label: 'Address', minWidth: 150 },
+  { id: 'Address', label: 'Address', minWidth: 100 },
   { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
 
-export default function CustomerList() {
+export default function CustomerList({ mode, toggleColorMode }) {
   const [loaderOpen, setLoaderOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -115,7 +117,22 @@ export default function CustomerList() {
       fetchData(searchInput, filterValue, columnId);
     }
   };
-
+  const calculateTenure = (startDate) => {
+    const currentDate = new Date();
+    const start = new Date(startDate);
+    const diffInMonths = (currentDate.getFullYear() - start.getFullYear()) * 12 + (currentDate.getMonth() - start.getMonth());
+    if (diffInMonths < 12) {
+      return { color: '#3f51b5', text: `${diffInMonths} months`, backgroundColor: '#f3e5f5', fontSize: '12px', borderRadius: '8px' };
+    } else if (diffInMonths < 24) {
+      return { color: '#f57c00', text: '1 year', backgroundColor: '#fff3e0', fontSize: '12px', borderRadius: '8px' };
+    } else if (diffInMonths < 36) {
+      return { color: '#f57c00', text: '2 years', backgroundColor: '#fff3e0', fontSize: '12px', borderRadius: '8px' };
+    } else if (diffInMonths < 48) {
+      return { color: '#d32f2f', text: '3 years', backgroundColor: '#ffcdd2', fontSize: '12px', borderRadius: '8px' };
+    } else {
+      return { color: '#d32f2f', text: 'More than 3 years', backgroundColor: '#ef9a9a', fontSize: '12px', borderRadius: '8px' };
+    }
+  };
   const handleEdit = (id) => {
     navigate(`/view/${id}`);
   };
@@ -123,12 +140,12 @@ export default function CustomerList() {
   const handleView = (id) => {
     navigate(`/view/${id}`);
   };
-
   const handleSearch = () => {
-    setSearchInput(searchValue);
+    setSearchInput(searchValue)
     fetchData(searchValue, filterValue, sortBy);
-    setSearchInput(null);
-  };
+    setSearchInput(null)
+  }
+
 
   useEffect(() => {
     fetchData();
@@ -138,9 +155,10 @@ export default function CustomerList() {
     setLoaderOpen(loading);
   }, [loading]);
 
-  return (
-    <Paper sx={{ width: '100%', top: '65px', position: 'absolute' }}>
-      <div style={{ display: 'flex', alignItems: 'center', margin: '1rem' }}>
+  return (<>
+    <Navbar mode={mode} toggleColorMode={toggleColorMode} />
+    <Paper sx={{ width: '100%', height: "100%", marginTop: '64px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', margin: 'auto', padding: ".4rem" }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TextField
             label="Search Name"
@@ -160,7 +178,7 @@ export default function CustomerList() {
             fetchData(searchInput, e.target.value, sortBy);
           }}
           IconComponent={FilterList}
-          style={{ marginLeft: '1rem' }}
+          style={{ marginLeft: '1rem', height: "2.5rem" }}
         >
           <MenuItem value="">All</MenuItem>
           <MenuItem value="Gold">Gold</MenuItem>
@@ -179,58 +197,106 @@ export default function CustomerList() {
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : (
-        <TableContainer sx={{ maxHeight: "70vh" }}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align || 'left'}
-                    style={{
-                      minWidth: column.minWidth,
-                      fontSize: "16px",
-                      fontWeight: 'bold',
-                      height: '40px',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography variant="subtitle1">{column.label}</Typography>
-                      {(column.id === 'Date' || column.id === 'Amount') && (
-                        <>
-                          <IconButton size="small" onClick={() => handleSort(column.id)}>
-                            <ArrowUpward />
-                          </IconButton>
-                          <IconButton size="small" onClick={() => handleSort(`-${column.id}`)}>
-                            <ArrowDownward />
-                          </IconButton>
-                        </>
-                      )}
-                    </div>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {customers
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((customer, index) => (
-                  <TableRow key={index}>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        style={{ fontSize: "20px", fontWeight: 'normal' }}
-                        align={column.align || 'left'}
-                      >
-                        {column.id === '_id'
-                          ? customer._id.slice(-6)
-                          : column.id === 'Date'
-                            ? new Date(customer.Date).toLocaleDateString('en-IN')
+      <TableContainer sx={{ maxHeight: "75.6vh" }}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align || 'left'}
+                  style={{
+                    minWidth: column.minWidth,
+                    fontSize: "16px",
+                    fontWeight: 'bold',
+                    // backgroundColor: "#f5f5f5", 
+                    height: '40px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="subtitle1">{column.label}</Typography>
+                    {(column.id === 'Date' || column.id === 'Amount') && (
+                      <>
+                        <IconButton size="small" onClick={() => handleSort(column.id)}>
+                          <ArrowUpward />
+                        </IconButton>
+                        <IconButton size="small" onClick={() => handleSort(`-${column.id}`)}>
+                          <ArrowDownward />
+                        </IconButton>
+                      </>
+                    )}
+                  </div>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {customers
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((customer, index) => (
+                <TableRow key={index}>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      style={{ fontSize: "20px", fontWeight: 'normal', }}
+                      align={column.align || 'left'}
+                    >
+                      {column.id === '_id'
+                        ? customer._id.slice(-6)
+                        : column.id === 'Date'
+                          ? new Date(customer.Date).toLocaleDateString('en-IN')
+                          : column.id === 'Name'
+                            ? (
+                              <>
+                                {column.id === 'Name' && (
+                                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                      {customer.Name}
+                                    </div>
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: calculateTenure(customer.Date).backgroundColor,
+                                        borderRadius: calculateTenure(customer.Date).borderRadius,
+                                        padding: '5px 10px',
+                                        marginTop: '5px',
+                                      }}
+                                    >
+                                      <AccessTimeIcon style={{ marginRight: '5px', color: '#757575' }} /> {/* Add the Material UI icon */}
+                                      <span
+                                        style={{
+                                          color: calculateTenure(customer.Date).color,
+                                          fontWeight: 'bold',
+                                          fontSize: calculateTenure(customer.Date).fontSize,
+                                        }}
+                                      >
+                                        {calculateTenure(customer.Date).text}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            )
                             : column.id === 'Status' ? (
                               <span
                                 style={{
-                                  color: customer.Status === 'Active' || customer.Status === 'Renew' || customer.Status === 'Completed' ? 'white' : 'inherit',
-                                  backgroundColor: customer.Status === 'Active' ? 'green' : customer.Status === 'Renew' ? 'blue' : customer.Status === 'Completed' ? 'red' : 'inherit',
+                                  color:
+                                    customer.Status === 'Active'
+                                      ? 'white'
+                                      : customer.Status === 'Renew'
+                                        ? 'white'
+                                        : customer.Status === 'Completed'
+                                          ? 'white'
+                                          : 'inherit',
+                                  backgroundColor:
+                                    customer.Status === 'Active'
+                                      ? 'green'
+                                      : customer.Status === 'Renew'
+                                        ? 'blue'
+                                        : customer.Status === 'Completed'
+                                          ? 'red'
+                                          : 'inherit',
                                   padding: '4px 8px',
                                   borderRadius: '4px',
                                   display: 'inline-block',
@@ -238,7 +304,7 @@ export default function CustomerList() {
                               >
                                 {customer.Status}
                               </span>
-                            ) : column.id === 'actions' ? (
+                            ) :column.id === 'Amount'?(<span>₹{customer.Amount}</span>): column.id === 'actions' ? (
                               <div style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}>
                                 <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
                                   <EditIcon />
@@ -295,6 +361,6 @@ export default function CustomerList() {
         </Alert>
       </Snackbar>
       <TransitionsModal open={open} handleClose={() => setOpen(false)} handleConfirm={handleConfirm} />
-    </Paper>
+    </Paper></>
   );
 }
