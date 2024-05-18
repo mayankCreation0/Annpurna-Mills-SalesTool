@@ -11,7 +11,6 @@ import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import Chart from './Charts.jsx';
 import Deposits from './Deposits.jsx';
-import Orders from './Orders.jsx';
 
 function Copyright(props) {
     return (
@@ -123,16 +122,39 @@ export default function Dashboard() {
                                 <Deposits />
                             </Paper>
                         </Grid>
-                        {/* Recent Orders */}
-                        <Grid item xs={12}>
-                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                <Orders />
-                            </Paper>
-                        </Grid>
                     </Grid>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
+                        <Paper sx={{ p: 2 }}>
+                            <iframe
+                                src="https://goldbroker.com/widget/historical/XAU?height=500&currency=INR&weight_unit=g"
+                                scrolling="yes"
+                                frameBorder="0"
+                                width="100%"
+                                height="500"
+                                style={{
+                                    border: '1px solid #ddd',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                }}
+                            ></iframe>
+                        </Paper>
+                        <Paper sx={{ p: 2 }}>
+                            <iframe
+                                src="https://goldbroker.com/widget/historical/XAG?height=500&currency=INR&weight_unit=kg"
+                                scrolling="yes"
+                                frameBorder="0"
+                                width="100%"
+                                height="500"
+                                style={{
+                                    border: '1px solid #ddd',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                }}
+                            ></iframe>
+                        </Paper>
+                    </Box>
                     <Copyright sx={{ pt: 4 }} />
                 </Container>
-                <iframe src="https://goldbroker.com/widget/historical/XAU?height=500&currency=INR&weight_unit=g" scrolling="no" frameborder="0" width="100%" height="500"></iframe>
             </Box>
         </Box>
     );
