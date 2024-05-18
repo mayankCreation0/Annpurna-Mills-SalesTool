@@ -98,7 +98,7 @@ export default function CustomerList({ mode, toggleColorMode }) {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    fetchData(searchInput, filterValue, sortBy);
+    // fetchData(searchInput, filterValue, sortBy);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -130,7 +130,27 @@ export default function CustomerList({ mode, toggleColorMode }) {
     } else if (diffInMonths < 48) {
       return { color: '#d32f2f', text: '3 years', backgroundColor: '#ffcdd2', fontSize: '12px', borderRadius: '8px' };
     } else {
-      return { color: '#d32f2f', text: 'More than 3 years', backgroundColor: '#ef9a9a', fontSize: '12px', borderRadius: '8px' };
+      return { color: '#d32f2f', text: '3+  years', backgroundColor: '#ef9a9a', fontSize: '12px', borderRadius: '8px' };
+    }
+  };
+
+  const getShortTenureText = (text) => {
+    switch (text) {
+      case 'More than 3 years':
+        return '3+ yrs';
+      case 'More than 2 years':
+        return '2+ yrs';
+      case 'More than a year':
+        return '1+ yr';
+      case 'Less than a year':
+        return '< 1 yr';
+      default:
+        // For specific months, e.g., "10 months", "9 months"
+        const monthsMatch = text.match(/^(\d+) months$/);
+        if (monthsMatch) {
+          return `${monthsMatch[1]}mos`;
+        }
+        return text;
     }
   };
   const handleEdit = (id) => {
@@ -142,6 +162,7 @@ export default function CustomerList({ mode, toggleColorMode }) {
   };
   const handleSearch = () => {
     setSearchInput(searchValue)
+    setPage(0);
     fetchData(searchValue, filterValue, sortBy);
     setSearchInput(null)
   }
@@ -157,7 +178,7 @@ export default function CustomerList({ mode, toggleColorMode }) {
 
   return (<>
     <Navbar mode={mode} toggleColorMode={toggleColorMode} />
-    <Paper sx={{ width: '100%', height: "100%", marginTop: '64px' }}>
+    <Paper sx={{ width: '100%', height: "100%", marginTop: '64px',overflowY :'hidden'}}>
       <div style={{ display: 'flex', alignItems: 'center', margin: 'auto', padding: ".4rem" }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TextField
@@ -197,128 +218,134 @@ export default function CustomerList({ mode, toggleColorMode }) {
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : (
-      <TableContainer sx={{ maxHeight: "75.6vh" }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align || 'left'}
-                  style={{
-                    minWidth: column.minWidth,
-                    fontSize: "16px",
-                    fontWeight: 'bold',
-                    // backgroundColor: "#f5f5f5", 
-                    height: '40px',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="subtitle1">{column.label}</Typography>
-                    {(column.id === 'Date' || column.id === 'Amount') && (
-                      <>
-                        <IconButton size="small" onClick={() => handleSort(column.id)}>
-                          <ArrowUpward />
-                        </IconButton>
-                        <IconButton size="small" onClick={() => handleSort(`-${column.id}`)}>
-                          <ArrowDownward />
-                        </IconButton>
-                      </>
-                    )}
-                  </div>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {customers
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((customer, index) => (
-                <TableRow key={index}>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      style={{ fontSize: "20px", fontWeight: 'normal', }}
-                      align={column.align || 'left'}
-                    >
-                      {column.id === '_id'
-                        ? customer._id.slice(-6)
-                        : column.id === 'Date'
-                          ? new Date(customer.Date).toLocaleDateString('en-IN')
-                          : column.id === 'Name'
-                            ? (
-                              <>
-                                {column.id === 'Name' && (
-                                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                      {customer.Name}
-                                    </div>
-                                    <div
-                                      style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        backgroundColor: calculateTenure(customer.Date).backgroundColor,
-                                        borderRadius: calculateTenure(customer.Date).borderRadius,
-                                        padding: '5px 10px',
-                                        marginTop: '5px',
-                                      }}
-                                    >
-                                      <AccessTimeIcon style={{ marginRight: '5px', color: '#757575' }} /> {/* Add the Material UI icon */}
-                                      <span
+        <TableContainer sx={{ height: "74.6vh" ,border:"1px solid black"}}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align || 'left'}
+                    style={{
+                      minWidth: column.minWidth,
+                      fontSize: '1rem',
+                      fontWeight: 'bold',
+                      // backgroundColor: "#f5f5f5", 
+                      height: '40px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography variant="subtitle1">{column.label}</Typography>
+                      {(column.id === 'Date' || column.id === 'Amount') && (
+                        <>
+                          <IconButton size="small" onClick={() => handleSort(column.id)}>
+                            <ArrowUpward />
+                          </IconButton>
+                          <IconButton size="small" onClick={() => handleSort(`-${column.id}`)}>
+                            <ArrowDownward />
+                          </IconButton>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {customers
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((customer, index) => (
+                  <TableRow key={index}>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        sx={{
+                          minWidth: column.minWidth,
+                          fontSize: '1rem',
+                          fontWeight: '600',
+                          backgroundColor: '#f5f5f5',
+                          color: '#333',
+                          padding: '8px',
+                        }}
+                        align={column.align || 'left'}
+                      >
+                        {column.id === '_id'
+                          ? customer._id.slice(-6)
+                          : column.id === 'Date'
+                            ? new Date(customer.Date).toLocaleDateString('en-IN')
+                            : column.id === 'Name'
+                              ? (
+                                <>
+                                  {column.id === 'Name' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center'}}>
+                                        {customer.Name}
+                                      </div>
+                                      <div
                                         style={{
-                                          color: calculateTenure(customer.Date).color,
-                                          fontWeight: 'bold',
-                                          fontSize: calculateTenure(customer.Date).fontSize,
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          backgroundColor: calculateTenure(customer.Date).backgroundColor,
+                                          borderRadius: '8px', // Slightly more rounded
+                                          padding: '4px 8px', // Reduced padding
+                                          marginTop: '4px', // Reduced margin
+                                          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)', // Subtle shadow
                                         }}
                                       >
-                                        {calculateTenure(customer.Date).text}
-                                      </span>
+                                        <AccessTimeIcon style={{ marginRight: '4px', color: '#757575', fontSize: '1rem' }} />
+                                        <span
+                                          style={{
+                                            color: calculateTenure(customer.Date).color,
+                                            fontWeight: '500', // Semi-bold
+                                            fontSize: '0.85rem', // Smaller font size
+                                          }}
+                                        >
+                                          {getShortTenureText(calculateTenure(customer.Date).text)}
+                                        </span>
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
-                              </>
-                            )
-                            : column.id === 'Status' ? (
-                              <span
-                                style={{
-                                  color:
-                                    customer.Status === 'Active'
-                                      ? 'white'
-                                      : customer.Status === 'Renew'
-                                        ? 'white'
-                                        : customer.Status === 'Completed'
-                                          ? 'white'
-                                          : 'inherit',
-                                  backgroundColor:
-                                    customer.Status === 'Active'
-                                      ? 'green'
-                                      : customer.Status === 'Renew'
-                                        ? 'blue'
-                                        : customer.Status === 'Completed'
-                                          ? 'red'
-                                          : 'inherit',
-                                  padding: '4px 8px',
-                                  borderRadius: '4px',
-                                  display: 'inline-block',
-                                }}
-                              >
-                                {customer.Status}
-                              </span>
-                            ) :column.id === 'Amount'?(<span>₹{customer.Amount}</span>): column.id === 'actions' ? (
-                              <div style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}>
-                                <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
-                                  <EditIcon />
-                                </IconButton>
-                                <IconButton color="secondary" onClick={() => handleView(customer._id)}>
-                                  <VisibilityIcon />
-                                </IconButton>
-                                <IconButton color="error" onClick={() => handleDelete(customer._id)}>
-                                  <DeleteIcon />
-                                </IconButton>
-                              </div>
-                            ) : (
-                              customer[column.id]
-                            )}
+                                  )}
+
+                                </>
+                              )
+                              : column.id === 'Status' ? (
+                                <span
+                                  style={{
+                                    color: 'white',
+                                    backgroundColor:
+                                      customer.Status === 'Active'
+                                        ? '#4CAF50' // Softer green
+                                        : customer.Status === 'Renew'
+                                          ? '#2196F3' // Softer blue
+                                          : customer.Status === 'Completed'
+                                            ? '#F44336' // Softer red
+                                            : 'inherit',
+                                    padding: '2px 6px', // Reduced padding
+                                    borderRadius: '12px', // More rounded corners
+                                    fontSize: '0.85rem', // Slightly smaller font size
+                                    display: 'inline-block',
+                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)', // Adding a subtle shadow
+                                    transition: 'background-color 0.3s ease', // Smooth transition for background color
+                                  }}
+                                >
+                                  {customer.Status}
+                                </span>
+
+                              ) : column.id === 'Amount' ? (<span>₹{customer.Amount}</span>) : column.id === 'actions' ? (
+                                <div style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}>
+                                  <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
+                                    <EditIcon />
+                                  </IconButton>
+                                  <IconButton color="secondary" onClick={() => handleView(customer._id)}>
+                                    <VisibilityIcon />
+                                  </IconButton>
+                                  <IconButton color="error" onClick={() => handleDelete(customer._id)}>
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </div>
+                              ) : (
+                                customer[column.id]
+                              )}
                       </TableCell>
                     ))}
                   </TableRow>

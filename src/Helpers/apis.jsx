@@ -4,7 +4,7 @@ import { handleAuth, handleLoading } from '../Redux/Reducer';
 
 export const loginApi = async ({ username,password},dispatch) => {
     try {
-        const response = await axios.post('http://localhost:8080/login', {
+        const response = await axios.post('https://annpurna-mills-server.vercel.app/login', {
             username,
             password,
         });
@@ -27,7 +27,7 @@ export const postFormData = async (formData,dispatch)=>{
             Authorization: `Bearer ${token}`,
         }
         const res = await axios.post(
-            "http://localhost:8080/user/add",
+            "https://annpurna-mills-server.vercel.app/user/add",
             formData,
             {
                 headers,
@@ -49,7 +49,7 @@ export const getList = async (queryString, dispatch) =>{
         const headers = {
             Authorization: `Bearer ${token}`,
         }
-        const response = await axios.get(`http://localhost:8080/user/get?${queryString}`, { headers })
+        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get?${queryString}`, { headers })
         dispatch(handleLoading(false))
         return response
     } catch (error) {
@@ -63,7 +63,7 @@ export const getDetailsById = async (id, dispatch)=>{
         const headers = {
             Authorization: `Bearer ${token}`,
         }
-        const response = await axios.get(`http://localhost:8080/user/get/${id}`,{headers})
+        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/${id}`,{headers})
         dispatch(handleLoading(false))
         return response
     } catch (error) {
@@ -79,7 +79,7 @@ export const deleteData = async(id,dispatch)=>{
         const headers = {
             Authorization: `Bearer ${token}`,
         }
-        const res = await axios.delete(`http://localhost:8080/user/delete/${id}`,{headers}) 
+        const res = await axios.delete(`https://annpurna-mills-server.vercel.app/user/delete/${id}`,{headers}) 
         dispatch(handleLoading(false))
         return res
     } catch (error) {
