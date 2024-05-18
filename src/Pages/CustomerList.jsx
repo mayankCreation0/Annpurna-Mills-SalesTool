@@ -23,12 +23,12 @@ import TransitionsModal from '../Components/Modal';
 import Navbar from '../Components/Navbar';
 
 const columns = [
-  { id: '_id', label: 'ID', minWidth: 50 },
+  { id: '_id', label: 'ID', minWidth: 50},
   { id: 'Name', label: 'Name', minWidth: 100 },
   { id: 'Date', label: 'Date', minWidth: 100 },
   { id: 'Category', label: 'Category', minWidth: 100 },
-  { id: 'Status', label: 'Status', minWidth: 50 },
-  { id: 'Amount', label: 'Amount', minWidth: 50 },
+  { id: 'Status', label: 'Status', minWidth: 100 },
+  { id: 'Amount', label: 'Amount', minWidth: 100 },
   { id: 'Address', label: 'Address', minWidth: 100 },
   { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
