@@ -14,7 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import PeopleIcon from '@mui/icons-material/People';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ToggleColorMode from './ToggleColorMode';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { handleAuth } from '../Redux/Reducer';
 import Cookies from 'js-cookie';

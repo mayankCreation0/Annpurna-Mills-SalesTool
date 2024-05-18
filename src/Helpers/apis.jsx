@@ -1,25 +1,25 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { handleAuth, handleLoading } from '../Redux/Reducer';
+import { handleAnalytics, handleAuth, handleLoading } from '../Redux/Reducer';
 
-export const loginApi = async ({ username,password},dispatch) => {
+export const loginApi = async ({ username, password }, dispatch) => {
     try {
         const response = await axios.post('https://annpurna-mills-server.vercel.app/login', {
             username,
             password,
         });
-        if(response.status === 200) {
-            const {token} = response.data;
+        if (response.status === 200) {
+            const { token } = response.data;
             Cookies.set('token', token, { expires: 1 });
             dispatch(handleAuth(true));
-            return {state : "success" ,  response};
-        } 
+            return { state: "success", response };
+        }
     } catch (error) {
-       return{state : 'invalid', response:error}
+        return { state: 'invalid', response: error }
     }
 };
 
-export const postFormData = async (formData,dispatch)=>{
+export const postFormData = async (formData, dispatch) => {
     try {
         dispatch(handleLoading(true));
         const token = Cookies.get('token');
@@ -42,7 +42,7 @@ export const postFormData = async (formData,dispatch)=>{
     }
 }
 
-export const getList = async (queryString, dispatch) =>{
+export const getList = async (queryString, dispatch) => {
     const token = Cookies.get('token');
     try {
         dispatch(handleLoading(true));
@@ -56,30 +56,47 @@ export const getList = async (queryString, dispatch) =>{
         dispatch(handleLoading(false))
     }
 }
-export const getDetailsById = async (id, dispatch)=>{
+
+export const getAnalytics = async (dispatch) => {
+    const token = Cookies.get('token');
+    try {
+        dispatch(handleLoading(true));
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        }
+        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/analytics`, { headers })
+        dispatch(handleAnalytics(response.data))
+        dispatch(handleLoading(false))
+        return response
+    } catch (error) {
+
+    }
+}
+
+export const getDetailsById = async (id, dispatch) => {
     dispatch(handleLoading(true));
     const token = Cookies.get('token');
     try {
         const headers = {
             Authorization: `Bearer ${token}`,
         }
-        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/${id}`,{headers})
+        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/${id}`, { headers })
         dispatch(handleLoading(false))
         return response
     } catch (error) {
         dispatch(handleLoading(false))
     }
-   
+
 }
 
-export const deleteData = async(id,dispatch)=>{
+export const deleteData = async (id, dispatch) => {
     dispatch(handleLoading(true));
     const token = Cookies.get('token');
     try {
         const headers = {
             Authorization: `Bearer ${token}`,
         }
-        const res = await axios.delete(`https://annpurna-mills-server.vercel.app/user/delete/${id}`,{headers}) 
+        const res = await axios.delete(`https://annpurna-mills-server.vercel.app/user/delete/${id}`, { headers })
         dispatch(handleLoading(false))
         return res
     } catch (error) {
