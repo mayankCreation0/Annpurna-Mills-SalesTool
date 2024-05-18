@@ -11,6 +11,7 @@ import Title from './Title';
 import LoanAmountBarChart from './AmountChart.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Helpers/apis';
+import Deposits from './Deposits.jsx';
 
 function Copyright(props) {
     return (
@@ -77,20 +78,7 @@ export default function Dashboard() {
                                             height: 240,
                                         }}
                                     >
-                                        <React.Fragment>
-                                            <Title>Recent Deposits</Title>
-                                            <Typography component="p" variant="h4">
-                                                $3,024.00
-                                            </Typography>
-                                            <Typography color="text.secondary" sx={{ flex: 1 }}>
-                                                on 15 March, 2019
-                                            </Typography>
-                                            <div>
-                                                <Link color="primary" href="#">
-                                                    View balance
-                                                </Link>
-                                            </div>
-                                        </React.Fragment>
+                                        <Deposits/>
                                     </Paper>
                                 </Grid>
                             </Grid>
@@ -105,6 +93,20 @@ export default function Dashboard() {
                                         }}
                                     >
                                         <LoanAmountBarChart />
+                                        <React.Fragment>
+                                            <Title>Recent Deposits</Title>
+                                            <Typography component="p" variant="h4">
+                                                $3,024.00
+                                            </Typography>
+                                            <Typography color="text.secondary" sx={{ flex: 1 }}>
+                                                on 15 March, 2019
+                                            </Typography>
+                                            <div>
+                                                <Link color="primary" href="#">
+                                                    View balance
+                                                </Link>
+                                            </div>
+                                        </React.Fragment>
                                     </Paper>
                                 </Grid>
                             </Grid>
