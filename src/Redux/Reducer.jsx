@@ -1,3 +1,4 @@
+// mySlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -18,7 +19,7 @@ export const MySlice = createSlice({
         },
         handleAnalytics: (state, action) => {
             state.analytics = action.payload;
-            console.log("redirecting to analytics",state.analytics);
+            console.log("Analytics data updated", state.analytics);
         }
     }
 });

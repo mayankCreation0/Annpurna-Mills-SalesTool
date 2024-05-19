@@ -46,14 +46,14 @@ function Navbar({ mode, toggleColorMode }) {
     return (
         <div>
             <AppBar
-                maxWidth="100%"
+                maxwidth="100%"
                 sx={{
                     boxShadow: 0,
                     // bgcolor: 'coral',
                     backgroundImage: 'none',
                 }}
             >
-                <Container maxWidth="100%">
+                <Container maxwidth="100%">
                     <Toolbar
                         variant="regular"
                         sx={(theme) => ({

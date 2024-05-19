@@ -1,17 +1,14 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import Chart from './Charts.jsx';
-import Title from './Title';
 import LoanAmountBarChart from './AmountChart.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAnalytics } from '../Helpers/apis';
-import Deposits from './Deposits.jsx';
+import { useSelector } from 'react-redux';
+import Statistics from './Statistics.jsx';
 
 function Copyright(props) {
     return (
@@ -27,21 +24,12 @@ function Copyright(props) {
 }
 
 export default function Dashboard() {
-    const dispatch = useDispatch();
-    const loading = useSelector(state => state.loading);
-
-    const fetchData = async () => {
-        await getAnalytics(dispatch);
-    };
-
-    React.useEffect(() => {
-        fetchData();
-    }, []);
+    const loading = useSelector(state => state.analytics.loading);
 
     return (
         <>
             {!loading ? (
-                <Box sx={{ display: 'flex' }}>
+                <Box sx={{ display: 'flex', marginTop: '64px' }}>
                     <Box
                         component="main"
                         sx={{
@@ -50,40 +38,30 @@ export default function Dashboard() {
                                     ? theme.palette.grey[100]
                                     : theme.palette.grey[900],
                             flexGrow: 1,
-                            height: '100vh',
-                            overflow: 'auto',
+                            // height: '100vh',
+                            // overflow: 'auto',
                         }}
                     >
-                        <Toolbar />
-                        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} md={8} lg={9}>
+                        <Container maxWidth="lg" sx={{ paddingTop: 2}}>
+                            <Grid container spacing={3} justifyContent='center'>
+                                <Grid item xs={12} >
+                                    <Statistics />
+                                </Grid>
+                                <Grid item xs={12} md={8} lg={9} >
                                     <Paper
                                         sx={{
                                             p: 2,
                                             display: 'flex',
                                             flexDirection: 'column',
-                                            height: 240,
+                                            height: '300px',
+                                            width: '100%',
+                                            margin: '0 auto',
                                         }}
                                     >
                                         <Chart />
                                     </Paper>
                                 </Grid>
-                                <Grid item xs={12} md={4} lg={3}>
-                                    <Paper
-                                        sx={{
-                                            p: 2,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            height: 240,
-                                        }}
-                                    >
-                                        <Deposits/>
-                                    </Paper>
-                                </Grid>
-                            </Grid>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12}>
+                                <Grid item xs={12} md={8} lg={9}>
                                     <Paper
                                         sx={{
                                             p: 2,
@@ -93,20 +71,6 @@ export default function Dashboard() {
                                         }}
                                     >
                                         <LoanAmountBarChart />
-                                        <React.Fragment>
-                                            <Title>Recent Deposits</Title>
-                                            <Typography component="p" variant="h4">
-                                                $3,024.00
-                                            </Typography>
-                                            <Typography color="text.secondary" sx={{ flex: 1 }}>
-                                                on 15 March, 2019
-                                            </Typography>
-                                            <div>
-                                                <Link color="primary" href="#">
-                                                    View balance
-                                                </Link>
-                                            </div>
-                                        </React.Fragment>
                                     </Paper>
                                 </Grid>
                             </Grid>

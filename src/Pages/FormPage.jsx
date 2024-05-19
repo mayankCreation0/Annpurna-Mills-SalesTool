@@ -21,7 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../Components/Navbar';
 
 const FormContainer = styled('div')({
-    maxWidth: '90vw',
+    maxwidth: '90vw',
     margin: 'auto',
     padding: '2rem',
     border: 'none',

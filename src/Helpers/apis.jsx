@@ -63,15 +63,16 @@ export const getAnalytics = async (dispatch) => {
         dispatch(handleLoading(true));
         const headers = {
             Authorization: `Bearer ${token}`,
-        }
-        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/analytics`, { headers })
-        dispatch(handleAnalytics(response.data))
-        dispatch(handleLoading(false))
-        return response
+        };
+        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/analytics`, { headers });
+        dispatch(handleAnalytics(response.data));
+        dispatch(handleLoading(false));
+        return response;
     } catch (error) {
-
+        dispatch(handleLoading(false));
+        return error;
     }
-}
+};
 
 export const getDetailsById = async (id, dispatch) => {
     dispatch(handleLoading(true));

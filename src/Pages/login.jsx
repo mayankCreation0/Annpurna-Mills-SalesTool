@@ -71,7 +71,7 @@ export default function LoginPage() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxwidth="xs">
                 <CssBaseline />
                 <Box
                     sx={{

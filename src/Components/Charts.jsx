@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { LineChart, axisClasses } from '@mui/x-charts';
-import axios from 'axios';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { useDispatch, useSelector } from 'react-redux';
