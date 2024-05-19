@@ -14,7 +14,7 @@ const AllRoutes = ({ mode, toggleColorMode }) => {
         {/* <Navbar mode={mode} toggleColorMode={toggleColorMode} /> */}
         <Routes>
             <Route path='/login' element={<LoginPage />} />
-            <Route path='/home' element={<PrivateRoutes><Home mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
+            <Route path='/' element={<PrivateRoutes><Home mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
             <Route path='/customerLists' element={<PrivateRoutes><CustomerList mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
             <Route path='/form' element={<PrivateRoutes><FormPage mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
             <Route path='/view/:id' element={<PrivateRoutes><ViewPage mode={mode} toggleColorMode={toggleColorMode}/></PrivateRoutes>} />
