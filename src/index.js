@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from './Store/Store';
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { Analytics } from "@vercel/analytics/react"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,6 +17,7 @@ root.render(
       <BrowserRouter>
         <App />
         <SpeedInsights />
+        <Analytics />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>
