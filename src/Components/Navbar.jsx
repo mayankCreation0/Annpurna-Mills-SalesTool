@@ -88,7 +88,7 @@ function Navbar({ mode, toggleColorMode }) {
                                 src={logo}
                                 style={logoStyle}
                                 alt="logo of sitemark"
-                                onClick={() => navigate('/home')}
+                                onClick={() => navigate('/')}
                             />
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                                 <MenuItem

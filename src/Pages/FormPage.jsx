@@ -239,7 +239,7 @@ const FormPage = ({ mode, toggleColorMode }) => {
                         <CircularProgress />
                     ) : "Submit"}
                     </Button>
-                    <Button variant='text' onClick={()=>{navigate('/home')}}>Back</Button>
+                    <Button variant='text' onClick={()=>{navigate('/')}}>Back</Button>
                 </Grid>
                 </Grid>
             </form>

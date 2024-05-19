@@ -60,7 +60,7 @@ export default function LoginPage() {
             setSeverity('success');
             setMessage(`Login successful, Welcome back ${response.data.name}`);
             setTimeout(() => {
-                navigate('/home');
+                navigate('/');
             }, 500);
         } else if (state === 'invalid'){
             setOpen(true);
