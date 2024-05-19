@@ -1,9 +1,9 @@
-import { useSelector } from "react-redux"
 import { Navigate } from "react-router-dom";
+import Cookies from 'js-cookie';
+
 
 const PrivateRoutes = ({children}) => {
-    const auth = useSelector(state => state.auth);
-  if(auth) return children
+  if (Cookies.get('token')) return children
   return <Navigate to="/login" />
 }
 

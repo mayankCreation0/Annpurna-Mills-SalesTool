@@ -13,7 +13,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { loginApi } from '../Helpers/apis';
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, Snackbar ,IconButton} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import {useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 
@@ -39,6 +40,13 @@ export default function LoginPage() {
     const [message, setMessage] = React.useState("")
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    };
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -63,7 +71,7 @@ export default function LoginPage() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxwidth="xs">
                 <CssBaseline />
                 <Box
                     sx={{
@@ -131,10 +139,22 @@ export default function LoginPage() {
                     open={open}
                     autoHideDuration={1000}
                     anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    onClose={handleClose}
+
                 >
                     <Alert
                         severity={severity}
                         sx={{ width: '100%' }}
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={handleClose}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        }
                     >
                         {message}
                     </Alert>
