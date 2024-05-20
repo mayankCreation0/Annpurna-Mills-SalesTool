@@ -8,7 +8,7 @@ import { getAnalytics } from '../Helpers/apis';
 
 export default function Chart() {
     const theme = useTheme();
-    const [data, setData] = useState({ yearly: [], monthly: [] }); // Initialize with empty arrays
+    const [data, setData] = useState({ yearly: [], monthly: [] });
     const [chartType, setChartType] = useState('yearly'); // 'monthly' or 'yearly'
 
     const loading = useSelector(state => state.loading);
@@ -25,11 +25,11 @@ export default function Chart() {
     useEffect(() => {
         if (!analytics) {
             fetchData();
+        } else {
+            const { yearlyData, monthlyData } = analytics || {};
+            setData({ yearly: yearlyData || [], monthly: monthlyData || [] });
         }
-        const { yearlyData, monthlyData } = analytics;
-        setData({ yearly: yearlyData, monthly: monthlyData });
-
-    }, []);
+    }, [analytics]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -37,11 +37,11 @@ export default function Chart() {
 
     const createChartData = (data, type) => {
         if (type === 'yearly') {
-            return data.yearly.map(item => ({ time: item._id.year, amount: item.count }));
+            return (data.yearly || []).map(item => ({ time: item._id.year, amount: item.customerCount }));
         }
-        return data.monthly.map(item => ({
-            time: `${item._id.year}-${item._id.month}`,
-            amount: item.count
+        return (data.monthly || []).map(item => ({
+            time: `${item.year}-${item.month}`,
+            amount: item.customerCount
         }));
     };
 

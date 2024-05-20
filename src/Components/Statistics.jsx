@@ -1,4 +1,3 @@
-// Statistics.jsx
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
@@ -27,33 +26,33 @@ const StatBox = ({ title, value, growth }) => (
 
 const Statistics = () => {
     const data = useSelector((state) => state.analytics);
-
-    const { currentMonth, previousMonth } = data;
+    console.log("Statistics", data.currentMonthLoanRepaidStats.totalLoanRepaidAmount);
+    const { currentMonth, previousMonth, currentMonthLoanRepaidStats, previousMonthLoanRepaidStats } = data;
 
     const calculateGrowth = (current, previous) => {
         return ((current - previous) / (previous || 1) * 100).toFixed(1);
     };
 
-    const totalLoanPaidAmountGrowth = calculateGrowth(currentMonth.totalLoanPaidAmount, previousMonth.totalLoanPaidAmount);
-    const countGrowth = calculateGrowth(currentMonth.count, previousMonth.count);
-    const totalAmountGrowth = calculateGrowth(currentMonth.totalAmount, previousMonth.totalAmount);
+    const totalLoanRepaidAmountGrowth = calculateGrowth(currentMonthLoanRepaidStats.totalLoanRepaidAmount, previousMonthLoanRepaidStats.totalLoanRepaidAmount);
+    const customerCountGrowth = calculateGrowth(currentMonth.customerCount, previousMonth.customerCount);
+    const totalLoanTakenAmountGrowth = calculateGrowth(currentMonth.totalLoanTakenAmount, previousMonth.totalLoanTakenAmount);
 
     return (
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto', whiteSpace: 'nowrap' }}>
             <StatBox
-                title="Total Loan Paid Amount"
-                value={`$${currentMonth.totalLoanPaidAmount}`}
-                growth={totalLoanPaidAmountGrowth}
+                title="Total Loan Repaid Amount"
+                value={`₹${currentMonthLoanRepaidStats.totalLoanRepaidAmount}`}
+                growth={totalLoanRepaidAmountGrowth}
             />
             <StatBox
-                title="Count"
-                value={currentMonth.count}
-                growth={countGrowth}
+                title="Customer Count"
+                value={currentMonth.customerCount}
+                growth={customerCountGrowth}
             />
             <StatBox
-                title="Total Amount"
-                value={`$${currentMonth.totalAmount}`}
-                growth={totalAmountGrowth}
+                title="Total Loan Taken Amount"
+                value={`₹${currentMonth.totalLoanTakenAmount}`}
+                growth={totalLoanTakenAmountGrowth}
             />
         </Box>
     );

@@ -5,10 +5,11 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
-import Chart from './Charts.jsx';
-import LoanAmountBarChart from './AmountChart.jsx';
+import Chart from './CountCharts.jsx'; 
+import LoanAmountBarChart from './RepaidChart.jsx';
 import { useSelector } from 'react-redux';
 import Statistics from './Statistics.jsx';
+import LoanBookChart from './LoanBookChart.jsx';
 
 function Copyright(props) {
     return (
@@ -71,6 +72,18 @@ export default function Dashboard() {
                                         }}
                                     >
                                         <LoanAmountBarChart />
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} md={8} lg={9}>
+                                    <Paper
+                                        sx={{
+                                            p: 2,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        {/* <LoanBookChart /> */}
                                     </Paper>
                                 </Grid>
                             </Grid>
