@@ -12,11 +12,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { loginApi } from '../Helpers/apis';
-import { Alert, Snackbar ,IconButton} from '@mui/material';
+import { loginApi } from '../Api/Apis';
+import { Alert, Snackbar ,IconButton, Stack} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
+import Logobg from '../Assets/login_bg.jpg';
+import Logo from '../Assets/ams-high-resolution-logo-white.png';
 
 function Copyright(props) {
     return (
@@ -32,7 +34,33 @@ function Copyright(props) {
 }
 
 
-const defaultTheme = createTheme();
+const logoInInputFieldTheme =  {
+    "& .MuiOutlinedInput-root": {
+        color:{xs:"white",lg:"black"},
+        // Class for the border around the input field
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: {xs:"white",lg:"black"},
+        },
+        "&.Mui-focused": {
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: {xs:"white",lg:"black"},
+            },
+            
+        },
+          "&:hover:not(.Mui-focused)": {
+            "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: {xs:"white",lg:"black"},
+            },
+          },
+      },
+      "& .MuiInputLabel-outlined": {
+        color:{xs:"white",lg:"black"},
+        
+        "&.Mui-focused": {
+            color:{xs:"white",lg:"black"},
+         }
+    }
+}
 
 export default function LoginPage() {
     const [open, setOpen] = React.useState(false)
@@ -70,96 +98,138 @@ export default function LoginPage() {
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxwidth="xs">
-                <CssBaseline />
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign in
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Sign In
-                        </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="#" variant="body2">
-                                    {"Don't have an account? Sign Up"}
-                                </Link>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
-                <Snackbar
-                    open={open}
-                    autoHideDuration={1000}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                    onClose={handleClose}
+      
+            <Grid container sx={{height:'100vh',width:"100%"}}>
+                <Grid item display={{ xs: "none", lg: "block" }} lg={6} xl={7}>
+                            <img src={Logobg} alt="" className='logoBg' />
+                </Grid> 
 
-                >
-                    <Alert
-                        severity={severity}
-                        sx={{ width: '100%' }}
-                        action={
-                            <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
-                                onClick={handleClose}
-                            >
-                                <CloseIcon fontSize="small" />
-                            </IconButton>
-                        }
-                    >
-                        {message}
-                    </Alert>
-                </Snackbar>
-            </Container>
-        </ThemeProvider>
+                <Grid item xs={12} lg={6} xl={5} sx={{width:"100%",height:"100%",bgcolor:{ xs: "none", lg:"applicationTheme.bgColor" }, backgroundImage:{ xs: `url(https://images.pexels.com/photos/924824/pexels-photo-924824.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)` , lg:"none" }, backgroundAttachment:{xs:"fixed",lg:"initial"}, backgroundRepeat:{ xs:"no-repeat", lg:"inherit" }, backgroundPosition:{ xs:'center'} , backgroundSize:{ xs:'cover'} }}>
+                        <Stack flexDirection={'column'}  justifyContent={'space-around'} alignItems={'center'} width={"100%"} height={'100%'}>      
+
+                       {/*  <img src={Logo} alt="" className='' width={150}  />
+ */}
+                                <Box display={{ xs: "none", lg: "block" }}>
+
+                                </Box>
+
+                            <Container component="main"  sx={{
+                                bgcolor:{ xs: "rgba( 255, 255, 255, 0.1 )" , lg: "transparent" },
+                          
+                            backdropFilter:"blur( 50px )",
+                          
+                            borderRadius: "10px",
+                          
+                            width:"auto"
+                           
+                             }}>
+                                <Box
+                                    sx={{
+                                       
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                  
+                                     
+                                    <Typography component="h1" variant="h3" sx={{color:{xs:"white",lg:"black"}, mt:3}}>
+                                        Log In
+                                    </Typography>
+                                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, mb: 6 }}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            id="email"
+                                            label="Email Address"
+                                            name="email"
+                                            autoComplete="email"
+                                            autoFocus
+                                            sx={{
+                                               ...logoInInputFieldTheme
+                                            }}
+                                        />
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            name="password"
+                                            label="Password"
+                                            type="password"
+                                            id="password"
+                                            autoComplete="current-password"
+                                            sx={{
+                                                ...logoInInputFieldTheme
+                                             }}
+                                        />
+                                      
+                                        
+                                        <Box sx={{display:'flex',justifyContent:"space-between",alignItems:"center", mb:3, flexWrap:"nowrap"}}>
+
+                                                <FormControlLabel
+                                                        control={<Checkbox value="remember" sx={{color:{xs:"applicationTheme.textColor2",lg:"applicationTheme.textColor"}}}/>}
+                                                        label="Remember me"
+                                                        sx={{textAlign:"left",padding:"0px",height:"auto",margin:"0px",whiteSpace:"nowrap",color:{xs:"applicationTheme.textColor2",lg:"applicationTheme.textColor"}}}
+                                                    />
+
+                                             
+                                                <Link href="#"  sx={{color:"applicationTheme.primary",fontSize:"15px",fontWeight:"500"}}>
+                                                    Forgot password?
+                                                </Link>
+
+                                                
+                                        </Box>
+
+                                        <Button
+                                            type="submit"
+                                            fullWidth
+                                            variant="contained"
+                                            sx={{bgcolor:"applicationTheme.main",mb:2,padding:"15px",color:"white",borderRadius:"30px",fontSize:"15px",}}
+                                        >
+                                            Sign In
+                                        </Button>
+
+                                        
+                                            
+                                            <Typography component="p" variant="p" sx={{color:{xs:"applicationTheme.textColor2",lg:"applicationTheme.textColor"}}}>
+                                                    Don't have an account?  <Link href="#" sx={{color:"applicationTheme.primary",fontSize:"15px",fontWeight:"500"}}> Sign Up </Link>
+
+                                            </Typography>
+                                        
+                                    </Box>
+                                </Box>
+                               
+                                <Snackbar
+                                    open={open}
+                                    autoHideDuration={1000}
+                                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                    onClose={handleClose}
+
+                                >
+                                    <Alert
+                                        severity={severity}
+                                        sx={{ width: '100%' }}
+                                        action={
+                                            <IconButton
+                                                aria-label="close"
+                                                color="inherit"
+                                                size="small"
+                                                onClick={handleClose}
+                                            >
+                                                <CloseIcon fontSize="small" />
+                                            </IconButton>
+                                        }
+                                    >
+                                        {message}
+                                    </Alert>
+                                </Snackbar>
+                            </Container>
+
+                            <Copyright display={{ xs: "none", lg: "block" }} sx={{ mt: 8, mb: 4 }} />
+                        </Stack>
+                </Grid>
+            </Grid>
+       
     );
 }

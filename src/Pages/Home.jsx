@@ -1,9 +1,8 @@
 // Home.js
 import React from 'react';
 import Dashboard from '../Components/Dashboard';
-import Navbar from '../Components/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAnalytics } from '../Helpers/apis';
+import { getAnalytics } from '../Api/Apis';
 import { CircularProgress } from '@mui/material';
 
 const Home = ({ mode, toggleColorMode }) => {
@@ -25,7 +24,6 @@ const Home = ({ mode, toggleColorMode }) => {
     <div>
       {!loading && Object.keys(storeData).length > 0 ? (
         <>
-          <Navbar mode={mode} toggleColorMode={toggleColorMode} />
           <Dashboard />
         </>
       ) : (

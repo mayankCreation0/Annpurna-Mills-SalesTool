@@ -3,7 +3,7 @@ import { BarChart, axisClasses } from '@mui/x-charts';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAnalytics } from '../Helpers/apis';
+import { getAnalytics } from '../Api/Apis';
 
 export default function LoanBookChart() {
     const [data, setData] = useState({ yearly: [], monthly: [] });
@@ -16,16 +16,16 @@ export default function LoanBookChart() {
     const fetchData = async () => {
         const response = await getAnalytics(dispatch);
         console.log("Analytics", response.data);
-        const { yearlyLoanTakenData, monthlyLoanTakenData } = response.data;
-        setData({ yearly: yearlyLoanTakenData, monthly: monthlyLoanTakenData });
+        const { yearlyData, monthlyData } = response.data;
+        setData({ yearly: yearlyData, monthly: monthlyData });
     };
 
     useEffect(() => {
         if (!analytics) {
             fetchData();
         } else {
-            const { yearlyLoanTakenData, monthlyLoanTakenData } = analytics;
-            setData({ yearly: yearlyLoanTakenData, monthly: monthlyLoanTakenData });
+            const { yearlyData, monthlyData } = analytics;
+            setData({ yearly: yearlyData, monthly: monthlyData });
         }
     }, [analytics]);
 
@@ -35,7 +35,7 @@ export default function LoanBookChart() {
 
     const createChartData = (data, type) => {
         if (type === 'yearly') {
-            return data.slice(-4).map(item => ({ time: item._id.year, amount: item.totalLoanTakenAmount }));
+            return data.slice(-8).map(item => ({ time: item._id.year, amount: item.totalLoanTakenAmount }));
         }
         return data.map(item => ({
             time: `${item.year}-${item.month}`,

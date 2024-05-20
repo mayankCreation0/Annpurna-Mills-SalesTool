@@ -15,10 +15,9 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/system';
-import { postFormData } from '../Helpers/apis';
+import { postFormData } from '../Api/Apis';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Navbar from '../Components/Navbar';
 
 const FormContainer = styled('div')({
     maxwidth: '90vw',
@@ -88,8 +87,8 @@ const FormPage = ({ mode, toggleColorMode }) => {
 
     return (
         <>
-        <Navbar mode={mode} toggleColorMode={toggleColorMode} />
-        <FormContainer sx={{position:'relative',top:"90px"}}>
+        
+        <FormContainer sx={{position:'relative'}}>
             <FormHeading variant="h6">Add Customers Data</FormHeading>
             <form component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
