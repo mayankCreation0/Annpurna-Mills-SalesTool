@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Paper, Typography, Grid, Card, CardContent, CardMedia, Avatar } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { getDetailsById } from '../Helpers/apis';
-import Navbar from '../Components/Navbar';
+import { getDetailsById } from '../Api/Apis';
 
 const ViewPage = ({ mode, toggleColorMode }) => {
     const [customer, setCustomer] = useState(null);
@@ -70,8 +69,7 @@ setMonth(fullMonths);
 
     return (
         <>
-            <Navbar mode={mode} toggleColorMode={toggleColorMode} />
-            <Paper sx={{ padding: '2rem', position: 'relative', top: '65px' }}>
+            <Paper sx={{ padding: '2rem', position: 'relative', }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <Card sx={{ display: 'flex', alignItems: 'center' }}>
