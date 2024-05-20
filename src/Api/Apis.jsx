@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { handleAnalytics, handleAuth, handleLoading } from '../Redux/Reducer';
+import { handleAnalytics, handleAuth, handleLoading } from '../Store/Reducers/Reducer';
 
 export const loginApi = async ({ username, password }, dispatch) => {
     try {

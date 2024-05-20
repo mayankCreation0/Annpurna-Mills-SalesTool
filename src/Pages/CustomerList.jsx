@@ -14,13 +14,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { deleteData, getList } from '../Helpers/apis';
+import { deleteData, getList } from '../Api/Apis';
 import { Typography, MenuItem, Select, TextField, Snackbar, Alert, Backdrop, CircularProgress } from '@mui/material';
 import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import TransitionsModal from '../Components/Modal';
-import Navbar from '../Components/Navbar';
 
 const columns = [
   { id: '_id', label: 'ID', minWidth: 50},
@@ -177,8 +176,8 @@ export default function CustomerList({ mode, toggleColorMode }) {
   }, [loading]);
 
   return (<>
-    <Navbar mode={mode} toggleColorMode={toggleColorMode} />
-    <Paper sx={{ width: '100%', height: "100%", marginTop: '64px',overflowY :'hidden'}}>
+ 
+    <Paper>
       <div style={{ display: 'flex', alignItems: 'center', margin: 'auto', padding: ".4rem" }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TextField

@@ -29,7 +29,7 @@ export default function Dashboard() {
     return (
         <>
             {!loading ? (
-                <Box sx={{ display: 'flex', marginTop: '64px' }}>
+                <Box sx={{ display: 'flex' }}>
                     <Box
                         component="main"
                         sx={{
@@ -70,7 +70,7 @@ export default function Dashboard() {
                                             height: 'auto',
                                         }}
                                     >
-                                        <LoanAmountBarChart />
+                                     {/*    <LoanAmountBarChart /> */}
                                     </Paper>
                                 </Grid>
                             </Grid>
