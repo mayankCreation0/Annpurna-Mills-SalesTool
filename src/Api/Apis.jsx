@@ -38,28 +38,39 @@ export const postFormData = async (formData, dispatch, navigate) => {
         dispatch(showToast({ message: 'Form data submitted successfully', type: 'success' }));
         navigate('/customerLists');
     } catch (error) {
+        if (error.response.status === 400) {
+            dispatch(showToast({ message: 'Token expired, Login again', type: 'error' }));
+            dispatch(handleAuth(false));
+            navigate('/login');
+        }
         dispatch(handleLoading(false));
         dispatch(showToast({ message: 'Failed to submit form data', type: 'error' }));
     }
 }
 
-export const getList = async (queryString, dispatch) => {
+export const getList = async ( dispatch,navigate) => {
     const token = Cookies.get('token');
     try {
         dispatch(handleLoading(true));
         const headers = {
             Authorization: `Bearer ${token}`,
         };
-        const response = await axios.get(`${API_BASE_URL}user/get?${queryString}`, { headers });
-        dispatch(handleGetData(response));
+        const response = await axios.get(`${API_BASE_URL}user/get?`, { headers });
+        dispatch(handleGetData(response.data));
         dispatch(handleLoading(false));
+        console.log("get data", response);
         return response;
     } catch (error) {
+        if(error.response.status === 400){
+            dispatch(showToast({ message: 'Token expired, Login again', type: 'error' }));
+            dispatch(handleAuth(false));
+            navigate('/login');
+        }
         dispatch(handleLoading(false));
     }
 }
 
-export const getAnalytics = async (dispatch) => {
+export const getAnalytics = async (dispatch,navigate) => {
     const token = Cookies.get('token');
     try {
         dispatch(handleLoading(true));
@@ -71,12 +82,16 @@ export const getAnalytics = async (dispatch) => {
         dispatch(handleLoading(false));
         return response;
     } catch (error) {
+        if (error.response.status === 400) {
+            dispatch(showToast({ message: 'Token expired, Login again', type: 'error' }));
+            dispatch(handleAuth(false));
+            navigate('/login');
+        }
         dispatch(handleLoading(false));
-        return error;
     }
 };
 
-export const getDetailsById = async (id, dispatch) => {
+export const getDetailsById = async (id, dispatch,navigate) => {
     dispatch(handleLoading(true));
     const token = Cookies.get('token');
     try {
@@ -87,11 +102,16 @@ export const getDetailsById = async (id, dispatch) => {
         dispatch(handleLoading(false));
         return response;
     } catch (error) {
+        if (error.response.status === 400) {
+            dispatch(showToast({ message: 'Token expired, Login again', type: 'error' }));
+            dispatch(handleAuth(false));
+            navigate('/login');
+        }
         dispatch(handleLoading(false));
     }
 }
 
-export const deleteData = async (id, dispatch) => {
+export const deleteData = async (id, dispatch,navigate) => {
     dispatch(handleLoading(true));
     const token = Cookies.get('token');
     try {
@@ -103,6 +123,11 @@ export const deleteData = async (id, dispatch) => {
         dispatch(handleLoading(false));
         return res;
     } catch (error) {
+        if (error.response.status === 400) {
+            dispatch(showToast({ message: 'Token expired, Login again', type: 'error' }));
+            dispatch(handleAuth(false));
+            navigate('/login');
+        }
         dispatch(showToast({ message: 'Failed to delete customer data', type: 'error' }));
         dispatch(handleLoading(false));
     }

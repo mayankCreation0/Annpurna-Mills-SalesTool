@@ -86,7 +86,7 @@ function Navbar({ mode, toggleColorMode }) {
                             </Stack>
 
                                 <Button onClick={handleLogout} sx={{color:'applicationTheme.textColor',fontSize:'15px',fontWeight:'400',textTransform:'capitalize',borderRadius:'30px',bgcolor:'applicationTheme.bgColor',padding:'8px 15px',display:'flex',justifyContent:'center',alignItems:'center',gap:'5px'}}>
-                                  Logout <i class="bi bi-box-arrow-up-right text-base text-gray-800"></i>
+                                  Logout <i className="bi bi-box-arrow-up-right text-base text-gray-800"></i>
                                 </Button>        
             </Box>
        
