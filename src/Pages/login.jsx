@@ -67,7 +67,7 @@ export default function LoginPage() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const payload = {
-            username    : data.get('email'),
+            username    : data.get('username'),
             password: data.get('password'),
         }
         await loginApi(payload,dispatch,navigate);
@@ -117,10 +117,10 @@ export default function LoginPage() {
                                             margin="normal"
                                             required
                                             fullWidth
-                                            id="email"
-                                            label="Email Address"
-                                            name="email"
-                                            autoComplete="email"
+                                            id="username"
+                                            label="username"
+                                            name="username"
+                                            autoComplete="username"
                                             autoFocus
                                             sx={{
                                                ...logoInInputFieldTheme

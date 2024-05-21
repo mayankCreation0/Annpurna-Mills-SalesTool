@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { handleAnalytics, handleAuth, handleLoading, showToast } from '../Store/Reducers/Reducer';
+import { handleAnalytics, handleAuth, handleGetData, handleLoading, showToast } from '../Store/Reducers/Reducer';
 
 const API_BASE_URL = process.env.REACT_APP_AMS_PROD_URL;
 
@@ -51,6 +51,7 @@ export const getList = async (queryString, dispatch) => {
             Authorization: `Bearer ${token}`,
         };
         const response = await axios.get(`${API_BASE_URL}user/get?${queryString}`, { headers });
+        dispatch(handleGetData(response));
         dispatch(handleLoading(false));
         return response;
     } catch (error) {

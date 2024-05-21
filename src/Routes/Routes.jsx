@@ -2,7 +2,7 @@ import React from 'react'
 import { Routes, Route, } from 'react-router-dom'
 import PrivateRoutes from './PrivateRoutes'
 import LoginPage from '../Pages/login'
-import Home from '../Pages/Home'
+import Home from '../Pages/Dashboard'
 import FormPage from '../Pages/FormPage'
 import CustomerList from '../Pages/CustomerList'
 

@@ -32,7 +32,7 @@ const columns = [
   { id: 'actions', label: 'Actions', minWidth: 100 },
 ];
 
-export default function CustomerList({ mode, toggleColorMode }) {
+export default function CustomerList() {
   const [loaderOpen, setLoaderOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -46,6 +46,7 @@ export default function CustomerList({ mode, toggleColorMode }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loading = useSelector(state => state.loading);
+  const listData = useSelector(state => state.getData);
 
   const fetchData = async (searchInput, filterValue, sortBy) => {
     try {
@@ -60,6 +61,9 @@ export default function CustomerList({ mode, toggleColorMode }) {
       if (sortBy) {
         queryString += `&sortBy=${sortBy}`;
       }
+      // if(Object.keys(listData).length > 0){
+      //   setCustomers(listData.data)
+      // }
       const response = await getList(queryString, dispatch);
       setCustomers(response.data);
     } catch (error) {

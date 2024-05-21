@@ -5,6 +5,7 @@ const initialState = {
     auth: false,
     loading: false,
     analytics: {},
+    getData:{},
     toast: { show: false, message: '', type: '' },
 };
 
@@ -21,6 +22,9 @@ export const MySlice = createSlice({
         handleAnalytics: (state, action) => {
             state.analytics = action.payload;
         },
+        handleGetData: (state, action) => {
+            state.getData = action.payload;
+        },
         showToast: (state, action) => {
             state.toast = {
                 show: true,
@@ -35,5 +39,5 @@ export const MySlice = createSlice({
     }
 });
 
-export const { handleAuth, handleLoading, handleAnalytics, showToast, hideToast } = MySlice.actions;
+export const { handleAuth, handleLoading, handleAnalytics,handleGetData, showToast, hideToast } = MySlice.actions;
 export default MySlice.reducer;
