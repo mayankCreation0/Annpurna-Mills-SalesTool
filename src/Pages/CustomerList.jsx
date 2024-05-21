@@ -15,7 +15,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { deleteData, getList } from '../Api/Apis';
-import { Typography, MenuItem, Select, TextField, Snackbar, Alert, Backdrop, CircularProgress } from '@mui/material';
+import { Typography, MenuItem, Select, TextField, CircularProgress, Backdrop } from '@mui/material';
 import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,9 +42,6 @@ export default function CustomerList({ mode, toggleColorMode }) {
   const [filterValue, setFilterValue] = useState(null);
   const [searchInput, setSearchInput] = useState(null);
   const [searchValue, setSearchValue] = useState(null);
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
-  const [severity, setSeverity] = useState("");
-  const [message, setMessage] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -81,19 +78,10 @@ export default function CustomerList({ mode, toggleColorMode }) {
     setOpen(false);
     setLoaderOpen(true);
     await deleteData(selectedId, dispatch);
-    setSnackBarOpen(true);
-    setMessage('Customer Deleted Successfully');
-    setSeverity('success');
     fetchData(searchInput, filterValue, sortBy);
     setLoaderOpen(false);
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackBarOpen(false);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -363,29 +351,6 @@ export default function CustomerList({ mode, toggleColorMode }) {
         onRowsPerPageChange={handleChangeRowsPerPage}
         sx={{ display: 'flex', justifyContent: 'flex-end' }}
       />
-      <Snackbar
-        open={snackBarOpen}
-        autoHideDuration={1000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        onClose={handleClose}
-      >
-        <Alert
-          severity={severity}
-          sx={{ width: '100%' }}
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={handleClose}
-            >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          }
-        >
-          {message}
-        </Alert>
-      </Snackbar>
       <TransitionsModal open={open} handleClose={() => setOpen(false)} handleConfirm={handleConfirm} />
     </Paper></>
   );

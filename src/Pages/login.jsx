@@ -1,7 +1,5 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -11,14 +9,12 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { loginApi } from '../Api/Apis';
-import { Alert, Snackbar ,IconButton, Stack} from '@mui/material';
+import {IconButton, Stack} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import Logobg from '../Assets/login_bg.jpg';
-import Logo from '../Assets/ams-high-resolution-logo-white.png';
 
 function Copyright(props) {
     return (
@@ -63,18 +59,10 @@ const logoInInputFieldTheme =  {
 }
 
 export default function LoginPage() {
-    const [open, setOpen] = React.useState(false)
-    const [severity, setSeverity] = React.useState("")
-    const [message, setMessage] = React.useState("")
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -82,19 +70,7 @@ export default function LoginPage() {
             username    : data.get('email'),
             password: data.get('password'),
         }
-        const {state,response} = await loginApi(payload,dispatch);
-        if(state === 'success'){
-            setOpen(true);
-            setSeverity('success');
-            setMessage(`Login successful, Welcome back ${response.data.name}`);
-            setTimeout(() => {
-                navigate('/');
-            }, 500);
-        } else if (state === 'invalid'){
-            setOpen(true);
-            setSeverity('error');
-            setMessage(`${response}`)
-        }
+        await loginApi(payload,dispatch,navigate);
     };
 
     return (
@@ -200,30 +176,6 @@ export default function LoginPage() {
                                     </Box>
                                 </Box>
                                
-                                <Snackbar
-                                    open={open}
-                                    autoHideDuration={1000}
-                                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                                    onClose={handleClose}
-
-                                >
-                                    <Alert
-                                        severity={severity}
-                                        sx={{ width: '100%' }}
-                                        action={
-                                            <IconButton
-                                                aria-label="close"
-                                                color="inherit"
-                                                size="small"
-                                                onClick={handleClose}
-                                            >
-                                                <CloseIcon fontSize="small" />
-                                            </IconButton>
-                                        }
-                                    >
-                                        {message}
-                                    </Alert>
-                                </Snackbar>
                             </Container>
 
                             <Copyright display={{ xs: "none", lg: "block" }} sx={{ mt: 8, mb: 4 }} />

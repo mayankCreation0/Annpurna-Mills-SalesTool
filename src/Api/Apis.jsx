@@ -1,10 +1,12 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { handleAnalytics, handleAuth, handleLoading } from '../Store/Reducers/Reducer';
+import { handleAnalytics, handleAuth, handleLoading, showToast } from '../Store/Reducers/Reducer';
 
-export const loginApi = async ({ username, password }, dispatch) => {
+const API_BASE_URL = process.env.REACT_APP_AMS_PROD_URL;
+
+export const loginApi = async ({ username, password }, dispatch, navigate) => {
     try {
-        const response = await axios.post('https://annpurna-mills-server.vercel.app/login', {
+        const response = await axios.post(`${API_BASE_URL}login`, {
             username,
             password,
         });
@@ -12,33 +14,32 @@ export const loginApi = async ({ username, password }, dispatch) => {
             const { token } = response.data;
             Cookies.set('token', token, { expires: 1 });
             dispatch(handleAuth(true));
-            return { state: "success", response };
+            dispatch(showToast({ message: 'hi Mayank Raj welcome back', type: 'success' }));
+            navigate('/');
         }
     } catch (error) {
-        return { state: 'invalid', response: error }
+        dispatch(showToast({ message: 'Login failed', type: 'error' }));
     }
 };
 
-export const postFormData = async (formData, dispatch) => {
+export const postFormData = async (formData, dispatch, navigate) => {
     try {
         dispatch(handleLoading(true));
         const token = Cookies.get('token');
         const headers = {
             Authorization: `Bearer ${token}`,
-        }
-        const res = await axios.post(
-            "https://annpurna-mills-server.vercel.app/user/add",
+        };
+        await axios.post(
+            `${API_BASE_URL}user/add`,
             formData,
-            {
-                headers,
-            }
+            { headers }
         );
-        console.log(res)
-        dispatch(handleLoading(false))
-        return { state: "success" };
+        dispatch(handleLoading(false));
+        dispatch(showToast({ message: 'Form data submitted successfully', type: 'success' }));
+        navigate('/customerLists');
     } catch (error) {
-        dispatch(handleLoading(false))
-        return { state: 'invalid' }
+        dispatch(handleLoading(false));
+        dispatch(showToast({ message: 'Failed to submit form data', type: 'error' }));
     }
 }
 
@@ -48,12 +49,12 @@ export const getList = async (queryString, dispatch) => {
         dispatch(handleLoading(true));
         const headers = {
             Authorization: `Bearer ${token}`,
-        }
-        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get?${queryString}`, { headers })
-        dispatch(handleLoading(false))
-        return response
+        };
+        const response = await axios.get(`${API_BASE_URL}user/get?${queryString}`, { headers });
+        dispatch(handleLoading(false));
+        return response;
     } catch (error) {
-        dispatch(handleLoading(false))
+        dispatch(handleLoading(false));
     }
 }
 
@@ -64,7 +65,7 @@ export const getAnalytics = async (dispatch) => {
         const headers = {
             Authorization: `Bearer ${token}`,
         };
-        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/analytics`, { headers });
+        const response = await axios.get(`${API_BASE_URL}user/get/analytics`, { headers });
         dispatch(handleAnalytics(response.data));
         dispatch(handleLoading(false));
         return response;
@@ -80,14 +81,13 @@ export const getDetailsById = async (id, dispatch) => {
     try {
         const headers = {
             Authorization: `Bearer ${token}`,
-        }
-        const response = await axios.get(`https://annpurna-mills-server.vercel.app/user/get/${id}`, { headers })
-        dispatch(handleLoading(false))
-        return response
+        };
+        const response = await axios.get(`${API_BASE_URL}user/get/${id}`, { headers });
+        dispatch(handleLoading(false));
+        return response;
     } catch (error) {
-        dispatch(handleLoading(false))
+        dispatch(handleLoading(false));
     }
-
 }
 
 export const deleteData = async (id, dispatch) => {
@@ -96,11 +96,13 @@ export const deleteData = async (id, dispatch) => {
     try {
         const headers = {
             Authorization: `Bearer ${token}`,
-        }
-        const res = await axios.delete(`https://annpurna-mills-server.vercel.app/user/delete/${id}`, { headers })
-        dispatch(handleLoading(false))
-        return res
+        };
+        const res = await axios.delete(`${API_BASE_URL}user/delete/${id}`, { headers });
+        dispatch(showToast({ message: 'Customer deleted successfully', type: 'success', theme: "colored" }));
+        dispatch(handleLoading(false));
+        return res;
     } catch (error) {
-        dispatch(handleLoading(false))
+        dispatch(showToast({ message: 'Failed to delete customer data', type: 'error' }));
+        dispatch(handleLoading(false));
     }
 }
