@@ -4,7 +4,7 @@ import { LineChart, axisClasses } from '@mui/x-charts';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAnalytics } from '../Helpers/apis';
+import { getAnalytics } from '../Api/Apis';
 
 export default function Chart() {
     const theme = useTheme();

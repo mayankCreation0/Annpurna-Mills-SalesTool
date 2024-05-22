@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import '../node_modules/bootstrap-icons/font/bootstrap-icons.min.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
@@ -8,6 +9,7 @@ import { Provider } from 'react-redux'
 import { store } from './Store/Store';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
+import Toast from './Components/Toast';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,6 +17,7 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
+        <Toast />
         <App />
         <SpeedInsights />
         <Analytics />

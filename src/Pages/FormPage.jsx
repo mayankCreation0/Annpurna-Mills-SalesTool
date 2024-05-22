@@ -3,22 +3,17 @@ import {
     TextField,
     Button,
     Grid,
-    Snackbar,
-    Alert,
     MenuItem,
     Typography,
     FormControl,
     InputLabel,
     Select,
-    IconButton,
     CircularProgress,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/system';
-import { postFormData } from '../Helpers/apis';
+import { postFormData } from '../Api/Apis';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Navbar from '../Components/Navbar';
 
 const FormContainer = styled('div')({
     maxwidth: '90vw',
@@ -37,10 +32,7 @@ const FormHeading = styled(Typography)({
     textAlign: 'center',
 });
 
-const FormPage = ({ mode, toggleColorMode }) => {
-    const [open, setOpen] = React.useState(false);
-    const [severity, setSeverity] = React.useState('');
-    const [message, setMessage] = React.useState('');
+const FormPage = () => {
     const [formData, setFormData] = useState({
         Name: '',
         Gender: '',
@@ -64,32 +56,16 @@ const FormPage = ({ mode, toggleColorMode }) => {
             [e.target.name]: e.target.value,
         }));
     };
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { state } = await postFormData(formData, dispatch);
-        if (state === 'success') {
-            setOpen(true);
-            setSeverity('success');
-            setMessage('Form data submitted successfully');
-            navigate('/customerLists');
-        } else {
-            setOpen(true);
-            setSeverity('error');
-            setMessage('Something went wrong, please try again');
-        }
+        await postFormData(formData, dispatch,navigate);
     };
 
     return (
         <>
-        <Navbar mode={mode} toggleColorMode={toggleColorMode} />
-        <FormContainer sx={{position:'relative',top:"90px"}}>
+        
+        <FormContainer sx={{position:'relative'}}>
             <FormHeading variant="h6">Add Customers Data</FormHeading>
             <form component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
@@ -243,30 +219,6 @@ const FormPage = ({ mode, toggleColorMode }) => {
                 </Grid>
                 </Grid>
             </form>
-            <Snackbar
-                open={open}
-                autoHideDuration={1000}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                onClose={handleClose}
-
-            >
-                <Alert
-                    severity={severity}
-                    sx={{ width: '100%' }}
-                    action={
-                        <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={handleClose}
-                        >
-                            <CloseIcon fontSize="small" />
-                        </IconButton>
-                    }
-                >
-                    {message}
-                </Alert>
-            </Snackbar>
         </FormContainer>
         </>
     );

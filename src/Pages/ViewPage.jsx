@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Paper, Typography, Grid, Card, CardContent, CardMedia, Avatar } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { getDetailsById } from '../Helpers/apis';
-import Navbar from '../Components/Navbar';
+import { getDetailsById } from '../Api/Apis';
 
-const ViewPage = ({ mode, toggleColorMode }) => {
+const ViewPage = () => {
     const [customer, setCustomer] = useState(null);
     const [interest, setInterest] = useState(0);
     const [month, setMonth] = useState(0);
     const { id } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const fetchData = async () => {
-        const res = await getDetailsById(id, dispatch);
+        const res = await getDetailsById(id, dispatch,navigate);
         setCustomer(res.data);
         calculateMonthlySimpleInterest(res.data.Amount, res.data.Rate, res.data.Date);
     };
@@ -70,8 +70,7 @@ setMonth(fullMonths);
 
     return (
         <>
-            <Navbar mode={mode} toggleColorMode={toggleColorMode} />
-            <Paper sx={{ padding: '2rem', position: 'relative', top: '65px' }}>
+            <Paper sx={{ padding: '2rem', position: 'relative', }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                         <Card sx={{ display: 'flex', alignItems: 'center' }}>
