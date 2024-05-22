@@ -3,13 +3,12 @@ const getDesignTokens = (mode) => ({
         mode,
         applicationTheme: {
             main: "#6082B6",
-            primary:"#6495ED",
-            secondary:"",
-            bgColor:"#FFFFFF",
-            textColor:"#000000",
-            textColor2:"#FFFFFF",
+            primary: "#6495ED",
+            secondary: "#FFA500", // Added secondary color
+            bgColor: mode === 'dark' ? "#333333" : "#FFFFFF",
+            textColor: mode === 'dark' ? "#FFFFFF" : "#000000",
+            textColor2: mode === 'dark' ? "#CCCCCC" : "#333333",
         },
-        
     },
     typography: {
         fontFamily: ['"Open Sans", "sans-serif"'].join(','),
@@ -69,38 +68,72 @@ export default function getLPTheme(mode) {
                 styleOverrides: {
                     root: ({ theme }) => ({
                         "& .MuiOutlinedInput-root": {
-                            color: "#000",
+                            color: theme.palette.applicationTheme.textColor,
                             fontWeight: "400",
-                            // Class for the border around the input field
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "black",
-                              borderWidth: "1.5px",
+                                borderColor: theme.palette.applicationTheme.textColor,
+                                borderWidth: "1.5px",
                             },
                             "&.Mui-focused": {
                                 "& .MuiOutlinedInput-notchedOutline": {
-                                  borderColor: "black",
-                                  borderWidth: "1.5px",
+                                    borderColor: theme.palette.applicationTheme.primary,
+                                    borderWidth: "1.5px",
                                 },
-                                
-                              },
-                              
-                          },
-                          // Class for the label of the input field
-                          "& .MuiInputLabel-outlined": {
-                            color: "black",
+                            },
+                        },
+                        "& .MuiInputLabel-outlined": {
+                            color: theme.palette.applicationTheme.textColor,
                             fontWeight: "500",
                             "&.Mui-focused": {
-                                color: "black",
-                                 
+                                color: theme.palette.applicationTheme.primary,
                             },
-                          },
+                        },
                         ...(theme.palette.mode === 'dark' && {
-                            
+                            "& .MuiOutlinedInput-root": {
+                                color: theme.palette.applicationTheme.textColor2,
+                            },
+                            "& .MuiInputLabel-outlined": {
+                                color: theme.palette.applicationTheme.textColor2,
+                            },
                         }),
                     }),
                 },
             },
-           
+            MuiButton: {
+                styleOverrides: {
+                    root: ({ theme }) => ({
+                        textTransform: 'none',
+                        borderRadius: '8px',
+                        '&:hover': {
+                            backgroundColor: theme.palette.applicationTheme.primary,
+                            color: theme.palette.applicationTheme.bgColor,
+                        },
+                        ...(theme.palette.mode === 'dark' && {
+                            color: theme.palette.applicationTheme.textColor2,
+                        }),
+                    }),
+                },
+            },
+            MuiAppBar: {
+                styleOverrides: {
+                    root: ({ theme }) => ({
+                        backgroundColor: theme.palette.applicationTheme.main,
+                        ...(theme.palette.mode === 'dark' && {
+                            backgroundColor: theme.palette.applicationTheme.bgColor,
+                        }),
+                    }),
+                },
+            },
+            MuiTypography: {
+                styleOverrides: {
+                    root: ({ theme }) => ({
+                        color: theme.palette.applicationTheme.textColor,
+                        ...(theme.palette.mode === 'dark' && {
+                            color: theme.palette.applicationTheme.textColor2,
+                        }),
+                    }),
+                },
+            },
         },
     };
 }

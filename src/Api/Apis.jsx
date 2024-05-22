@@ -33,15 +33,18 @@ export const refreshData = async (dispatch, navigate) => {
 
 export const loginApi = async ({ username, password }, dispatch, navigate) => {
     try {
+        dispatch(handleLoading(true))
         const response = await axios.post(`${API_BASE_URL}login`, { username, password });
         if (response.status === 200) {
             const { token } = response.data;
             Cookies.set('token', token, { expires: 1 });
             dispatch(handleAuth(true));
             dispatch(showToast({ message: 'hi Mayank Raj welcome back', type: 'success' }));
+            dispatch(handleLoading(false))
             navigate('/');
         }
     } catch (error) {
+        dispatch(handleLoading(false))
         dispatch(showToast({ message: 'Login failed', type: 'error' }));
     }
 };
