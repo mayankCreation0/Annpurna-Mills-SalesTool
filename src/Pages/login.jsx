@@ -6,12 +6,10 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { loginApi } from '../Api/Apis';
 import { CircularProgress, IconButton, InputAdornment, Stack } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import Logobg from '../Assets/login_bg.jpg';
@@ -139,7 +137,7 @@ export default function LoginPage() {
                                     fullWidth
                                     name="password"
                                     label="Password"
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     id="password"
                                     autoComplete="current-password"
                                     sx={{
