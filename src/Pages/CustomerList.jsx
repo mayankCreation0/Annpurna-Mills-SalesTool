@@ -13,7 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { Typography, MenuItem, Select, TextField, CircularProgress, Backdrop } from '@mui/material';
+import { Typography, MenuItem, Select, TextField, CircularProgress, Backdrop, InputAdornment } from '@mui/material';
 import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -182,11 +182,17 @@ export default function CustomerList() {
               variant="outlined"
               onChange={(e) => setSearchValue(e.target.value)}
               value={searchValue}
-              sx={{ width: '250px', marginRight: '1rem' }}
+              sx={{ width: '250px' }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton color="primary" aria-label="search" onClick={handleSearch}>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            <IconButton color="primary" aria-label="search" sx={{ ml: '-30px' }} onClick={handleSearch}>
-              <SearchIcon />
-            </IconButton>
           </div>
           <Select
             variant="outlined"
