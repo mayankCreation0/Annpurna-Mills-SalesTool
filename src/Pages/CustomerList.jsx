@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import TransitionsModal from '../Components/Modal';
 import { deleteData, getList } from '../Api/Apis';
+import Loading from '../Components/Loading';
 
 const columns = [
   { id: '_id', label: 'ID', minWidth: 50 },
@@ -211,9 +212,7 @@ export default function CustomerList() {
           </Select>
         </div>
         {loaderOpen ? (
-          <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loaderOpen}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
+          <Loading/>
         ) : (
           <TableContainer sx={{ height: '69.9vh', border: '1px solid black' }}>
             <Table stickyHeader aria-label="sticky table">

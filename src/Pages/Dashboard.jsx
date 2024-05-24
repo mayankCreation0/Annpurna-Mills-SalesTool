@@ -12,6 +12,7 @@ import LoanAmountBarChart from '../Components/RepaidChart';
 import Statistics from '../Components/Statistics';
 import Chart from '../Components/CountCharts';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../Components/Loading';
 
 function Copyright(props) {
   return (
@@ -135,8 +136,8 @@ const Home = () => {
           </Box>
         </Box>
       ) : (
-        <div style={styles.loaderContainer}>
-          <CircularProgress />
+        <div>
+          <Loading/>
         </div>
       )}
     </div>
