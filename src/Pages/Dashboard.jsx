@@ -1,4 +1,3 @@
-// Home.js
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
@@ -31,16 +30,16 @@ const Home = () => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.loading);
   const storeData = useSelector(state => state.analytics);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  
   React.useEffect(() => {
     const fetchData = async () => {
       await getAnalytics(dispatch, navigate);
     };
-    if(Object.keys(storeData).length <= 0){
+    if (Object.keys(storeData).length <= 0) {
       fetchData();
     }
   }, [dispatch]);
-
 
   return (
     <div>
@@ -54,16 +53,15 @@ const Home = () => {
                   ? theme.palette.grey[100]
                   : theme.palette.grey[900],
               flexGrow: 1,
-              // height: '100vh',
-              // overflow: 'auto',
+              padding: { xs: 2, sm: 3, md: 4 }, // Add padding for all screen sizes
             }}
           >
-            <Container maxWidth="lg" sx={{ paddingTop: 2 }}>
-              <Grid container spacing={3} justifyContent='center'>
-                <Grid item xs={12} >
+            <Container maxWidth="lg">
+              <Grid container spacing={3} justifyContent="center">
+                <Grid item xs={12}>
                   <Statistics />
                 </Grid>
-                <Grid item xs={12} md={8} lg={9} >
+                <Grid item xs={12} md={8} lg={9}>
                   <Paper
                     sx={{
                       p: 2,
@@ -145,7 +143,6 @@ const Home = () => {
   );
 };
 
-
 const styles = {
   loaderContainer: {
     display: 'flex',
@@ -154,4 +151,5 @@ const styles = {
     height: '100vh',
   },
 };
+
 export default Home;

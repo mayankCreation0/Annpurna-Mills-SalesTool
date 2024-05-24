@@ -7,6 +7,7 @@ const initialState = {
     analytics: {},
     getData:{},
     toast: { show: false, message: '', type: '' },
+    mode: 'light'
 };
 
 export const MySlice = createSlice({
@@ -36,6 +37,9 @@ export const MySlice = createSlice({
         hideToast: (state) => {
             state.toast = { show: false, message: '', type: '' };
         },
+        handleMode: (state,action) => {
+            state.mode = action.payload
+        }
     }
 });
 

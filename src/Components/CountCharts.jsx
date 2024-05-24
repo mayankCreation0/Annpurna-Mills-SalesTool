@@ -3,8 +3,10 @@ import { useTheme } from '@mui/material/styles';
 import { LineChart, axisClasses } from '@mui/x-charts';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import Typography from '@mui/material/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
+import { Box } from '@mui/material';
 
 export default function Chart() {
     const theme = useTheme();
@@ -17,7 +19,6 @@ export default function Chart() {
 
     const fetchData = async () => {
         const response = await getAnalytics(dispatch);
-        console.log("Analytics", response.data);
         const { yearlyData, monthlyData } = response.data;
         setData({ yearly: yearlyData, monthly: monthlyData });
     };
@@ -49,26 +50,46 @@ export default function Chart() {
 
     return (
         <React.Fragment>
-            <ButtonGroup
-                variant="contained"
-                color="primary"
-                aria-label="outlined primary button group"
-                sx={{ mb: 2 }}
-            >
-                <Button
-                    onClick={() => setChartType('monthly')}
-                    sx={{ textTransform: 'none', borderRadius: '8px' }}
+            <Box sx={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
+                <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
+                    Customer Counts Data
+                </Typography>
+                <ButtonGroup
+                    variant="contained"
+                    aria-label="outlined primary button group"
+                    sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}
                 >
-                    Monthly
-                </Button>
-                <Button
-                    onClick={() => setChartType('yearly')}
-                    sx={{ textTransform: 'none', borderRadius: '8px' }}
-                >
-                    Yearly
-                </Button>
-            </ButtonGroup>
-            <div style={{ width: '100%', flexGrow: 1, overflow: 'hidden', padding: '16px', background: theme.palette.background.paper, borderRadius: '8px' }}>
+                    <Button
+                        onClick={() => setChartType('monthly')}
+                        sx={{
+                            textTransform: 'none',
+                            borderRadius: '8px',
+                            bgcolor: chartType === 'monthly' ? theme.palette.primary.main : theme.palette.grey[300],
+                            color: chartType === 'monthly' ? 'white' : theme.palette.text.primary,
+                            '&:hover': {
+                                bgcolor: chartType === 'monthly' ? theme.palette.primary.dark : theme.palette.grey[400]
+                            }
+                        }}
+                    >
+                        Monthly
+                    </Button>
+                    <Button
+                        onClick={() => setChartType('yearly')}
+                        sx={{
+                            textTransform: 'none',
+                            borderRadius: '8px',
+                            bgcolor: chartType === 'yearly' ? theme.palette.primary.main : theme.palette.grey[300],
+                            color: chartType === 'yearly' ? 'white' : theme.palette.text.primary,
+                            '&:hover': {
+                                bgcolor: chartType === 'yearly' ? theme.palette.primary.dark : theme.palette.grey[400]
+                            }
+                        }}
+                    >
+                        Yearly
+                    </Button>
+                </ButtonGroup>
+            </Box>
+            <div style={{ width: '100%', flexGrow: 1, overflow: 'hidden', padding: '16px', background: theme.palette.background.paper, borderRadius: '8px', boxShadow: theme.shadows[3] }}>
                 <LineChart
                     dataset={chartData}
                     margin={{
