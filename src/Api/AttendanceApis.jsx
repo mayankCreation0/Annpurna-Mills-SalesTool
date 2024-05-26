@@ -28,17 +28,19 @@ export const fetchAllStaffAttendance = async (staffList, dispatch) => {
   }
 };
 
-export const postAttendance = async (attendanceData) => {
+export const postAttendance = async (attendanceData,dispatch) => {
   try {
     await axios.post('http://localhost:8080/attendance/add', attendanceData);
+    getStaff(dispatch)
   } catch (error) {
     console.error('Error saving attendance data', error);
   }
 };
 
-export const patchAttendance = async (attendanceData) => {
+export const patchAttendance = async (attendanceData,dispatch) => {
   try {
     await axios.patch(`http://localhost:8080/attendance/update/${attendanceData._id}`, attendanceData);
+    getStaff(dispatch);
   } catch (error) {
     console.error('Error updating attendance data', error);
   }

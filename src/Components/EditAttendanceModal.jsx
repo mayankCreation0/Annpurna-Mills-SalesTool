@@ -1,48 +1,43 @@
+// src/EditAttendanceModal.js
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
-import { getStaffDetailById, patchAttendance, postAttendance } from '../Api/AttendanceApis';
-import { useDispatch } from 'react-redux';
+import { patchAttendance, postAttendance } from '../Api/AttendanceApis';
+import { useDispatch, useSelector } from 'react-redux';
 
 const EditAttendanceModal = ({ open, handleClose, staff, date, isAdding }) => {
-  const [status, setStatus] = useState('');
-  const [moneyTaken, setMoneyTaken] = useState('');
-  const [remark, setRemark] = useState('');
+  const attendanceDetails = useSelector(state => state.attendance);
+  const formattedDate = new Date(date).toISOString().split('T')[0];
+  const attendance = attendanceDetails[staff._id]?.[formattedDate] || {};
+  const [status, setStatus] = useState(attendance.status || '');
+  const [moneyTaken, setMoneyTaken] = useState(attendance.moneyTaken || '');
+  const [remark, setRemark] = useState(attendance.remark || '');
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isAdding) {
-      const fetchAttendanceData = async () => {
-        try {
-          const response = await getStaffDetailById(staff);
-          const formattedDate = new Date(date).toISOString().split('T')[0];
-          const attendance = response.attendance[formattedDate] || {};
-          setStatus(attendance.status || '');
-          setMoneyTaken(attendance.moneyTaken || '');
-          setRemark(attendance.remark || '');
-        } catch (error) {
-          console.error('Error fetching attendance data', error);
-        }
-      };
-
-      fetchAttendanceData();
+      setStatus(attendance.status || '');
+      setMoneyTaken(attendance.moneyTaken || '');
+      setRemark(attendance.remark || '');
     }
-  }, [isAdding, staff, date]);
+  }, [isAdding, attendance]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedData = {
+    const attendanceData = {
       staffId: staff._id,
-      date,
+      date: formattedDate,
       status,
       moneyTaken,
       remark,
+      _id: attendance._id,
     };
 
     try {
       if (isAdding) {
-        await postAttendance(updatedData);
+        await postAttendance(attendanceData, dispatch);
       } else {
-        await patchAttendance(updatedData);
+        await patchAttendance(attendanceData, dispatch);
       }
       handleClose();
     } catch (error) {
@@ -56,7 +51,7 @@ const EditAttendanceModal = ({ open, handleClose, staff, date, isAdding }) => {
       <DialogContent>
         <FormControl fullWidth style={{ marginBottom: '16px' }}>
           <InputLabel>Status</InputLabel>
-          <Select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <Select value={status} onChange={(e) => setStatus(e.target.value)} required>
             <MenuItem value="present">Present</MenuItem>
             <MenuItem value="half day">Half Day</MenuItem>
             <MenuItem value="absent">Absent</MenuItem>
@@ -67,6 +62,7 @@ const EditAttendanceModal = ({ open, handleClose, staff, date, isAdding }) => {
           label="Wages"
           value={moneyTaken}
           onChange={(e) => setMoneyTaken(e.target.value)}
+          required
           style={{ marginBottom: '16px' }}
         />
         <TextField

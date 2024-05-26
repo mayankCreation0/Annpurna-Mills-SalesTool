@@ -1,3 +1,5 @@
+// src/StaffTable.js
+
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box,
@@ -25,6 +27,7 @@ const StaffTable = () => {
   const [openDetails, setOpenDetails] = useState(false);
   const [openEditAttendance, setOpenEditAttendance] = useState(false);
   const [openAddStaff, setOpenAddStaff] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const dispatch = useDispatch();
 
   const staffList = useSelector(state => state.staff);
@@ -34,7 +37,7 @@ const StaffTable = () => {
     getStaff(dispatch);
   }, [dispatch]);
 
-  const handleOpenDetails = async (staff, date) => {
+  const handleOpenDetails = (staff, date) => {
     setSelectedStaff(staff);
     setSelectedDate(date);
     setOpenDetails(true);
@@ -46,15 +49,17 @@ const StaffTable = () => {
     setSelectedDate(null);
   };
 
-  const handleOpenEditAttendance = (isAdding = false) => {
-    setOpenDetails(false);
+  const handleOpenEditAttendance = (staff, date, adding) => {
+    setSelectedStaff(staff);
+    setSelectedDate(date);
+    setIsAdding(adding);
     setOpenEditAttendance(true);
   };
 
   const handleCloseEditAttendance = () => {
     setOpenEditAttendance(false);
     setOpenDetails(false);
-    getStaff(dispatch); 
+    setIsAdding(false);
   };
 
   const dates = getPreviousDays(365);
@@ -65,7 +70,7 @@ const StaffTable = () => {
         variant="contained"
         color="primary"
         startIcon={<AddIcon />}
-        onClick={() => handleOpenEditAttendance(true)}
+        onClick={() => setOpenAddStaff(true)}
         style={{ marginBottom: '16px' }}
       >
         Add Staff
@@ -99,7 +104,7 @@ const StaffTable = () => {
                           if (attendance) {
                             handleOpenDetails(staff, formattedDate);
                           } else {
-                            handleOpenEditAttendance(true);
+                            handleOpenEditAttendance(staff, formattedDate, true);
                           }
                         }}
                         style={{
@@ -113,7 +118,6 @@ const StaffTable = () => {
                       >
                         {attendance ? `${attendance.status} (₹${attendance.moneyTaken || '0'})` : 'Add'}
                       </Button>
-
                     </TableCell>
                   );
                 })}
@@ -125,7 +129,7 @@ const StaffTable = () => {
           <DetailsModal
             open={openDetails}
             handleClose={handleCloseDetails}
-            handleOpenEdit={handleOpenEditAttendance}
+            handleOpenEdit={() => handleOpenEditAttendance(selectedStaff, selectedDate, false)}
             staff={selectedStaff}
             date={selectedDate}
           />
@@ -136,7 +140,7 @@ const StaffTable = () => {
             handleClose={handleCloseEditAttendance}
             staff={selectedStaff}
             date={selectedDate}
-            isAdding={selectedDate === null}
+            isAdding={isAdding}
           />
         )}
         {openAddStaff && (
