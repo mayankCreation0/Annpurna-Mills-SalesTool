@@ -1,12 +1,11 @@
-// src/StaffTable.js
-
 import React, { useState, useEffect } from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, IconButton, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography,
 } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from 'react-redux';
-import { getStaff } from '../Api/AttendanceApis';
+import { getStaff, deleteStaff } from '../Api/AttendanceApis';
 import DetailsModal from './DetailModal';
 import EditAttendanceModal from './EditAttendanceModal';
 import AddStaffModal from './AddStaffModal';
@@ -28,6 +27,9 @@ const StaffTable = () => {
   const [openEditAttendance, setOpenEditAttendance] = useState(false);
   const [openAddStaff, setOpenAddStaff] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [aggregatedData, setAggregatedData] = useState({});
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
   const dispatch = useDispatch();
 
   const staffList = useSelector(state => state.staff);
@@ -36,6 +38,50 @@ const StaffTable = () => {
   useEffect(() => {
     getStaff(dispatch);
   }, [dispatch]);
+
+  useEffect(() => {
+    const aggregateData = () => {
+      const data = {};
+
+      staffList.forEach(staff => {
+        const currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        const currentYearStart = new Date(new Date().getFullYear(), 0, 1);
+
+        let totalMonthMoney = 0;
+        let totalYearMoney = 0;
+        let totalDaysPresentMonth = 0;
+        let totalDaysPresentYear = 0;
+
+        Object.keys(attendanceDetails[staff._id] || {}).forEach(date => {
+          const record = attendanceDetails[staff._id][date];
+          const recordDate = new Date(date);
+
+          if (recordDate >= currentMonthStart) {
+            totalMonthMoney += record.moneyTaken || 0;
+            if (record.status === 'present') totalDaysPresentMonth += 1;
+            if (record.status === 'half day') totalDaysPresentMonth += 0.5;
+          }
+
+          if (recordDate >= currentYearStart) {
+            totalYearMoney += record.moneyTaken || 0;
+            if (record.status === 'present') totalDaysPresentYear += 1;
+            if (record.status === 'half day') totalDaysPresentYear += 0.5;
+          }
+        });
+
+        data[staff._id] = {
+          totalMonthMoney,
+          totalYearMoney,
+          totalDaysPresentMonth,
+          totalDaysPresentYear
+        };
+      });
+
+      setAggregatedData(data);
+    };
+
+    aggregateData();
+  }, [attendanceDetails, staffList]);
 
   const handleOpenDetails = (staff, date) => {
     setSelectedStaff(staff);
@@ -62,6 +108,39 @@ const StaffTable = () => {
     setIsAdding(false);
   };
 
+  const handleMenuOpen = (event, staff) => {
+    setSelectedStaff(staff);
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleEditStaff = () => {
+    setOpenAddStaff(true);
+    handleMenuClose();
+  };
+
+  const handleDeleteConfirmOpen = () => {
+    setOpenDeleteConfirm(true);
+    handleMenuClose();
+  };
+
+  const handleDeleteConfirmClose = () => {
+    setOpenDeleteConfirm(false);
+    setSelectedStaff(null);
+  };
+
+  const handleDeleteStaff = async () => {
+    try {
+      await deleteStaff(selectedStaff._id, dispatch);
+      handleDeleteConfirmClose();
+    } catch (error) {
+      console.error('Error deleting staff', error);
+    }
+  };
+
   const dates = getPreviousDays(365);
 
   return (
@@ -79,45 +158,61 @@ const StaffTable = () => {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell style={{ position: 'sticky', left: 0, backgroundColor: '#fff', zIndex: 10, fontWeight: 'bold' }}>Name</TableCell>
+              <TableCell style={{ position: 'sticky', left: 0, backgroundColor: '#f5f5f5', zIndex: 10, fontWeight: 'bold', borderRight:'2px solid #ddd' ,borderBottom: '2px solid #ddd' }}>Name/Date</TableCell>
               {dates.map((date, idx) => (
-                <TableCell key={idx} style={{ backgroundColor: '#fff', fontWeight: 'bold' }}>{date.toDateString()}</TableCell>
+                <TableCell key={idx} style={{ backgroundColor: '#f5f5f5', fontWeight: 'bold', borderBottom: '2px solid #ddd' }}>{date.toDateString()}</TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
             {staffList.map((staff) => (
-              <TableRow key={staff._id}>
+              <TableRow key={staff._id} style={{ borderBottom: '1px solid #ddd' }}>
                 <TableCell
-                  style={{ position: 'sticky', left: 0, backgroundColor: '#fff', zIndex: 10, cursor: 'pointer', fontWeight: 'bold' }}
-                  onClick={() => handleOpenDetails(staff, null)}
+                  style={{
+                    position: 'sticky',
+                    left: 0,
+                    backgroundColor: '#f5f5f5',
+                    zIndex: 10,
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    height:'100px'
+                  }}
+                // onClick={() => handleOpenDetails(staff, null)}
                 >
-                  {staff.name}
+                  <span>{staff.name}</span>
+                  <IconButton
+                    size="small"
+                    onClick={(event) => handleMenuOpen(event, staff)}
+                    style={{ marginLeft: 'auto', marginRight: '0' }}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
                 </TableCell>
                 {dates.map((date) => {
                   const formattedDate = date.toISOString().split('T')[0];
                   const attendance = attendanceDetails[staff._id]?.[formattedDate];
                   return (
-                    <TableCell key={formattedDate}>
-                      <Button
-                        onClick={() => {
-                          if (attendance) {
-                            handleOpenDetails(staff, formattedDate);
-                          } else {
-                            handleOpenEditAttendance(staff, formattedDate, true);
-                          }
-                        }}
-                        style={{
-                          fontWeight: attendance ? 'bold' : 'normal',
-                          color: attendance
-                            ? attendance.status === 'present' ? 'green'
-                              : attendance.status === 'half day' ? 'orange'
-                                : 'red'
-                            : '#000'
-                        }}
-                      >
-                        {attendance ? `${attendance.status} (₹${attendance.moneyTaken || '0'})` : 'Add'}
-                      </Button>
+                    <TableCell key={formattedDate} style={{ borderRight: '1px solid #ddd', height: '100px', backgroundColor: attendance ? (attendance.status === 'present' ? '#d9f2d9' : (attendance.status === 'half day' ? '#ffe0b3' : '#ffd9cc')) : '#fff' }}>
+                      {attendance ? (
+                        <Button
+                          onClick={() => handleOpenDetails(staff, formattedDate)}
+                          variant="text"
+                          style={{ fontWeight: 'bold', padding: '0px', color: attendance.status === 'present' ? 'green' : (attendance.status === 'half day' ? 'orange' : 'red') }}
+                        >
+                          {`${attendance.status} (₹${attendance.moneyTaken || '0'})`}
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handleOpenEditAttendance(staff, formattedDate, true)}
+                            variant="contained" startIcon={<AddIcon />} color="primary"
+                          style={{ fontWeight: 'bold', padding: '10px 15px', backgroundColor: '#2196f3' }}
+                        >
+                          Add
+                        </Button>
+                      )}
                     </TableCell>
                   );
                 })}
@@ -125,13 +220,14 @@ const StaffTable = () => {
             ))}
           </TableBody>
         </Table>
-        {selectedStaff && selectedDate && (
+        {selectedStaff && (
           <DetailsModal
             open={openDetails}
             handleClose={handleCloseDetails}
             handleOpenEdit={() => handleOpenEditAttendance(selectedStaff, selectedDate, false)}
             staff={selectedStaff}
             date={selectedDate}
+            aggregatedData={aggregatedData[selectedStaff._id]}
           />
         )}
         {openEditAttendance && (
@@ -147,9 +243,31 @@ const StaffTable = () => {
           <AddStaffModal
             open={openAddStaff}
             handleClose={() => setOpenAddStaff(false)}
+            staff={selectedStaff}
+            isEdit={!!selectedStaff}
           />
         )}
+        {openDeleteConfirm && (
+          <Dialog open={openDeleteConfirm} onClose={handleDeleteConfirmClose}>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogContent>
+              <Typography>Are you sure you want to delete {selectedStaff?.name}?</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDeleteConfirmClose} color="primary">Cancel</Button>
+              <Button onClick={handleDeleteStaff} color="secondary">Delete</Button>
+            </DialogActions>
+          </Dialog>
+        )}
       </TableContainer>
+      <Menu
+        anchorEl={menuAnchorEl}
+        open={Boolean(menuAnchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleEditStaff}>Edit</MenuItem>
+        <MenuItem onClick={handleDeleteConfirmOpen}>Delete</MenuItem>
+      </Menu>
     </Box>
   );
 };
