@@ -1,8 +1,7 @@
 // src/App.js
 
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
-import '../Styles/staffCalendar.css';
 import AttendanceForm from '../Components/AttendanceForm';
 import StaffTable from '../Components/StaffTable';
 import { useDispatch } from 'react-redux';
