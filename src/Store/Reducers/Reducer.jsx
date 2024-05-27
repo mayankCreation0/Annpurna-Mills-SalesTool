@@ -5,9 +5,11 @@ const initialState = {
     auth: false,
     loading: false,
     analytics: {},
-    getData:{},
+    getData: {},
     toast: { show: false, message: '', type: '' },
-    mode: 'light'
+    mode: 'light',
+    staff:[],
+    attendance:{},
 };
 
 export const MySlice = createSlice({
@@ -31,17 +33,24 @@ export const MySlice = createSlice({
                 show: true,
                 message: action.payload.message,
                 type: action.payload.type,
-                theme: action.payload.theme || 'light', 
+                theme: action.payload.theme || 'light',
             };
         },
         hideToast: (state) => {
             state.toast = { show: false, message: '', type: '' };
         },
-        handleMode: (state,action) => {
+        handleMode: (state, action) => {
             state.mode = action.payload
+        },
+        handleStaff: (state, action) => {
+            state.staff = action.payload
+        },
+        handleAttendance: (state, action) => {
+            state.attendance = action.payload
         }
+
     }
 });
 
-export const { handleAuth, handleLoading, handleAnalytics,handleGetData, showToast, hideToast } = MySlice.actions;
+export const { handleAuth, handleLoading, handleAnalytics, handleGetData, showToast, hideToast, handleAttendance, handleStaff } = MySlice.actions;
 export default MySlice.reducer;
