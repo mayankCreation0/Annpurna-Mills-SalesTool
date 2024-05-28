@@ -22,9 +22,11 @@ function Copyright(props) {
     return (
         <Typography variant="p" {...props} sx={{ color:"applicationTheme.primaryColor_2" }}>
             {'Copyright © '}
-            <Link variant='p' href="https://annpurna-mills.vercel.app/" sx={{  color:"applicationTheme.primaryColor_2" , textDecoration:"none" }}>
-                Your Website
-            </Link>{' '}
+
+            <Link variant='p' href="https://annpurna-mills.vercel.app/"  sx={{  color:"applicationTheme.primaryColor_2" , textDecoration:"none" }}>
+               Annpurna Mills
+          
+            </Link> {' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>

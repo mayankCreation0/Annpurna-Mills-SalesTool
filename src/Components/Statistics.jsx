@@ -26,7 +26,6 @@ const StatBox = ({ title, value, growth }) => (
 
 const Statistics = () => {
     const data = useSelector((state) => state.analytics);
-    console.log("Statistics", data.currentMonthLoanRepaidStats.totalLoanRepaidAmount);
     const { currentMonth, previousMonth, currentMonthLoanRepaidStats, previousMonthLoanRepaidStats } = data;
 
     const calculateGrowth = (current, previous) => {
