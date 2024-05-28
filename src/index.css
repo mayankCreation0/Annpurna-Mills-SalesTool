@@ -8,4 +8,14 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+ 
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #696161;
+}
  
