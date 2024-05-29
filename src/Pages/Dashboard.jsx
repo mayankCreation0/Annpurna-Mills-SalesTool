@@ -45,14 +45,11 @@ const Home = () => {
   return (
     <div>
       {!loading && Object.keys(storeData).length > 0 ? (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex' ,bgcolor:"applicationTheme.primary"}}>
           <Box
             component="main"
             sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'light'
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[900],
+              bgcolor:"transparent",
               flexGrow: 1,
               padding: { xs: 2, sm: 3, md: 4 }, // Add padding for all screen sizes
             }}

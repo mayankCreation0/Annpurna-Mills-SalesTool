@@ -1,19 +1,20 @@
 import './App.css';
 import AllRoutes from './Routes/Routes';
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import React from 'react';
-import getLPTheme from './Components/GetLptTheme';
+import { ThemeProvider } from '@mui/material';
+import React, { useEffect } from 'react';
+import { lightTheme , darkTheme } from './Components/Theme';
+import { useSelector } from 'react-redux';
 
 function App() {
-  const [mode, setMode] = React.useState('light');
-  const LPtheme = createTheme(getLPTheme(mode));
+
+  const mode  = useSelector((state) => state.mode);
 
   return (
-    <div className="App">
-      <ThemeProvider theme={mode ? LPtheme : '' }>
+   
+      <ThemeProvider theme={mode === 'light' ? lightTheme : darkTheme }>
            <AllRoutes/>
       </ThemeProvider>
-    </div>
+   
   );
 }
 

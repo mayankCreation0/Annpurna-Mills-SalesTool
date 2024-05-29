@@ -5,9 +5,9 @@ const initialState = {
     auth: false,
     loading: false,
     analytics: {},
-    getData: {},
+    getData:{},
+    mode:sessionStorage.getItem('mode') === null ? 'light' : sessionStorage.getItem('mode') , // initial state
     toast: { show: false, message: '', type: '' },
-    mode: 'light',
     staff:[],
     attendance:{},
 };
@@ -39,8 +39,9 @@ export const MySlice = createSlice({
         hideToast: (state) => {
             state.toast = { show: false, message: '', type: '' };
         },
-        handleMode: (state, action) => {
-            state.mode = action.payload
+        handleToggleTheme: (state) => {
+            state.mode = state.mode !== 'light' ? 'light' : 'dark';
+            sessionStorage.setItem('mode', `${state.mode !== 'light' ? 'dark' : 'light'}`);
         },
         handleStaff: (state, action) => {
             state.staff = action.payload
@@ -48,9 +49,8 @@ export const MySlice = createSlice({
         handleAttendance: (state, action) => {
             state.attendance = action.payload
         }
-
     }
 });
 
-export const { handleAuth, handleLoading, handleAnalytics, handleGetData, showToast, hideToast, handleAttendance, handleStaff } = MySlice.actions;
+export const { handleAuth, handleLoading, handleAnalytics,handleGetData, showToast, hideToast, handleToggleTheme,  handleAttendance, handleStaff  } = MySlice.actions;
 export default MySlice.reducer;
