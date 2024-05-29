@@ -2,7 +2,16 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { handleAnalytics, handleAuth, handleGetData, handleLoading, showToast } from '../Store/Reducers/Reducer';
 
-const API_BASE_URL = "https://annpurna-mills-server.vercel.app/";
+
+const API_BASE_URL = process.env.REACT_APP_AMS_PROD_URL;
+export const fetchRates = async() =>{
+    try {
+        const response = await axios.get(`${API_BASE_URL}api/metal-rates`);
+        return response
+    } catch (error) {
+        console.log("Error while fetching rates" + error.message)
+    }
+}
 
 export const refreshData = async (dispatch, navigate) => {
     try {
