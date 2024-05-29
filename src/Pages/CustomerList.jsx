@@ -13,12 +13,13 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { Typography, MenuItem, Select, TextField, CircularProgress, Backdrop } from '@mui/material';
+import { Typography, MenuItem, Select, TextField, CircularProgress, Backdrop, InputAdornment } from '@mui/material';
 import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import TransitionsModal from '../Components/Modal';
 import { deleteData, getList } from '../Api/Apis';
+import Loading from '../Components/Loading';
 
 const columns = [
   { id: '_id', label: 'ID', minWidth: 50 },
@@ -182,11 +183,17 @@ export default function CustomerList() {
               variant="outlined"
               onChange={(e) => setSearchValue(e.target.value)}
               value={searchValue}
-              sx={{ width: '250px', marginRight: '1rem' }}
+              sx={{ width: '250px' }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton color="primary" aria-label="search" onClick={handleSearch}>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            <IconButton color="primary" aria-label="search" sx={{ ml: '-30px' }} onClick={handleSearch}>
-              <SearchIcon />
-            </IconButton>
           </div>
           <Select
             variant="outlined"
@@ -205,9 +212,7 @@ export default function CustomerList() {
           </Select>
         </div>
         {loaderOpen ? (
-          <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loaderOpen}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
+          <Loading/>
         ) : (
           <TableContainer sx={{ height: '69.9vh', border: '1px solid black' }}>
             <Table stickyHeader aria-label="sticky table">

@@ -1,4 +1,3 @@
-// Home.js
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
@@ -13,13 +12,14 @@ import LoanAmountBarChart from '../Components/RepaidChart';
 import Statistics from '../Components/Statistics';
 import Chart from '../Components/CountCharts';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../Components/Loading';
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://annpurna-mills.vercel.app/">
-        Your Website
+       Annpurna Mills
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -31,39 +31,35 @@ const Home = () => {
   const dispatch = useDispatch();
   const loading = useSelector(state => state.loading);
   const storeData = useSelector(state => state.analytics);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  
   React.useEffect(() => {
     const fetchData = async () => {
       await getAnalytics(dispatch, navigate);
     };
-    if(Object.keys(storeData).length <= 0){
+    if (Object.keys(storeData).length <= 0) {
       fetchData();
     }
   }, [dispatch]);
 
-
   return (
     <div>
       {!loading && Object.keys(storeData).length > 0 ? (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex' ,bgcolor:"applicationTheme.primary"}}>
           <Box
             component="main"
             sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'light'
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[900],
+              bgcolor:"transparent",
               flexGrow: 1,
-              // height: '100vh',
-              // overflow: 'auto',
+              padding: { xs: 2, sm: 3, md: 4 }, // Add padding for all screen sizes
             }}
           >
-            <Container maxWidth="lg" sx={{ paddingTop: 2 }}>
-              <Grid container spacing={3} justifyContent='center'>
-                <Grid item xs={12} >
+            <Container maxWidth="lg">
+              <Grid container spacing={3} justifyContent="center">
+                <Grid item xs={12}>
                   <Statistics />
                 </Grid>
-                <Grid item xs={12} md={8} lg={9} >
+                <Grid item xs={12} md={8} lg={9}>
                   <Paper
                     sx={{
                       p: 2,
@@ -102,7 +98,7 @@ const Home = () => {
                   </Paper>
                 </Grid>
               </Grid>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
+              {/* <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
                 <Paper sx={{ p: 2 }}>
                   <iframe
                     src="https://goldbroker.com/widget/historical/XAU?height=500&currency=INR&weight_unit=g"
@@ -131,20 +127,19 @@ const Home = () => {
                     }}
                   ></iframe>
                 </Paper>
-              </Box>
+              </Box> */}
               <Copyright sx={{ pt: 4 }} />
             </Container>
           </Box>
         </Box>
       ) : (
-        <div style={styles.loaderContainer}>
-          <CircularProgress />
+        <div>
+          <Loading/>
         </div>
       )}
     </div>
   );
 };
-
 
 const styles = {
   loaderContainer: {
@@ -154,4 +149,5 @@ const styles = {
     height: '100vh',
   },
 };
+
 export default Home;

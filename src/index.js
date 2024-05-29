@@ -11,6 +11,10 @@ import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
 import Toast from './Components/Toast';
 
+if(sessionStorage.getItem('mode') === null){
+  sessionStorage.setItem("mode", "light");
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
