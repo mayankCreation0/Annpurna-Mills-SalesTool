@@ -1,7 +1,7 @@
-// src/AttendanceForm.js
-
 import React, { useState } from 'react';
-import { TextField, Select, MenuItem, FormControl, InputLabel, Button, Grid, Typography, Paper } from '@mui/material';
+import {
+  TextField, Select, MenuItem, FormControl, InputLabel, Button, Grid, Typography, Paper, useTheme
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { postAttendance } from '../Api/AttendanceApis';
 
@@ -13,6 +13,7 @@ const AttendanceForm = () => {
   const [remark, setRemark] = useState('');
   const staffList = useSelector(state => state.staff);
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,8 +33,17 @@ const AttendanceForm = () => {
   };
 
   return (
-    <Paper style={{ padding: '16px', border: '1px solid #ccc' }}>
-      <Typography variant="h6">Add/Edit Attendance</Typography>
+    <Paper
+      sx={{
+        padding: '16px',
+        border: '1px solid',
+        borderColor: theme.palette.mode === 'light' ? '#ccc' : theme.palette.divider,
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
+      <Typography variant="h6" gutterBottom>
+        Add/Edit Attendance
+      </Typography>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -83,9 +93,13 @@ const AttendanceForm = () => {
             <TextField
               fullWidth
               label="Wages"
+              type="number"
               value={moneyTaken}
               onChange={(e) => setMoneyTaken(e.target.value)}
               required
+              InputProps={{
+                startAdornment: <Typography sx={{ mr: 1 }}>₹</Typography>,
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -99,7 +113,16 @@ const AttendanceForm = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                backgroundColor: theme.palette.applicationTheme.main,
+                '&:hover': {
+                  backgroundColor: theme.palette.applicationTheme.secondaryColor_1,
+                },
+              }}
+            >
               Submit
             </Button>
           </Grid>
