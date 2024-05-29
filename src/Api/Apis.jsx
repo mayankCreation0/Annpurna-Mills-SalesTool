@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { handleAnalytics, handleAuth, handleGetData, handleLoading, showToast } from '../Store/Reducers/Reducer';
 
-const API_BASE_URL = process.env.REACT_APP_AMS_PROD_URL;
+const API_BASE_URL = "https://annpurna-mills-server.vercel.app/";
 
 export const refreshData = async (dispatch, navigate) => {
     try {

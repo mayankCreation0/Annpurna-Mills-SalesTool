@@ -1,20 +1,27 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import PrivateRoutes from './PrivateRoutes';
 import Layout from '../Layout/Layout';
-import Loading from '../Components/Loading';
+import LoginPage from '../Pages/login';
+import StaffAttendance from '../Pages/StaffAttendance';
+import Home from '../Pages/Dashboard';
+import CustomerList from '../Pages/CustomerList';
+import FormPage from '../Pages/FormPage';
+import ViewPage from '../Pages/ViewPage';
+import EditPage from '../Pages/EditPage';
+
 // Lazy load the components
-const LoginPage = lazy(() => import('../Pages/login'));
+/* const LoginPage = lazy(() => import('../Pages/login'));
 const Home = lazy(() => import('../Pages/Dashboard'));
 const FormPage = lazy(() => import('../Pages/FormPage'));
 const CustomerList = lazy(() => import('../Pages/CustomerList'));
 const ViewPage = lazy(() => import('../Pages/ViewPage'));
 const EditPage = lazy(() => import('../Pages/EditPage'));
-const StaffAttendance = lazy(() => import('../Pages/StaffAttendance'));
+const StaffAttendance = lazy(() => import('../Pages/StaffAttendance')); */
 
 const AllRoutes = ({ mode, toggleColorMode }) => {
     return (
-        <Suspense fallback={<div><Loading/></div>}>
+   
             <Routes>
                 <Route path='/login' element={<LoginPage />} />
                 
@@ -27,7 +34,7 @@ const AllRoutes = ({ mode, toggleColorMode }) => {
                     <Route path='/edit/:id' element={<PrivateRoutes><EditPage mode={mode} toggleColorMode={toggleColorMode} /></PrivateRoutes>} />
                 </Route>
             </Routes>
-        </Suspense>
+       
     );
 };
 

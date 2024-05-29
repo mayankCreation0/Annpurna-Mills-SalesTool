@@ -211,9 +211,7 @@ export default function CustomerList() {
             <MenuItem value="Others">Others</MenuItem>
           </Select>
         </div>
-        {loaderOpen ? (
-          <Loading/>
-        ) : (
+        
           <TableContainer sx={{ height: '69.9vh', border: '1px solid black' }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -339,7 +337,7 @@ export default function CustomerList() {
               </TableBody>
             </Table>
           </TableContainer>
-        )}
+      
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
