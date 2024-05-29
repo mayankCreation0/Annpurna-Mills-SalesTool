@@ -19,7 +19,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://annpurna-mills.vercel.app/">
-        My Website
+       Annpurna Mills
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -98,7 +98,7 @@ const Home = () => {
                   </Paper>
                 </Grid>
               </Grid>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
+              {/* <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
                 <Paper sx={{ p: 2 }}>
                   <iframe
                     src="https://goldbroker.com/widget/historical/XAU?height=500&currency=INR&weight_unit=g"
@@ -127,7 +127,7 @@ const Home = () => {
                     }}
                   ></iframe>
                 </Paper>
-              </Box>
+              </Box> */}
               <Copyright sx={{ pt: 4 }} />
             </Container>
           </Box>
