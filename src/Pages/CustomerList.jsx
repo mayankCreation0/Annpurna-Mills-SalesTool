@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SearchIcon from '@mui/icons-material/Search';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { Typography, MenuItem, Select, TextField, CircularProgress, Backdrop, InputAdornment } from '@mui/material';
-import { ArrowUpward, ArrowDownward, FilterList } from '@mui/icons-material';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  IconButton,
+  Typography,
+  MenuItem,
+  Select,
+  TextField,
+  CircularProgress,
+  Backdrop,
+  InputAdornment,
+  Box,
+} from '@mui/material';
+import {
+  Edit as EditIcon,
+  Visibility as VisibilityIcon,
+  Delete as DeleteIcon,
+  Search as SearchIcon,
+  AccessTime as AccessTimeIcon,
+  ArrowUpward,
+  ArrowDownward,
+  FilterList,
+} from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import TransitionsModal from '../Components/Modal';
@@ -45,7 +58,7 @@ export default function CustomerList() {
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const listData = useSelector(state => state.getData);
+  const listData = useSelector((state) => state.getData);
 
   useEffect(() => {
     async function fetchData() {
@@ -66,11 +79,13 @@ export default function CustomerList() {
     let filteredData = customers;
 
     if (filterValue) {
-      filteredData = filteredData.filter(item => item.Category === filterValue);
+      filteredData = filteredData.filter((item) => item.Category === filterValue);
     }
 
     if (searchValue) {
-      filteredData = filteredData.filter(item => item.Name.toLowerCase().includes(searchValue.toLowerCase()));
+      filteredData = filteredData.filter((item) =>
+        item.Name.toLowerCase().includes(searchValue.toLowerCase())
+      );
     }
 
     if (sortBy) {
@@ -125,17 +140,49 @@ export default function CustomerList() {
   const calculateTenure = (startDate) => {
     const currentDate = new Date();
     const start = new Date(startDate);
-    const diffInMonths = (currentDate.getFullYear() - start.getFullYear()) * 12 + (currentDate.getMonth() - start.getMonth());
+    const diffInMonths =
+      (currentDate.getFullYear() - start.getFullYear()) * 12 +
+      (currentDate.getMonth() - start.getMonth());
     if (diffInMonths < 12) {
-      return { color: '#3f51b5', text: `${diffInMonths} months`, backgroundColor: '#f3e5f5', fontSize: '12px', borderRadius: '8px' };
+      return {
+        color: '#3f51b5',
+        text: `${diffInMonths} months`,
+        backgroundColor: '#f3e5f5',
+        fontSize: '12px',
+        borderRadius: '8px',
+      };
     } else if (diffInMonths < 24) {
-      return { color: '#f57c00', text: '1 year', backgroundColor: '#fff3e0', fontSize: '12px', borderRadius: '8px' };
+      return {
+        color: '#f57c00',
+        text: '1 year',
+        backgroundColor: '#fff3e0',
+        fontSize: '12px',
+        borderRadius: '8px',
+      };
     } else if (diffInMonths < 36) {
-      return { color: '#f57c00', text: '2 years', backgroundColor: '#fff3e0', fontSize: '12px', borderRadius: '8px' };
+      return {
+        color: '#f57c00',
+        text: '2 years',
+        backgroundColor: '#fff3e0',
+        fontSize: '12px',
+        borderRadius: '8px',
+      };
     } else if (diffInMonths < 48) {
-      return { color: '#d32f2f', text: '3 years', backgroundColor: '#ffcdd2', fontSize: '12px', borderRadius: '8px' };
+      return {
+        color: '#d32f2f',
+        text: '3 years',
+        backgroundColor: '#ffcdd2',
+        fontSize: '12px',
+        borderRadius: '8px',
+      };
     } else {
-      return { color: '#d32f2f', text: '3+ years', backgroundColor: '#ef9a9a', fontSize: '12px', borderRadius: '8px' };
+      return {
+        color: '#d32f2f',
+        text: '3+ years',
+        backgroundColor: '#ef9a9a',
+        fontSize: '12px',
+        borderRadius: '8px',
+      };
     }
   };
 
@@ -168,7 +215,9 @@ export default function CustomerList() {
 
   const handleSearch = () => {
     const lowercasedFilter = searchValue.toLowerCase();
-    const filteredData = customers.filter(item => item.Name.toLowerCase().includes(lowercasedFilter));
+    const filteredData = customers.filter((item) =>
+      item.Name.toLowerCase().includes(lowercasedFilter)
+    );
     setFilteredCustomers(filteredData);
     setPage(0);
   };
@@ -176,31 +225,67 @@ export default function CustomerList() {
   return (
     <>
       <Paper>
-        <div style={{ display: 'flex', alignItems: 'center', margin: 'auto', padding: '.4rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
-              label="Search Name"
-              variant="outlined"
-              onChange={(e) => setSearchValue(e.target.value)}
-              value={searchValue}
-              sx={{ width: '250px' }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton color="primary" aria-label="search" onClick={handleSearch}>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </div>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0.5rem 1rem',
+            backgroundColor: 'background.default',
+          }}
+        >
+          <TextField
+            // label="Search Name"
+            variant="outlined"
+            onChange={(e) => setSearchValue(e.target.value)}
+            value={searchValue}
+            placeholder='seach name..'
+            sx={{
+              width: '250px',
+              marginRight: '1rem',
+              '.MuiOutlinedInput-root': {
+                height: '2.5rem',
+                borderRadius: '20px',
+              },
+              '.MuiInputLabel-outlined': {
+                transform: 'translate(14px, 10px) scale(1)',
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    color="primary"
+                    aria-label="search"
+                    onClick={handleSearch}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
           <Select
             variant="outlined"
+            // label="Filter"
             value={filterValue}
             onChange={(e) => setFilterValue(e.target.value)}
             IconComponent={FilterList}
-            style={{ marginLeft: '1rem', height: '2.5rem' }}
+            displayEmpty
+            sx={{
+              height: '2.5rem',
+              borderRadius: '20px',
+              minWidth: '150px',
+              '.MuiSelect-icon': {
+                right: '10px',
+              },
+              '.MuiOutlinedInput-root': {
+                borderRadius: '20px',
+                paddingRight: '30px',
+              },
+              '.MuiInputLabel-outlined': {
+                transform: 'translate(14px, 10px) scale(1)',
+              },
+            }}
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="Gold">Gold</MenuItem>
@@ -210,11 +295,16 @@ export default function CustomerList() {
             <MenuItem value="Cycle">Cycle</MenuItem>
             <MenuItem value="Others">Others</MenuItem>
           </Select>
-        </div>
+        </Box>
         {loaderOpen ? (
-          <Loading/>
+          <Loading />
         ) : (
-          <TableContainer sx={{ height: '69.9vh', border: '1px solid black' }}>
+          <TableContainer
+            sx={{
+              height: '65vh',
+              border: '1px solid black',
+            }}
+          >
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
@@ -222,22 +312,28 @@ export default function CustomerList() {
                     <TableCell
                       key={column.id}
                       align={column.align || 'left'}
-                      style={{
+                      sx={{
                         minWidth: column.minWidth,
-                        fontSize: '1rem',
+                        fontSize: '0.875rem',
                         fontWeight: 'bold',
-                        height: '40px',
+                        height: '30px',
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography variant="subtitle1">{column.label}</Typography>
+                        <Typography variant="subtitle2">{column.label}</Typography>
                         {(column.id === 'Date' || column.id === 'Amount') && (
                           <>
-                            <IconButton size="small" onClick={() => handleSort(column.id)}>
-                              <ArrowUpward />
+                            <IconButton
+                              size="small"
+                              onClick={() => handleSort(column.id)}
+                            >
+                              <ArrowUpward sx={{ fontSize: '1rem' }} />
                             </IconButton>
-                            <IconButton size="small" onClick={() => handleSort(`-${column.id}`)}>
-                              <ArrowDownward />
+                            <IconButton
+                              size="small"
+                              onClick={() => handleSort(`-${column.id}`)}
+                            >
+                              <ArrowDownward sx={{ fontSize: '1rem' }} />
                             </IconButton>
                           </>
                         )}
@@ -248,94 +344,93 @@ export default function CustomerList() {
               </TableHead>
               <TableBody>
                 {Array.isArray(filteredCustomers) &&
-                  filteredCustomers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((customer, index) => (
-                    <TableRow key={index}>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          sx={{
-                            minWidth: column.minWidth,
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            backgroundColor: '#f5f5f5',
-                            color: '#333',
-                            padding: '8px',
-                          }}
-                          align={column.align || 'left'}
-                        >
-                          {column.id === '_id'
-                            ? customer._id.slice(-6)
-                            : column.id === 'Date'
-                              ? new Date(customer.Date).toLocaleDateString('en-IN')
-                              : column.id === 'Name' ? (
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    {customer.Name}
-                                  </div>
-                                  <div
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      backgroundColor: calculateTenure(customer.Date).backgroundColor,
-                                      borderRadius: '8px',
-                                      padding: '4px 8px',
-                                      marginTop: '4px',
-                                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                                    }}
-                                  >
-                                    <AccessTimeIcon style={{ marginRight: '4px', color: '#757575', fontSize: '1rem' }} />
-                                    <span
+                  filteredCustomers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((customer, index) => (
+                      <TableRow key={index}>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            sx={{
+                              minWidth: column.minWidth,
+                              fontSize: '0.875rem',
+                              fontWeight: '600',
+                              backgroundColor: '#f5f5f5',
+                              color: '#333',
+                              padding: '6px',
+                            }}
+                            align={column.align || 'left'}
+                          >
+                            {column.id === '_id'
+                              ? customer._id.slice(-6)
+                              : column.id === 'Date'
+                                ? new Date(customer.Date).toLocaleDateString('en-IN')
+                                : column.id === 'Name' ? (
+                                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                      {customer.Name}
+                                    </div>
+                                    <div
                                       style={{
-                                        color: calculateTenure(customer.Date).color,
-                                        fontWeight: '500',
-                                        fontSize: '0.85rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        backgroundColor: calculateTenure(customer.Date).backgroundColor,
+                                        borderRadius: '8px',
+                                        padding: '2px 4px',
+                                        marginTop: '4px',
                                       }}
                                     >
-                                      {getShortTenureText(calculateTenure(customer.Date).text)}
-                                    </span>
+                                      <AccessTimeIcon style={{ marginRight: '4px', color: '#757575', fontSize: '1rem' }} />
+                                      <span
+                                        style={{
+                                          color: calculateTenure(customer.Date).color,
+                                          fontWeight: '500',
+                                          fontSize: '0.75rem',
+                                        }}
+                                      >
+                                        {getShortTenureText(calculateTenure(customer.Date).text)}
+                                      </span>
+                                    </div>
                                   </div>
-                                </div>
-                              ) : column.id === 'Status' ? (
-                                <span
-                                  style={{
-                                    color: 'white',
-                                    backgroundColor:
-                                      customer.Status === 'Active'
-                                        ? '#4CAF50'
-                                        : customer.Status === 'Renew'
-                                          ? '#2196F3'
-                                          : customer.Status === 'Completed'
-                                            ? '#F44336'
-                                            : 'inherit',
-                                    padding: '2px 6px',
-                                    borderRadius: '12px',
-                                    fontSize: '0.85rem',
-                                    display: 'inline-block',
-                                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
-                                    transition: 'background-color 0.3s ease',
-                                  }}
-                                >
-                                  {customer.Status}
-                                </span>
-                              ) : column.id === 'Amount' ? (<span>₹{customer.Amount}</span>) : column.id === 'actions' ? (
-                                <div style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}>
-                                  <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
-                                    <EditIcon />
-                                  </IconButton>
-                                  <IconButton color="secondary" onClick={() => handleView(customer._id)}>
-                                    <VisibilityIcon />
-                                  </IconButton>
-                                  <IconButton color="error" onClick={() => handleDelete(customer._id)}>
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </div>
-                              ) : (
-                                customer[column.id]
-                              )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
+                                ) : column.id === 'Status' ? (
+                                  <span
+                                    style={{
+                                      color: 'white',
+                                      backgroundColor:
+                                        customer.Status === 'Active'
+                                          ? '#4CAF50'
+                                          : customer.Status === 'Renew'
+                                            ? '#2196F3'
+                                            : customer.Status === 'Completed'
+                                              ? '#F44336'
+                                              : 'inherit',
+                                      padding: '2px 6px',
+                                      borderRadius: '12px',
+                                      fontSize: '0.75rem',
+                                      display: 'inline-block',
+                                    }}
+                                  >
+                                    {customer.Status}
+                                  </span>
+                                ) : column.id === 'Amount' ? (<span>₹{customer.Amount}</span>) : column.id === 'actions' ? (
+                                  <div style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}>
+                                    <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
+                                      <EditIcon sx={{ fontSize: '1rem' }} />
+                                    </IconButton>
+                                    <IconButton color="secondary" onClick={() => handleView(customer._id)}>
+                                      <VisibilityIcon sx={{ fontSize: '1rem' }} />
+                                    </IconButton>
+                                    <IconButton color="error" onClick={() => handleDelete(customer._id)}>
+                                      <DeleteIcon sx={{ fontSize: '1rem' }} />
+                                    </IconButton>
+                                  </div>
+                                ) : (
+                                  customer[column.id]
+                                )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -348,9 +443,13 @@ export default function CustomerList() {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          sx={{ display: 'flex', justifyContent: 'flex-end' }}
+          sx={{ display: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem',padding:'0px' }}
         />
-        <TransitionsModal open={open} handleClose={() => setOpen(false)} handleConfirm={handleConfirm} />
+        <TransitionsModal
+          open={open}
+          handleClose={() => setOpen(false)}
+          handleConfirm={handleConfirm}
+        />
       </Paper>
     </>
   );
