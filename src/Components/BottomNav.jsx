@@ -1,14 +1,10 @@
 import { Box, Stack, Typography } from '@mui/material'
 import React from 'react'
 import HomeIcon from '@mui/icons-material/Home';
-import ListIcon from '@mui/icons-material/List';
-import AddIcon from '@mui/icons-material/Add';
 import BallotIcon from '@mui/icons-material/Ballot';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { color } from 'framer-motion';
 
 const menuItems = [
     { text: 'Home', icon: <HomeIcon />, path: '/' },

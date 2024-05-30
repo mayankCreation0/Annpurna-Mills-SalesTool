@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
@@ -29,7 +29,6 @@ function Copyright(props) {
 
 const Home = () => {
   const dispatch = useDispatch();
-  const loading = useSelector(state => state.loading);
   const storeData = useSelector(state => state.analytics);
   const navigate = useNavigate();
   
@@ -40,11 +39,11 @@ const Home = () => {
     if (Object.keys(storeData).length <= 0) {
       fetchData();
     }
-  }, [dispatch]);
+  }, [dispatch,navigate,storeData]);
 
   return (
     <div>
-      { Object.keys(storeData).length > 0 && (
+      { Object.keys(storeData).length > 0 ? (
         <Box sx={{ display: 'flex' ,bgcolor:"applicationTheme.primary"}}>
           <Box
             component="main"
@@ -132,19 +131,11 @@ const Home = () => {
             </Container>
           </Box>
         </Box>
-      )}
+      ):<Loading/>}
       
     </div>
   );
 };
 
-const styles = {
-  loaderContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
-  },
-};
 
 export default Home;
