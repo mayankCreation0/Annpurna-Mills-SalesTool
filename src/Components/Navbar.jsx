@@ -13,6 +13,7 @@ import ListIcon from '@mui/icons-material/List';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
 import logo from '../Assets/logo_transparent.png';
+import whiteLogo from '../Assets/ams-high-resolution-logo-white.png'
 import ThemeToggle from './ThemeToggle';
 import { motion } from 'framer-motion';
 

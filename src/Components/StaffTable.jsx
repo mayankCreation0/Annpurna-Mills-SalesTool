@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, IconButton, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Typography,
+  CircularProgress,
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
@@ -144,80 +145,116 @@ const StaffTable = () => {
   const dates = getPreviousDays(365);
 
   return (
-    <Box>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<AddIcon />}
-        onClick={() => setOpenAddStaff(true)}
-        style={{ marginBottom: '16px' }}
-      >
-        Add Staff
-      </Button>
+    <Box sx={{ padding: '16px' }}>
       <TableContainer component={Paper}>
-        <Table stickyHeader>
+        <Table>
           <TableHead>
             <TableRow>
-              <TableCell style={{ position: 'sticky', left: 0, backgroundColor: '#f5f5f5', zIndex: 10, fontWeight: 'bold', borderRight:'2px solid #ddd' ,borderBottom: '2px solid #ddd' }}>Name/Date</TableCell>
+              <TableCell
+                style={{
+                  left: 0,
+                  backgroundColor: 'background.default',
+                  fontWeight: 'bold',
+                  borderRight: '2px solid #ddd',
+                  borderBottom: '2px solid #ddd'
+                }}
+              >
+                Name/Date
+              </TableCell>
               {dates.map((date, idx) => (
-                <TableCell key={idx} style={{ backgroundColor: '#f5f5f5', fontWeight: 'bold', borderBottom: '2px solid #ddd' }}>{date.toDateString()}</TableCell>
+                <TableCell
+                  key={idx}
+                  style={{
+                    backgroundColor: 'background.default',
+                    fontWeight: 'bold',
+                    borderBottom: '2px solid #ddd'
+                  }}
+                >
+                  {date.toDateString()}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {staffList.map((staff) => (
-              <TableRow key={staff._id} style={{ borderBottom: '1px solid #ddd' }}>
-                <TableCell
-                  style={{
-                    position: 'sticky',
-                    left: 0,
-                    backgroundColor: '#f5f5f5',
-                    zIndex: 10,
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    height:'100px'
-                  }}
-                // onClick={() => handleOpenDetails(staff, null)}
-                >
-                  <span>{staff.name}</span>
-                  <IconButton
-                    size="small"
-                    onClick={(event) => handleMenuOpen(event, staff)}
-                    style={{ marginLeft: 'auto', marginRight: '0' }}
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                </TableCell>
-                {dates.map((date) => {
-                  const formattedDate = date.toISOString().split('T')[0];
-                  const attendance = attendanceDetails[staff._id]?.[formattedDate];
-                  return (
-                    <TableCell key={formattedDate} style={{ borderRight: '1px solid #ddd', height: '100px', backgroundColor: attendance ? (attendance.status === 'present' ? '#d9f2d9' : (attendance.status === 'half day' ? '#ffe0b3' : '#ffd9cc')) : '#fff' }}>
-                      {attendance ? (
-                        <Button
-                          onClick={() => handleOpenDetails(staff, formattedDate)}
-                          variant="text"
-                          style={{ fontWeight: 'bold', padding: '0px', color: attendance.status === 'present' ? 'green' : (attendance.status === 'half day' ? 'orange' : 'red') }}
-                        >
-                          {`${attendance.status} (₹${attendance.moneyTaken || '0'})`}
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => handleOpenEditAttendance(staff, formattedDate, true)}
-                            variant="contained" startIcon={<AddIcon />} color="primary"
-                          style={{ fontWeight: 'bold', padding: '10px 15px', backgroundColor: '#2196f3' }}
-                        >
-                          Add
-                        </Button>
-                      )}
-                    </TableCell>
-                  );
-                })}
+            {staffList.length === 0 ? (
+              <TableRow>
+                {dates.map((date, idx) => (
+                  <TableCell key={idx} style={{ height: '100px', borderRight: '1px solid #ddd' }}>
+                    <CircularProgress size={24} />
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
+            ) : (
+              staffList.map((staff) => (
+                <TableRow key={staff._id} style={{ borderBottom: '1px solid #ddd' }}>
+                  <TableCell
+                    style={{
+                      left: 0,
+                      backgroundColor: 'background.default',
+                      zIndex: 10,
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      height: '100px'
+                    }}
+                  >
+                    <span>{staff.name}</span>
+                    <IconButton
+                      size="small"
+                      onClick={(event) => handleMenuOpen(event, staff)}
+                      style={{ marginLeft: 'auto', marginRight: '0' }}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
+                  {dates.map((date) => {
+                    const formattedDate = date.toISOString().split('T')[0];
+                    const attendance = attendanceDetails[staff._id]?.[formattedDate];
+                    return (
+                      <TableCell
+                        key={formattedDate}
+                        style={{
+                          borderRight: '1px solid #ddd',
+                          height: '100px',
+                          backgroundColor: attendance ? (attendance.status === 'present' ? '#d9f2d9' : (attendance.status === 'half day' ? '#ffe0b3' : '#ffd9cc')) : '#fff'
+                        }}
+                      >
+                        {attendance ? (
+                          <Button
+                            onClick={() => handleOpenDetails(staff, formattedDate)}
+                            variant="text"
+                            style={{
+                              fontWeight: 'bold',
+                              padding: '0px',
+                              color: attendance.status === 'present' ? 'green' : (attendance.status === 'half day' ? 'orange' : 'red'),
+                              background: 'transparent'
+                            }}
+                          >
+                            {`${attendance.status} (₹${attendance.moneyTaken || '0'})`}
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => handleOpenEditAttendance(staff, formattedDate, true)}
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            color="primary"
+                            style={{
+                              fontWeight: 'bold',
+                              padding: '10px 15px',
+                              backgroundColor: '#2196f3'
+                            }}
+                          >
+                            Add
+                          </Button>
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
         {selectedStaff && (
