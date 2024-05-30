@@ -2,6 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { handleAnalytics, handleAuth, handleGetData, handleLoading, showToast } from '../Store/Reducers/Reducer';
 
+
 const API_BASE_URL = process.env.REACT_APP_AMS_PROD_URL;
 export const fetchRates = async() =>{
     try {
@@ -11,6 +12,7 @@ export const fetchRates = async() =>{
         console.log("Error while fetching rates" + error.message)
     }
 }
+
 export const refreshData = async (dispatch, navigate) => {
     try {
         const token = Cookies.get('token');

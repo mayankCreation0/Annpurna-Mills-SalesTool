@@ -15,6 +15,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import logo from '../Assets/logo_transparent.png';
 import whiteLogo from '../Assets/ams-high-resolution-logo-white.png'
 import ThemeToggle from './ThemeToggle';
+import { motion } from 'framer-motion';
 
 const logoStyle = {
     width: '100px',
@@ -33,11 +34,14 @@ function Navbar({sx}) {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
+
     const handleLogout = () => {
         Cookies.remove('token', { path: '/login' });
         dispatch(handleAuth(false));
         navigate('/login');
     };
+
+
 
     return (
         <>
@@ -51,12 +55,15 @@ function Navbar({sx}) {
                 /> 
                 {/* <Box component={'div'}></Box> */}
 
+
+
+
                 <Stack flexDirection={'row'} spacing={'20px'} justifyContent={'start'} alignItems={'center'} gap={"20px"}>
                     {menuItems.map((item, index) => (
                         <MenuItem
                             disableRipple="true"
                             key={index}
-                            onClick={() => navigate(item.path)}
+                            onClick={() => navigate(item.path) }
                             className='!m-0'
                             sx={{
                                 display: 'flex',
@@ -64,27 +71,35 @@ function Navbar({sx}) {
                                 gap:"1px",
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                backgroundColor: location.pathname === item.path ? "applicationTheme.primary" : 'transparent',
-                                borderRadius: "30px",
+                                backgroundColor:'transparent',
+                                borderRadius: "0",
                                 ":hover":{
-                                    backgroundColor: location.pathname === item.path ? "applicationTheme.primary" : 'transparent',
-                                }   ,
+                                    backgroundColor:'transparent',
+                                },
                                 ":focus":{
-                                    backgroundColor: location.pathname === item.path ? "applicationTheme.primary" : 'transparent',
-                                }   ,   
-                             
+                                    backgroundColor:'transparent',
+                                },   
                                 padding: '10px 15px',
-                                
                                 position: 'relative',
-                                
-                               
-                               
                             }}
                         >
                         {/*   {item.icon}   */}
-                            <Typography variant="p" component={"p"} sx={{color: location.pathname === item.path ? 'applicationTheme.secondaryColor_1' : "applicationTheme.primaryColor_1"}}   fontSize={"16px"}  >
-                                {item.text}
-                            </Typography>
+                         {   location.pathname === item.path &&
+                           <Box component={motion.span}
+                           initial={{  left: '-100px',  }}
+                           animate={{  left: '0px' }}
+                            
+                           transition={{ type: 'linear', duration: 0.5 }} 
+                            sx={{bgcolor:"applicationTheme.primary" , position: 'absolute', top:'0', width:"100%", height:"100%", zIndex:'0',  borderRadius: "30px",  }} >
+
+
+                            </Box> }
+                            
+                            <Box component={'div'} sx={{ position:'relative'}}>
+                                <Typography variant="p" component={"p"} sx={{color: location.pathname === item.path ? 'applicationTheme.secondaryColor_1' : "applicationTheme.primaryColor_1",}}   fontSize={"16px"}  >
+                                    {item.text}
+                                </Typography>
+                            </Box>
                         
                           
                             
@@ -105,6 +120,7 @@ function Navbar({sx}) {
         </Box> 
        
 
+                   
         <Box display={{xs:'flex', md: 'none'}} component="div" sx={{ justifyContent:'space-between', alignItems:'center', gap:"20px", width:"100%"}} >
                      
 

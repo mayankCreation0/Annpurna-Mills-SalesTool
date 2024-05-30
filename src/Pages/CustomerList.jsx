@@ -295,6 +295,9 @@ export default function CustomerList() {
             <MenuItem value="Cycle">Cycle</MenuItem>
             <MenuItem value="Others">Others</MenuItem>
           </Select>
+        </div>
+        
+          <TableContainer sx={{ height: '69.9vh', border: '1px solid black' }}>
         </Box>
         {loaderOpen ? (
           <Loading />
@@ -434,7 +437,7 @@ export default function CustomerList() {
               </TableBody>
             </Table>
           </TableContainer>
-        )}
+      
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"

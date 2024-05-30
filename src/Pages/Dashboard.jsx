@@ -44,7 +44,7 @@ const Home = () => {
 
   return (
     <div>
-      {!loading && Object.keys(storeData).length > 0 ? (
+      { Object.keys(storeData).length > 0 && (
         <Box sx={{ display: 'flex' ,bgcolor:"applicationTheme.primary"}}>
           <Box
             component="main"
@@ -132,11 +132,8 @@ const Home = () => {
             </Container>
           </Box>
         </Box>
-      ) : (
-        <div>
-          <Loading/>
-        </div>
       )}
+      
     </div>
   );
 };
