@@ -6,7 +6,7 @@ import { handleAnalytics, handleAuth, handleGetData, handleLoading, showToast } 
 const API_BASE_URL = process.env.REACT_APP_AMS_PROD_URL;
 export const fetchRates = async() =>{
     try {
-        const response = await axios.get(`${API_BASE_URL}api/metal-rates`);
+        const response = await axios.get(`http://localhost:8080/api/metal-rates`);
         return response
     } catch (error) {
         console.log("Error while fetching rates" + error.message)
