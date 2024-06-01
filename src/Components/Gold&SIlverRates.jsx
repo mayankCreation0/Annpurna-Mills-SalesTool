@@ -30,7 +30,7 @@ const GoldSilverRatesComponent = () => {
 
     const marquee = keyframes`
         0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
+        100% { transform: translateX(-80%); }
     `;
 
     const commonStyles = {
@@ -42,7 +42,7 @@ const GoldSilverRatesComponent = () => {
         overflow: 'hidden',
         whiteSpace: 'nowrap',
         backgroundColor: theme.palette.applicationTheme.primary,
-        animation: `${marquee} 15s linear infinite`
+        animation: `${marquee} 13s linear infinite`
     };
 
     const rateStyles = {
