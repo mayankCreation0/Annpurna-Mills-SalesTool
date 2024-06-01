@@ -20,7 +20,7 @@ export const MySlice = createSlice({
             state.auth = action.payload;
         },
         handleLoading: (state, action) => {
-            //state.loading = action.payload;
+            state.loading = action.payload;
         },
         handleAnalytics: (state, action) => {
             state.analytics = action.payload;
