@@ -34,8 +34,8 @@ const GoldSilverRatesComponent = () => {
     `;
 
     const commonStyles = {
-        padding: '5px',
-        height: '20px',
+        padding: '10px',
+        height: '50px',
         display: 'flex',    
         alignItems: 'center',
         justifyContent: 'center',

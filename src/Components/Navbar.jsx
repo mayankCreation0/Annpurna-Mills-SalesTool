@@ -100,7 +100,7 @@ function Navbar({ sx }) {
                             </MenuItem>
                         ))}
                     </Stack>
-                    <Button onClick={handleLogout} sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                    <Button onClick={handleLogout} sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" , backgroundColor:"transparent"}}>
                         Logout <LogoutIcon sx={{ fontSize: "14px" }} />
                     </Button>
                 </Box>
