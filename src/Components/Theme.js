@@ -16,53 +16,47 @@ export const lightTheme =  createTheme({
         },
         typography: {
             fontFamily: ['"Open Sans", "sans-serif"'].join(','),
-           
-            h1:  {
-              
-                fontSize: 60,
-                fontWeight: 600,
-                lineHeight: 78 / 70,
-                letterSpacing: -0.2,
+          
+            h1:{
+                '@media (max-width:585.98px)': {
+                    fontSize:"50px",
+                },
             },
-            h2: {
-                fontSize: 48,
-                fontWeight: 600,
-                lineHeight: 1.2,
+            h2:{
+                '@media (max-width:585.98px)': {
+                    fontSize:"30px",
+                },
             },
-            h3: {
-                fontSize: 42,
-                lineHeight: 1.2,
+            h3:{
+                '@media (max-width:585.98px)': {
+                    fontSize:"25px",
+                },
             },
-            h4: {
-                fontSize: 36,
-                fontWeight: 500,
-                lineHeight: 1.5,
+            h4:{
+                '@media (max-width:585.98px)': {
+                    fontSize:"24px",
+                },
             },
-            h5: {
-                fontSize: 20,
-                fontWeight: 600,
+            h5:{
+                '@media (max-width:585.98px)': {
+                    fontSize:"23px",
+                },
             },
-            h6: {
-                fontSize: 18,
+            h6:{
+                '@media (max-width:585.98px)': {
+                    fontSize:"20px",
+                },
             },
-            subtitle1: {
-                fontSize: 18,
+            p:{
+                '@media (max-width:585.98px)': {
+                    fontSize:"14px",
+                },
             },
-            subtitle2: {
-                fontSize: 16,
-            },
-            body1: {
-                fontWeight: 400,
-                fontSize: 15,
-            },
-            body2: {
-                fontWeight: 400,
-                fontSize: 14,
-            },
-            caption: {
-                fontWeight: 400,
-                fontSize: 12,
-            },
+            
+
+          
+          
+          
         },
         components: {
             MuiTextField: {
@@ -91,6 +85,9 @@ export const lightTheme =  createTheme({
                                     borderWidth: "1.5px",
                                 },
                             },
+                            '@media (max-width:585.98px)': {
+                                fontSize:"15px",
+                            },
                         },
                         "& .MuiInputLabel-outlined": {
                             color: theme.palette.applicationTheme.secondary,
@@ -100,6 +97,12 @@ export const lightTheme =  createTheme({
                             "&.Mui-focused": {
                                 color: theme.palette.applicationTheme.secondary,
                                 fontSize:"18px",
+                                '@media (max-width:585.98px)': {
+                                    fontSize:"15px",
+                                },
+                            },
+                            '@media (max-width:585.98px)': {
+                                fontSize:"15px",
                             },
                         },  
                     }),
@@ -112,7 +115,7 @@ export const lightTheme =  createTheme({
                     borderRadius: '1px',
                     backgroundColor: theme.palette.applicationTheme.secondary,
                     padding:"8px 10px",
-                    borderRadius:"0px",
+                    borderRadius:"30px",
                     fontSize:"15px",
                     color:theme.palette.applicationTheme.primary,
                     '&:hover': {
@@ -127,6 +130,44 @@ export const lightTheme =  createTheme({
                 }),
             },
         },
+        MuiToggleButtonGroup:{
+            styleOverrides:{
+                 root: ({theme}) => ({
+                        backgroundColor: theme.palette.applicationTheme.primaryColor_1,
+                        border:"none",
+                 })
+            }
+        },
+        MuiToggleButton:{
+            styleOverrides:{
+                root:({theme}) => ({
+                      border:"1px solid lightgrey",
+                    color: theme.palette.applicationTheme.primaryColor_2,
+                    fontSize:"14px",
+                    display:"flex",
+                    justifyContent:"space-between",
+                    alignItems:"center",
+                    gap:"2px",
+                    "&.Mui-selected":{
+                          border:"1px solid lightgrey",
+                        backgroundColor:theme.palette.applicationTheme.main,
+                        color:theme.palette.applicationTheme.primaryColor_1,
+                        opacity:0.7,
+                        "&:hover":{
+                            backgroundColor:theme.palette.applicationTheme.main,
+                            opacity:0.9,
+                        }
+                        
+                    },
+                    "&:hover":{
+                          border:"1px solid lightgrey",
+                        backgroundColor:theme.palette.applicationTheme.primaryColor_1,
+                    }
+                    
+                })
+            }
+        },
+      
         }
 })
 
@@ -146,53 +187,43 @@ export const darkTheme = createTheme({
     },
     typography: {
         fontFamily: ['"Open Sans", "sans-serif"'].join(','),
-       
-        h1:  {
-          
-            fontSize: 60,
-            fontWeight: 600,
-            lineHeight: 78 / 70,
-            letterSpacing: -0.2,
+        h1:{
+            '@media (max-width:585.98px)': {
+                fontSize:"50px",
+            },
         },
-        h2: {
-            fontSize: 48,
-            fontWeight: 600,
-            lineHeight: 1.2,
+        h2:{
+            '@media (max-width:585.98px)': {
+                fontSize:"30px",
+            },
         },
-        h3: {
-            fontSize: 42,
-            lineHeight: 1.2,
+        h3:{
+            '@media (max-width:585.98px)': {
+                fontSize:"25px",
+            },
         },
-        h4: {
-            fontSize: 36,
-            fontWeight: 500,
-            lineHeight: 1.5,
+        h4:{
+            '@media (max-width:585.98px)': {
+                fontSize:"24px",
+            },
         },
-        h5: {
-            fontSize: 20,
-            fontWeight: 600,
+        h5:{
+            '@media (max-width:585.98px)': {
+                fontSize:"23px",
+            },
         },
-        h6: {
-            fontSize: 18,
+        h6:{
+            '@media (max-width:585.98px)': {
+                fontSize:"20px",
+            },
         },
-        subtitle1: {
-            fontSize: 18,
+        p:{
+            '@media (max-width:585.98px)': {
+                fontSize:"14px",
+            },
         },
-        subtitle2: {
-            fontSize: 16,
-        },
-        body1: {
-            fontWeight: 400,
-            fontSize: 15,
-        },
-        body2: {
-            fontWeight: 400,
-            fontSize: 14,
-        },
-        caption: {
-            fontWeight: 400,
-            fontSize: 12,
-        },
+        
+        
     },
     components: {
         MuiTextField: {
@@ -221,6 +252,9 @@ export const darkTheme = createTheme({
                                 borderWidth: "1.5px",
                             },
                         },
+                        '@media (max-width:585.98px)': {
+                            fontSize:"15px",
+                        },
                     },
                     "& .MuiInputLabel-outlined": {
                         color: theme.palette.applicationTheme.secondary,
@@ -230,6 +264,12 @@ export const darkTheme = createTheme({
                         "&.Mui-focused": {
                             color: theme.palette.applicationTheme.secondary,
                             fontSize:"18px",
+                            '@media (max-width:585.98px)': {
+                                fontSize:"15px",
+                            },
+                        },
+                        '@media (max-width:585.98px)': {
+                            fontSize:"15px",
                         },
                     },  
                 }),
@@ -242,7 +282,7 @@ export const darkTheme = createTheme({
                 borderRadius: '1px',
                 backgroundColor: theme.palette.applicationTheme.secondary,
                 padding:"8px 10px",
-                borderRadius:"0px",
+                borderRadius:"30px",
                 fontSize:"15px",
                 color:theme.palette.applicationTheme.primary,
                 '&:hover': {
@@ -257,6 +297,46 @@ export const darkTheme = createTheme({
             }),
         },
     },
+    MuiToggleButtonGroup:{
+        styleOverrides:{
+             root: ({theme}) => ({
+                    backgroundColor: theme.palette.applicationTheme.primaryColor_1,
+                    border:"none",
+             })
+        }
+    },
+    MuiToggleButton:{
+        styleOverrides:{
+            root:({theme}) => ({
+                  border:"1px solid lightgrey",
+                color: theme.palette.applicationTheme.secondaryColor_1,
+                fontSize:"14px",
+                display:"flex",
+                justifyContent:"space-between",
+                alignItems:"center",
+                gap:"2px",
+                '@media (max-width:585.98px)': {
+                    fontSize:"12px",
+                },
+                "&.Mui-selected":{
+                      border:"1px solid lightgrey",
+                    backgroundColor:theme.palette.applicationTheme.main,
+                    color:theme.palette.applicationTheme.primaryColor_1,
+                    opacity:0.7,
+                    "&:hover":{
+                        backgroundColor:theme.palette.applicationTheme.main,
+                        opacity:0.9,
+                    }
+                    
+                },
+                "&:hover":{
+                      border:"1px solid lightgrey",
+                    backgroundColor:theme.palette.applicationTheme.primaryColor_1,
+                }
+                
+            })
+        }
+    }
     }
 })
 

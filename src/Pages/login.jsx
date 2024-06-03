@@ -12,7 +12,6 @@ import { loginApi } from '../Api/Apis';
 import { CircularProgress, IconButton, InputAdornment, Stack, SvgIcon } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
-import Bg_XsImg from '../Assets/Login_Xs_Bg.jpg';
 import Bg_LgImg from '../Assets/Login_Lg_Bg.jpg';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import ThemeToggle from '../Components/ThemeToggle';
@@ -59,9 +58,9 @@ export default function LoginPage() {
     return (
 
         <Grid container sx={{  height: '100vh', width: "100%", bgcolor: "applicationTheme.primary"}} spacing={0} >
-            <Grid item display="block" xs={12} md={6} lg={6} xl={7} className='h-52 min-[900px]:h-auto  relative'>
+            <Grid item display="block" xs={12} md={6} lg={6} xl={7} className={`h-52 min-[900px]:h-auto relative XsloginBg`}>
                 <img src={Bg_LgImg} alt=""  className='h-full w-full object-fill hidden min-[900px]:block'/>
-                <img src={Bg_XsImg} alt="" className='h-52 object-cover w-full block min-[900px]:hidden '/>
+            
               {/*  <svg width="100%" height="100%" fill='none' id="svg" viewBox="0 0 1440 390" xmlns="http://www.w3.org/2000/svg" style={{fill:`${ mode === 'light' ? '#FFFFFF' : '#191919'}`}} class="transition duration-300 svgWave ease-in-out delay-150 block min-[900px]:hidden ">
                           <path d="M 0,400 L 0,150 C 101.28571428571428,173.67857142857144 202.57142857142856,197.35714285714286 324,184 C 445.42857142857144,170.64285714285714 587,120.25 711,119 C 835,117.75 941.4285714285716,165.64285714285714 1060,179 C 1178.5714285714284,192.35714285714286 1309.2857142857142,171.17857142857144 1440,150 L 1440,400 L 0,400 Z"  fill-opacity="1" class="transition-all duration-300 ease-in-out delay-150 path-0"></path>
                 </svg> */}
@@ -166,7 +165,7 @@ export default function LoginPage() {
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-                                    sx={{mb:3, padding:"12px 0px", fontSize:"19px"}}
+                                    sx={{mb:3, padding:"12px 0px", fontSize:"19px",}}
                                     disabled={isLoading}
                                 >
                                     {isLoading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Sign In'}
@@ -184,6 +183,7 @@ export default function LoginPage() {
                     </Container>
 
                     <Copyright display="block"/>
+                    <Box component={'div'} sx={{display:{xs:'block', sm:'none'},height:"10px", width:"100%",}}> </Box>
                 </Stack>
             </Grid>
         </Grid>
