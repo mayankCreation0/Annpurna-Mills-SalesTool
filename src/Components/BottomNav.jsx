@@ -19,7 +19,7 @@ function BottomNav({sx}) {
     const location = useLocation();
 
   return (
-     <Stack display={{xs:'flex', md:'none'}} direction={'row'} justifyContent={'space-around'} alignItems={'center'} sx={{ width:"100%", backgroundColor:"applicationTheme.primary", borderTopWidth: '0.5px', borderTopStyle:'solid', borderTopColor:"#4d4d4d",padding:"10px 0px" ,...sx}}>
+     <Stack display={{xs:'flex', md:'none'}} direction={'row'} justifyContent={'space-around'} alignItems={'center'} sx={{ width:"100%", backgroundColor:"applicationTheme.primary", borderTopWidth: '0.5px', borderTopStyle:'solid', borderTopColor:"#4d4d4d", height:"80px",padding:"0px 0px" ,...sx}}>
                     {menuItems.map((item, index) => ( 
                         <Box component={'div'}   key={index}   onClick={() => navigate(item.path)} sx={{  display:'flex', justifyContent:'center', alignItems:'center', flexDirection:'column' , gap:"5px", cursor:'pointer' , padding:"5px 10px" , ['svg']:{ color:  location.pathname === item.path ? 'applicationTheme.secondary' : 'applicationTheme.secondaryColor_2'} , opacity: location.pathname === item.path ? '0.9' : '0.7'}}>
                                      {item.icon}
