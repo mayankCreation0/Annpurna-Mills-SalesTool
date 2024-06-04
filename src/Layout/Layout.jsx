@@ -24,7 +24,7 @@ const Layout = () => {
                        {/* sx={{bgcolor: {xs:'applicationTheme.primaryColor_1', md:"applicationTheme.primary"}}} */}
                        <Paper component={'div'} className="w-full flex-grow overflow-y-auto !shadow-none p-2"  sx={{bgcolor:'applicationTheme.primary', backgroundImage:"none"}}>
                           <Outlet/>  
-                          <Box component={'div'} sx={{display:{xs:'block', sm:'none'},height:"80px", width:"100%"}}> </Box>
+                          <Box component={'div'} sx={{display:{xs:'block', md:'none'},height:"80px", width:"100%"}}> </Box>
                        </Paper>
 
                        <BottomNav sx={{position:'fixed', bottom:'0', zIndex:100}} />

@@ -354,9 +354,9 @@ setMonth(fullMonths);
                                                             <Typography component={'h4'} variant='h4' sx={{ color: 'applicationTheme.secondaryColor_1', }} className=' capitalize'>
                                                               {customer.Name}
                                                           </Typography>
-                                                          <Typography component={'p'} variant='p' sx={{ color: mode !== 'light'? 'applicationTheme.secondaryColor_1' : 'applicationTheme.primaryColor_1' , backgroundColor:"applicationTheme.main", borderRadius:"30px", width:"fit-content", padding:"5px 20px"}} className=' capitalize'>
+                                                        {  customer.Gender && <Typography component={'p'} variant='p' sx={{ color: mode !== 'light'? 'applicationTheme.secondaryColor_1' : 'applicationTheme.primaryColor_1' , backgroundColor:"applicationTheme.main", borderRadius:"30px", width:"fit-content", padding:"5px 20px"}} className=' capitalize'>
                                                             {customer.Gender}
-                                                          </Typography>      
+                                                          </Typography> }     
                                                     </Box>
                                                </Box>
 
