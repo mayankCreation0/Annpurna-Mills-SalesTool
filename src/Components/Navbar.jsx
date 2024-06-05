@@ -12,8 +12,10 @@ import HomeIcon from '@mui/icons-material/Home';
 import ListIcon from '@mui/icons-material/List';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
-import logo from '../Assets/blackLogo.png';
-import whiteLogo from '../Assets/lightLogo.png';
+import blackLogo_xs from '../Assets/logo/blackLogo_xs.png';
+import whiteLogo_xs from '../Assets/logo/lightLogo_xs.png';
+import blackLogo_lg from '../Assets/logo/blackLogo_lg.png';
+import whiteLogo_lg from '../Assets/logo/lightLogo_lg.png'; 
 import ThemeToggle from './ThemeToggle';
 import { motion } from 'framer-motion';
 import { useTheme, useMediaQuery } from '@mui/material';
@@ -45,7 +47,7 @@ function Navbar({ sx }) {
         navigate('/login');
     };
 
-    const logoSrc = mode === 'dark' ? whiteLogo : logo;
+    let logoSrc = window.innerWidth < 900 ? (mode === 'dark' ? whiteLogo_xs : blackLogo_xs ) : (mode === 'dark' ? blackLogo_lg : whiteLogo_lg) ;
 
     React.useEffect(() => { }, [mode, isMobile]);
 
@@ -57,6 +59,7 @@ function Navbar({ sx }) {
                         src={logoSrc}
                         style={logoStyle}
                         alt="logo of sitemark"
+                        className='!w-[100px] !h-12 ml-4'
                         onClick={() => navigate('/')}
                     />
                     <Stack flexDirection={'row'} spacing={'20px'} justifyContent={'start'} alignItems={'center'} gap={"20px"}>

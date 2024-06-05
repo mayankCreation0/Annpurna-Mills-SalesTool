@@ -145,7 +145,7 @@ const StaffTable = () => {
   const dates = getPreviousDays(365);
 
   return (
-    <Box sx={{ padding: '16px' }}>
+    <Box >
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
