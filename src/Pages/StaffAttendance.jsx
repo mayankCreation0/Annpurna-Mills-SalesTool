@@ -28,9 +28,9 @@ function StaffAttendance() {
 
 
   return (
-    <Container>
-      <Box sx={{display:'flex',justifyContent:'space-between'}}>
-        <Typography variant="h4" gutterBottom>
+    <>
+      <Box sx={{display:'flex',justifyContent:'space-around',padding:'10px'}}>
+        <Typography variant="h5" gutterBottom>
           Staff Attendance Management
         </Typography>
         <Button
@@ -53,7 +53,7 @@ function StaffAttendance() {
         // isEdit={!!selectedStaff}
         />
       )}
-    </Container>
+    </>
   );
 }
 

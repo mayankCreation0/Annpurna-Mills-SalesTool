@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Paper, Typography, Grid, Card, CardContent, CardMedia, Avatar, Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Table, TableBody, TableRow, TableCell, Autocomplete } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDetailsById } from '../Api/Apis';
+import { getDetailsById, updateData } from '../Api/Apis';
 import MaleImg from '../Assets/Profile/Ava_Male.jpg';
 import FemaleImg from '../Assets/Profile/Ava_Female.jpg';
 import CreateIcon from '@mui/icons-material/Create';
@@ -94,7 +94,9 @@ const ViewPage = () => {
     if (!customer) {
         return <div className='flex justify-center items-center h-full w-full text-xl'>Loading...</div>;
     }
-
+    const handleUpdate = async(data) => {
+        await updateData(data,dispatch,navigate,id)
+    }
 
 
     return (
@@ -132,7 +134,7 @@ const ViewPage = () => {
 
                             </Stack>
                         </Stack>
-                        <Box component="form" onSubmit={() => console.log("Submit")} noValidate>
+                        <Box component="form" onSubmit={() => handleUpdate()} noValidate>
                             <Grid container rowSpacing={{ xs: !isEdit ? '30px' : '10px', sm: !isEdit ? '30px' : '10px', md: '20px' }} columnSpacing={'20px'}>
                                 <Grid item xs={11} sm={6} md={5} lg={6} xl={!isEdit ? 6 : 8} >
                                     {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
@@ -371,12 +373,12 @@ const ViewPage = () => {
                     </Box>
                 </Grid>
                 <Grid item xs={'12'} sm='12' md={5} lg={4} xl={5}>
-                    <Stack flexDirection={{ xs: 'column', sm: 'row', md: 'column' }} justifyContent={{ xs: 'space-between', md: 'start' }} gap={{ sm: '40px', md: '10px' }} alignItems={{ xs: 'start', sm: 'center', md: "start" }} component={'div'} sx={{ borderLeftWidth: { xs: 'none', sm: "none", md: "1px" }, borderLeftStyle: "solid", borderLeftColor: "applicationTheme.primaryColor_2", padding: "10px 20px", backgroundColor: "applicationTheme.primaryBackground", borderRadius: "10px" }}>
+                    <Stack flexDirection={{ xs: 'column', sm: 'row', md: 'column' }} justifyContent={{ xs: 'space-between', md: 'start' }} gap={{ sm: '40px', md: '10px' }} alignItems={{ xs: 'start', sm: 'center', md: "start" }} component={'div'} sx={{ borderLeftWidth: { xs: 'none', sm: "none", md: "1px" }, borderLeftStyle: "solid", borderLeftColor: "applicationTheme.primaryColor_2", padding: "10px 20px" }}>
 
                         <Box component={'div'} sx={{ display: 'flex', justifyContent: "start", alignItems: "center", gap: "15px" }} className='mb-5'>
-                            <img src={customer.Gender !== 'male' ? FemaleImg : MaleImg} alt='Male' className='h-40 w-40 rounded-[50%]' />
+                            <img src={customer.Gender !== 'male' ? FemaleImg : MaleImg} alt='Male' className='h-40 w-40 rounded-[50%] ' />
                             <Box component={'div'}>
-                                <Typography component={'h4'} variant='h4' sx={{ color: 'applicationTheme.secondaryColor_1', fontWeight: 'bold' }} className=' capitalize'>
+                                <Typography component={'h4'} variant='h4' sx={{ color: 'applicationTheme.secondaryColor_1', }} className=' capitalize'>
                                     {customer.Name}
                                 </Typography>
                                 <Typography component={'p'} variant='p' sx={{ color: mode !== 'light' ? 'applicationTheme.secondaryColor_1' : 'applicationTheme.primaryColor_1', backgroundColor: "applicationTheme.main", borderRadius: "30px", width: "fit-content", padding: "5px 20px" }} className=' capitalize'>
@@ -407,9 +409,9 @@ const ViewPage = () => {
                                                 Month
                                             </Typography>
                                         </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottom: "none" }}>
+                                        <TableCell width={'120px'} sx={{ borderBottom: "none" }}>
                                             <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {Math.sign(month) !== -1 ? <MovingIcon /> : <TrendingDownIcon sx={{ fontSize: "25px", color: "#ff4d4d" }} />}  {month}
+                                                {month}
                                             </Typography>
                                         </TableCell>
                                     </TableRow>
@@ -425,7 +427,7 @@ const ViewPage = () => {
                                             </Typography>
                                         </TableCell>
                                     </TableRow>
-                                    {/* <TableRow>
+                                    <TableRow>
                                         <TableCell width={'120px'} sx={{ borderBottom: "none", borderRightWidth: "1px", borderRightStyle: "solid", borderRightColor: "applicationTheme.primaryColor_2" }}>
                                             <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
                                                 Exact Time Period
@@ -436,7 +438,7 @@ const ViewPage = () => {
                                                 {calculateExactTimePeriod}
                                             </Typography>
                                         </TableCell>
-                                    </TableRow> */}
+                                    </TableRow>
                                 </TableBody>
                             </Table>
                         </Stack>
@@ -465,7 +467,7 @@ const ViewPage = () => {
                                         </TableCell>
                                         <TableCell width={'150px'} sx={{ borderBottom: "none" }}>
                                             <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {Math.sign(month) !== -1 ? <MovingIcon /> : <TrendingDownIcon sx={{ fontSize: "25px", color: "#ff4d4d" }} />}  {month} months ~ exact duration({calculateExactTimePeriod(customer.Date)})
+                                                {month} months ~ exact duration({calculateExactTimePeriod(customer.Date)})
                                             </Typography>
                                         </TableCell>
                                     </TableRow>

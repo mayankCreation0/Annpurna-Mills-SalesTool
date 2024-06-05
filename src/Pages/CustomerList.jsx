@@ -15,6 +15,7 @@ import {
   TextField,
   InputAdornment,
   Box,
+  useTheme,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -58,6 +59,9 @@ export default function CustomerList() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const listData = useSelector((state) => state.getData);
+  const theme = useTheme();
+
+  const height = theme.breakpoints.down('sm') ? '62vh' : '75vh';
 
   useEffect(() => {
     async function fetchData() {
@@ -223,12 +227,12 @@ export default function CustomerList() {
 
   return (
     <>
-      <Paper>
+      <Paper sx={{padding:'0px',overflowY: 'hidden',   }}>
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            padding: '0.5rem 1rem',
+            padding: '0.1rem   1rem',
             backgroundColor: 'background.default',
           }}
         >
@@ -300,8 +304,8 @@ export default function CustomerList() {
         ) : (
           <>
             <TableContainer
+            component={'div'} className='max-sm:h-[62vh] h-[77vh]'
               sx={{
-                height: '65vh',
                 border: '1px solid black',
                 overflowX: 'scroll',
                 scrollBehavior: 'smooth'
@@ -440,7 +444,7 @@ export default function CustomerList() {
                 </TableBody>
               </Table>
             </TableContainer>
-
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}> 
             <TablePagination
               rowsPerPageOptions={[10, 25, 100]}
               component="div"
@@ -449,13 +453,14 @@ export default function CustomerList() {
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-              sx={{ display: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', padding: '0px' }}
+              sx={{  xs: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', padding: '0px',overflow: 'hidden',paddingX:'0px' }}
             />
             <TransitionsModal
               open={open}
               handleClose={() => setOpen(false)}
               handleConfirm={handleConfirm}
             />
+            </Box>
           </>)}
       </Paper>
     </>

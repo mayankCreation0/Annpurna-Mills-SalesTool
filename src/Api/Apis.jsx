@@ -162,3 +162,29 @@ export const deleteData = async (id, dispatch, navigate) => {
         dispatch(handleLoading(false));
     }
 }
+
+export const updateData = async (formData, dispatch, navigate,id) => {
+    try {
+        dispatch(handleLoading(true));
+        const token = Cookies.get('token');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+        await axios.post(`${API_BASE_URL}/update/${id}`, formData, { headers });
+        dispatch(handleLoading(false));
+        dispatch(showToast({ message: 'Form data updated successfully', type: 'success' }));
+        // navigate('/customerLists');
+
+        // Refresh data
+        await refreshData(dispatch, navigate);
+    } catch (error) {
+        if (error.response && error.response.status === 400) {
+            dispatch(showToast({ message: 'Token expired, Login again', type: 'error' }));
+            dispatch(handleAuth(false));
+            navigate('/login');
+        } else {
+            dispatch(showToast({ message: 'Failed to submit form data', type: 'error' }));
+        }
+        dispatch(handleLoading(false));
+    }
+}
