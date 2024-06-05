@@ -14,9 +14,7 @@ import {
   Select,
   TextField,
   InputAdornment,
-  Box,
-  useTheme,
-} from '@mui/material';
+  Box} from '@mui/material';
 import {
   Edit as EditIcon,
   Visibility as VisibilityIcon,
@@ -59,9 +57,6 @@ export default function CustomerList() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const listData = useSelector((state) => state.getData);
-  const theme = useTheme();
-
-  const height = theme.breakpoints.down('sm') ? '62vh' : '75vh';
 
   useEffect(() => {
     async function fetchData() {
@@ -304,7 +299,7 @@ export default function CustomerList() {
         ) : (
           <>
             <TableContainer
-            component={'div'} className='max-sm:h-[62vh] h-[77vh]'
+            component={'div'} className='max-sm:h-[72vh] h-[77vh]'
               sx={{
                 border: '1px solid black',
                 overflowX: 'scroll',
