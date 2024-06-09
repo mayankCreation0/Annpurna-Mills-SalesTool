@@ -78,7 +78,7 @@ const FormPage = () => {
                             onChange={handleChange}
                             fullWidth
                             required
-                            placeholder='Your name'
+                            placeholder='Customer name'
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -106,10 +106,11 @@ const FormPage = () => {
                                 value={formData.Category}
                                 onChange={handleChange}
                                 label="Category"
+                                required
                             >
                                 <MenuItem value="Gold">Gold</MenuItem>
                                 <MenuItem value="Silver">Silver</MenuItem>
-                                <MenuItem value="Bronze">Bronze</MenuItem>
+                                <MenuItem value="Bronze">Kansa</MenuItem>
                                 <MenuItem value="Bike">Bike</MenuItem>
                                 <MenuItem value="Cycle">Cycle</MenuItem>
                                 <MenuItem value="Others">Others</MenuItem>
@@ -125,6 +126,7 @@ const FormPage = () => {
                                 value={formData.Status}
                                 onChange={handleChange}
                                 label="Status"
+                                required
                             >
                                 <MenuItem value="Active">Active</MenuItem>
                                 <MenuItem value="Completed">Completed</MenuItem>
@@ -150,6 +152,7 @@ const FormPage = () => {
                             value={formData.Amount}
                             onChange={handleChange}
                             fullWidth
+                            required
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -161,6 +164,7 @@ const FormPage = () => {
                             value={formData.Rate}
                             onChange={handleChange}
                             fullWidth
+                            required
                         />
                     </Grid>
                     
@@ -172,6 +176,7 @@ const FormPage = () => {
                             value={formData.Weight}
                             onChange={handleChange}
                             fullWidth
+                            required
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>

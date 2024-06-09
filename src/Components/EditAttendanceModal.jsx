@@ -1,7 +1,5 @@
-// src/EditAttendanceModal.js
-
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, TextField, Button, CircularProgress } from '@mui/material';
 import { patchAttendance, postAttendance } from '../Api/AttendanceApis';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -12,6 +10,7 @@ const EditAttendanceModal = ({ open, handleClose, staff, date, isAdding }) => {
   const [status, setStatus] = useState(attendance.status || '');
   const [moneyTaken, setMoneyTaken] = useState(attendance.moneyTaken || '');
   const [remark, setRemark] = useState(attendance.remark || '');
+  const [loading, setLoading] = useState(false); // New state for loading
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -24,6 +23,7 @@ const EditAttendanceModal = ({ open, handleClose, staff, date, isAdding }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     const attendanceData = {
       staffId: staff._id,
       date: formattedDate,
@@ -42,6 +42,8 @@ const EditAttendanceModal = ({ open, handleClose, staff, date, isAdding }) => {
       handleClose();
     } catch (error) {
       console.error('Error saving attendance data', error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -75,8 +77,10 @@ const EditAttendanceModal = ({ open, handleClose, staff, date, isAdding }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">Close</Button>
-        <Button onClick={handleSubmit} color="secondary">{isAdding ? 'Add' : 'Update'}</Button>
+        <Button onClick={handleClose} color="primary" disabled={loading}>Close</Button>
+        <Button onClick={handleSubmit} color="secondary" disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : (isAdding ? 'Add' : 'Update')}
+        </Button>
       </DialogActions>
     </Dialog>
   );

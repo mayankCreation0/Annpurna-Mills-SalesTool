@@ -31,6 +31,7 @@ const StaffTable = () => {
   const [aggregatedData, setAggregatedData] = useState({});
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
+  const [loading, setLoading] = useState(false); // New state for loading
   const dispatch = useDispatch();
 
   const staffList = useSelector(state => state.staff);
@@ -246,7 +247,7 @@ const StaffTable = () => {
                               backgroundColor: '#2196f3'
                             }}
                           >
-                            Add
+                             {loading ? <CircularProgress size={24} color="inherit" /> : 'Add'}
                           </Button>
                         )}
                       </TableCell>

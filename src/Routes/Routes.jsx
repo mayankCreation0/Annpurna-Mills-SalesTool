@@ -9,6 +9,7 @@ import CustomerList from '../Pages/CustomerList';
 import FormPage from '../Pages/FormPage';
 import ViewPage from '../Pages/ViewPage';
 import EditPage from '../Pages/EditPage';
+import TransactionHistory from '../Pages/TransactionHistory';
 
 // Lazy load the components
 /* const LoginPage = lazy(() => import('../Pages/login'));
@@ -30,6 +31,7 @@ const AllRoutes = ({ mode, toggleColorMode }) => {
                     <Route path='/' element={<PrivateRoutes><Home mode={mode} toggleColorMode={toggleColorMode} /></PrivateRoutes>} />
                     <Route path='/customerLists' element={<PrivateRoutes><CustomerList mode={mode} toggleColorMode={toggleColorMode} /></PrivateRoutes>} />
                     <Route path='/form' element={<PrivateRoutes><FormPage mode={mode} toggleColorMode={toggleColorMode} /></PrivateRoutes>} />
+                    <Route path='/history' element={<PrivateRoutes><TransactionHistory mode={mode} toggleColorMode={toggleColorMode} /></PrivateRoutes>} />
                     <Route path='/view/:id' element={<PrivateRoutes><ViewPage mode={mode} toggleColorMode={toggleColorMode} /></PrivateRoutes>} />
                     <Route path='/edit/:id' element={<PrivateRoutes><EditPage mode={mode} toggleColorMode={toggleColorMode} /></PrivateRoutes>} />
                 </Route>
