@@ -42,7 +42,7 @@ function Navbar({ sx }) {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleLogout = () => {
-        Cookies.remove('token', { path: '/login' });
+        Cookies.remove('token', { path: '/' });
         dispatch(handleAuth(false));
         navigate('/login');
     };
