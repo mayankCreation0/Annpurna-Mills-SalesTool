@@ -42,20 +42,36 @@ export const refreshData = async (dispatch, navigate) => {
 
 export const loginApi = async ({ username, password }, dispatch, navigate) => {
     try {
-        dispatch(handleLoading(true))
+        dispatch(handleLoading(true));
+        
         const response = await axios.post(`${API_BASE_URL}login`, { username, password });
+        
         if (response.status === 200) {
             const { token } = response.data;
-            Cookies.set('token', token, { expires: 1 });
+            
+            // Set the token cookie with an expiration of 1 day
+            Cookies.set('token', token, { expires: 1, path: '/' });
+            
+            // Dispatch actions for successful login
             dispatch(handleAuth(true));
-            dispatch(showToast({ message: 'hi Mayank Raj welcome back', type: 'success' }));
-            dispatch(handleLoading(false))
-            navigate('/');
+            dispatch(showToast({ message: 'Hi Mayank Raj, welcome back!', type: 'success' }));
+        } else {
+            // Handle unexpected response status
+            throw new Error('Unexpected response status');
         }
     } catch (error) {
-        dispatch(handleLoading(false))
+        // If login fails, remove any existing token cookie
+        Cookies.remove('token', { path: '/' });
+        
+        // Dispatch actions for login failure
         dispatch(showToast({ message: 'Login failed', type: 'error' }));
+    } finally {
+        // Ensure loading state is reset in both success and error cases
+        dispatch(handleLoading(false));
     }
+    
+    // Navigate to home page on successful login
+    navigate('/');
 };
 
 export const postFormData = async (formData, dispatch, navigate) => {
