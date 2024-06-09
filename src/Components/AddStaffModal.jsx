@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, CircularProgress } from '@mui/material';
 import { addStaff, updateStaff } from '../Api/AttendanceApis';
 import { useDispatch } from 'react-redux';
 
 const AddStaffModal = ({ open, handleClose, staff, isEdit }) => {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const AddStaffModal = ({ open, handleClose, staff, isEdit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (isEdit) {
         await updateStaff({ ...staff, name, role }, dispatch);
@@ -29,6 +31,8 @@ const AddStaffModal = ({ open, handleClose, staff, isEdit }) => {
       handleClose();
     } catch (error) {
       console.error('Error adding/updating staff', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,6 +46,7 @@ const AddStaffModal = ({ open, handleClose, staff, isEdit }) => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           style={{ marginBottom: '16px' }}
+          disabled={loading}
         />
         <TextField
           fullWidth
@@ -49,11 +54,14 @@ const AddStaffModal = ({ open, handleClose, staff, isEdit }) => {
           value={role}
           onChange={(e) => setRole(e.target.value)}
           style={{ marginBottom: '16px' }}
+          disabled={loading}
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">Close</Button>
-        <Button onClick={handleSubmit} color="secondary">{isEdit ? 'Update' : 'Add'}</Button>
+        <Button onClick={handleClose} color="primary" disabled={loading}>Close</Button>
+        <Button onClick={handleSubmit} color="secondary" disabled={loading}>
+          {loading ? <CircularProgress size={24} color="inherit" /> : (isEdit ? 'Update' : 'Add')}
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -288,7 +288,7 @@ export default function CustomerList() {
             <MenuItem value="">All</MenuItem>
             <MenuItem value="Gold">Gold</MenuItem>
             <MenuItem value="Silver">Silver</MenuItem>
-            <MenuItem value="Bronze">Bronze</MenuItem>
+            <MenuItem value="Bronze">Kansa</MenuItem>
             <MenuItem value="Bike">Bike</MenuItem>
             <MenuItem value="Cycle">Cycle</MenuItem>
             <MenuItem value="Others">Others</MenuItem>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  TextField, Select, MenuItem, FormControl, InputLabel, Button, Grid, Typography, Paper, useTheme
+  TextField, Select, MenuItem, FormControl, InputLabel, Button, Grid, Typography, Paper, useTheme, CircularProgress
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { postAttendance } from '../Api/AttendanceApis';
@@ -11,12 +11,14 @@ const AttendanceForm = () => {
   const [status, setStatus] = useState('');
   const [moneyTaken, setMoneyTaken] = useState('');
   const [remark, setRemark] = useState('');
+  const [loading, setLoading] = useState(false);
   const staffList = useSelector(state => state.staff);
   const dispatch = useDispatch();
   const theme = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const attendanceData = {
       staffId: selectedStaff,
       date,
@@ -25,8 +27,9 @@ const AttendanceForm = () => {
       remark,
     };
     await postAttendance(attendanceData, dispatch);
+    setLoading(false);
     setSelectedStaff('');
-    setDate('');
+    setDate('');  
     setStatus('');
     setMoneyTaken('');
     setRemark('');
@@ -122,8 +125,9 @@ const AttendanceForm = () => {
                   backgroundColor: theme.palette.applicationTheme.secondaryColor_1,
                 },
               }}
+              disabled={loading}
             >
-              Submit
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
             </Button>
           </Grid>
         </Grid>
