@@ -1,7 +1,7 @@
-// Toast.js
 import React, { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../Styles/toast.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { hideToast } from '../Store/Reducers/Reducer';
 
