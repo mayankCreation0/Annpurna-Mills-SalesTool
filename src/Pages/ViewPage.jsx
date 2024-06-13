@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Paper, Typography, Grid, Card, CardContent, CardMedia, Avatar, Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Table, TableBody, TableRow, TableCell, Autocomplete } from '@mui/material';
+import { Typography, Grid,Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Table, TableBody, TableRow, TableCell, Autocomplete } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDetailsById, updateData } from '../Api/Apis';
 import MaleImg from '../Assets/Profile/Ava_Male.jpg';
@@ -43,48 +43,36 @@ const ViewPage = () => {
         return `${years} years, ${months} months, ${days} days`;
     }
 
-
     function calculateMonthlySimpleInterest(principal, monthlyRate, startDate) {
         const start = new Date(startDate);
         const end = new Date();
-
-        // Determine exclusion rules based on principal amount
-        const startExclusionDay = principal <= 3500 ? 6 : 10;
-        const endExclusionDay = principal <= 3500 ? 10 : 13;
-
-        // Exclude start month if the start date is within the last `startExclusionDay` days of the month
-        const daysInStartMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
-        if (start.getDate() > daysInStartMonth - startExclusionDay) {
-            start.setMonth(start.getMonth() + 1);
-            start.setDate(1);
+    
+        const years = end.getFullYear() - start.getFullYear();
+        const months = end.getMonth() - start.getMonth();
+        const days = end.getDate() - start.getDate();
+    
+        let totalMonths = years * 12 + months;
+    
+        // Adjust the days to the total months
+        if (days > 10) {
+            totalMonths += 1;
         }
-
-        // Exclude end month if the end date is within the first `endExclusionDay` days of the month
-        if (end.getDate() <= endExclusionDay) {
-            end.setMonth(end.getMonth() - 1);
-            end.setDate(new Date(end.getFullYear(), end.getMonth() + 1, 0).getDate());
-        }
-
-        // Calculate the number of full months between the adjusted start and end dates
-        let fullMonths = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
-
+    
         // Ensure the minimum time period is 1 month
-        if (fullMonths < 1) {
-            fullMonths = 1;
+        if (totalMonths < 1) {
+            totalMonths = 1;
         }
-
-        // Calculate the simple interest for the full months
-        const simpleInterest = (principal * monthlyRate * fullMonths) / 100;
-
+    
+        // Calculate the simple interest for the total months
+        const simpleInterest = (principal * monthlyRate * totalMonths) / 100;
+    
         // Assuming setMonth and setInterest are defined elsewhere
-        setMonth(fullMonths);
+        setMonth(totalMonths);
         setInterest(simpleInterest);
-
+    
         // Return the simple interest if needed
         return simpleInterest;
     }
-
-
 
 
     useEffect(() => {
