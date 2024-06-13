@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, axisClasses } from '@mui/x-charts';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import { Button, ToggleButton, ToggleButtonGroup, Typography, Box, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
-import { Box, Typography, useTheme } from '@mui/material';
+import { motion } from 'framer-motion';
 
 export default function LoanAmountBarChart() {
     const [data, setData] = useState({ yearly: [], monthly: [] });
@@ -15,10 +14,8 @@ export default function LoanAmountBarChart() {
     const dispatch = useDispatch();
     const theme = useTheme();
 
-
     const fetchData = async () => {
         const response = await getAnalytics(dispatch);
-        console.log("Analytics", response.data);
         const { yearlyLoanRepaidData, monthlyLoanRepaidData } = response.data;
         setData({ yearly: yearlyLoanRepaidData, monthly: monthlyLoanRepaidData });
     };
@@ -38,7 +35,18 @@ export default function LoanAmountBarChart() {
 
     const createChartData = (data, type) => {
         if (type === 'yearly') {
-            return data.map(item => ({ time: item._id.year, amount: item.totalLoanRepaidAmount }));
+            const currentYear = new Date().getFullYear();
+            const last7Years = Array.from({ length: 7 }, (_, i) => currentYear - i).reverse();
+
+            const yearlyDataMap = data.reduce((acc, item) => {
+                acc[item._id.year] = item.totalLoanRepaidAmount;
+                return acc;
+            }, {});
+
+            return last7Years.map(year => ({
+                time: year,
+                amount: yearlyDataMap[year] || 0
+            }));
         }
         return data.map(item => ({
             time: `${item.year}-${item.month}`,
@@ -49,68 +57,69 @@ export default function LoanAmountBarChart() {
     const chartData = createChartData(data[chartType], chartType);
 
     return (
-        <>
-            <React.Fragment>
-                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                    <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
-                        RePaid Loan Amount Data
-                    </Typography>
-                    <ButtonGroup
-                        variant="contained"
-                        aria-label="outlined primary button group"
-                        sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}
-                    >
-                        <Button
-                            onClick={() => setChartType('monthly')}
-                            sx={{
-                                textTransform: 'none',
-                                borderRadius: '8px',
-                                bgcolor: chartType === 'monthly' ? theme.palette.primary.main : theme.palette.grey[300],
-                                color: chartType === 'monthly' ? 'white' : theme.palette.text.primary,
-                                '&:hover': {
-                                    bgcolor: chartType === 'monthly' ? theme.palette.primary.dark : theme.palette.grey[400]
-                                }
-                            }}
-                        >
-                            Monthly
-                        </Button>
-                        <Button
-                            onClick={() => setChartType('yearly')}
-                            sx={{
-                                textTransform: 'none',
-                                borderRadius: '8px',
-                                bgcolor: chartType === 'yearly' ? theme.palette.primary.main : theme.palette.grey[300],
-                                color: chartType === 'yearly' ? 'white' : theme.palette.text.primary,
-                                '&:hover': {
-                                    bgcolor: chartType === 'yearly' ? theme.palette.primary.dark : theme.palette.grey[400]
-                                }
-                            }}
-                        >
-                            Yearly
-                        </Button>
-                    </ButtonGroup>
-                </Box>
-                <div style={{ width: '100%', flexGrow: 1, overflow: 'hidden', padding: '16px', background: theme.palette.background.paper, borderRadius: '8px', boxShadow: theme.shadows[3] }}>
-                    <BarChart
-                        dataset={chartData}
-                        xAxis={[
-                            { scaleType: 'band', dataKey: 'time', tickPlacement: 'middle', tickLabelPlacement: 'middle' },
-                        ]}
-                        yAxis={[
-                            { label: 'Loan Amount', labelStyle: { fill: '#000' }, tickLabelStyle: { fill: '#000' } }
-                        ]}
-                        series={[
-                            { dataKey: 'amount', color: '#1976d2' }
-                        ]}
-                        height={300}
-                        sx={{
-                            [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
-                                transform: 'translateX(-10px)',
-                            },
-                        }}
-                    />
-                </div>
-            </React.Fragment>
-        </>
+        <React.Fragment>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}>
+                <Typography variant="h5" component="h2" gutterBottom>
+                    RePaid Loan Amount Data
+                </Typography>
+                <ToggleButtonGroup
+                    value={chartType}
+                    exclusive
+                    onChange={(e, newType) => newType && setChartType(newType)}
+                    sx={{ mb: 2 }}
+                >
+                    <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+                        Monthly
+                    </ToggleButton>
+                    <ToggleButton value="yearly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+                        Yearly
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Box>
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                style={{
+                    width: '100%',
+                    flexGrow: 1,
+                    overflow: 'hidden',
+                    // padding: '16px',
+                    background: theme.palette.background.paper,
+                    // borderRadius: '8px',
+                    // boxShadow: theme.shadows[3]
+                }}
+            >
+                <BarChart
+                    dataset={chartData}
+                    margin={{
+                        top: 5,
+                        right: 0,
+                        left: 50,
+                        bottom: 30,
+                    }}
+                    xAxis={[
+                        { scaleType: 'band', dataKey: 'time', tickPlacement: 'middle', tickLabelPlacement: 'middle', tickLabelStyle: theme.typography.body2 }
+                    ]}
+                    yAxis={[
+                        { labelStyle: theme.typography.body1, tickLabelStyle: theme.typography.body2 }
+                    ]}
+                    series={[
+                        { dataKey: 'amount', color: theme.palette.primary.main }
+                    ]}
+                    height={300}
+                    sx={{
+                        [`.${axisClasses.root} line`]: { stroke: theme.palette.text.secondary },
+                        [`.${axisClasses.root} text`]: { fill: theme.palette.text.secondary },
+                        [`& .${axisClasses.left} .${axisClasses.label}`]: {
+                            transform: 'translateX(-10px)',
+                        },
+                        [`& .${axisClasses.bottom} .${axisClasses.label}`]: {
+                            transform: 'translateY(10px)',
+                        },
+                    }}
+                />
+            </motion.div>
+        </React.Fragment>
     );
 }

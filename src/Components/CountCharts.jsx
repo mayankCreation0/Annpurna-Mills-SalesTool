@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { LineChart, axisClasses } from '@mui/x-charts';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import Typography from '@mui/material/Typography';
+import { Button, ToggleButton, ToggleButtonGroup, Typography, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
-import { Box } from '@mui/material';
+import { motion } from 'framer-motion';
 
 export default function Chart() {
     const theme = useTheme();
@@ -48,67 +46,65 @@ export default function Chart() {
 
     const chartData = createChartData(data, chartType);
 
+    const last7Years = new Date().getFullYear() - 6;
+    const filteredChartData = chartData.filter(item => {
+        const year = chartType === 'yearly' ? item.time : parseInt(item.time.split('-')[0]);
+        return year >= last7Years;
+    });
+
     return (
         <React.Fragment>
-            <Box sx={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                 <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
                     Customer Counts Data
                 </Typography>
-                <ButtonGroup
-                    variant="contained"
-                    aria-label="outlined primary button group"
-                    sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}
+                <ToggleButtonGroup
+                    value={chartType}
+                    exclusive
+                    onChange={(e, newType) => newType && setChartType(newType)}
+                    sx={{ mb: 2,mt:1, height:'30px' }}
                 >
-                    <Button
-                        onClick={() => setChartType('monthly')}
-                        sx={{
-                            textTransform: 'none',
-                            borderRadius: '8px',
-                            bgcolor: chartType === 'monthly' ? theme.palette.primary.main : theme.palette.grey[300],
-                            color: chartType === 'monthly' ? 'white' : theme.palette.text.primary,
-                            '&:hover': {
-                                bgcolor: chartType === 'monthly' ? theme.palette.primary.dark : theme.palette.grey[400]
-                            }
-                        }}
-                    >
+                    <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
                         Monthly
-                    </Button>
-                    <Button
-                        onClick={() => setChartType('yearly')}
-                        sx={{
-                            textTransform: 'none',
-                            borderRadius: '8px',
-                            bgcolor: chartType === 'yearly' ? theme.palette.primary.main : theme.palette.grey[300],
-                            color: chartType === 'yearly' ? 'white' : theme.palette.text.primary,
-                            '&:hover': {
-                                bgcolor: chartType === 'yearly' ? theme.palette.primary.dark : theme.palette.grey[400]
-                            }
-                        }}
-                    >
+                    </ToggleButton>
+                    <ToggleButton value="yearly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
                         Yearly
-                    </Button>
-                </ButtonGroup>
+                    </ToggleButton>
+                </ToggleButtonGroup>
             </Box>
-            <div style={{ width: '100%', flexGrow: 1, overflow: 'hidden', padding: '16px', background: theme.palette.background.paper, borderRadius: '8px', boxShadow: theme.shadows[3] }}>
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                style={{
+                    width: '100%',
+                    flexGrow: 1,
+                    overflow: 'hidden',
+                    // padding: '16px',
+                    background: theme.palette.background.paper,
+                    // borderRadius: '8px',
+                    // boxShadow: theme.shadows[3]
+                }}
+            >
                 <LineChart
-                    dataset={chartData}
+                    dataset={filteredChartData}
                     margin={{
-                        top: 16,
+                        top: 5,
                         right: 20,
-                        left: 70,
+                        left: 35,
                         bottom: 30,
                     }}
                     xAxis={[
                         {
                             scaleType: 'point',
                             dataKey: 'time',
-                            tickNumber: 5,
+                            tickNumber: 7,
                             tickLabelStyle: theme.typography.body2,
+                            tickLabelProps: { style: { transition: '0.3s', ':hover': { fill: theme.palette.primary.main } } }
                         },
                     ]}
                     yAxis={[
                         {
-                            label: 'Customer Count',
                             labelStyle: {
                                 ...theme.typography.body1,
                                 fill: theme.palette.text.primary,
@@ -132,7 +128,7 @@ export default function Chart() {
                         },
                     }}
                 />
-            </div>
+            </motion.div>
         </React.Fragment>
     );
 }
