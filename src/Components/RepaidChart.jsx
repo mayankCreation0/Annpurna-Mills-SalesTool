@@ -60,13 +60,13 @@ export default function LoanAmountBarChart() {
         <React.Fragment>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}>
                 <Typography variant="h5" component="h2" gutterBottom>
-                    RePaid Loan Amount Data
+                Loan Repayment
                 </Typography>
                 <ToggleButtonGroup
                     value={chartType}
                     exclusive
                     onChange={(e, newType) => newType && setChartType(newType)}
-                    sx={{ mb: 2 }}
+                    sx={{ mb: 2, mt: 1, height: '30px' }}
                 >
                     <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
                         Monthly

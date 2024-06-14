@@ -56,7 +56,7 @@ export default function LoanBookChart() {
                         style={{ width: '24px', height: '24px', marginRight: '8px' }}
                     />
                     <Typography variant="h5" component="h2" gutterBottom>
-                        Loan Book Data
+                        Loan Issued
                     </Typography>
                 </Box>
                 <ButtonGroup
@@ -109,7 +109,7 @@ export default function LoanBookChart() {
                         { scaleType: 'band', dataKey: 'time', tickPlacement: 'middle', tickLabelPlacement: 'middle', tickLabelStyle: theme.typography.body2 }
                     ]}
                     yAxis={[
-                        {  labelStyle: theme.typography.body1, tickLabelStyle: theme.typography.body2 }
+                        { labelStyle: theme.typography.body1, tickLabelStyle: theme.typography.body2 }
                     ]}
                     series={[
                         { dataKey: 'amount', color: theme.palette.primary.main }

@@ -53,7 +53,7 @@ const Home = () => {
                 <Grid item xs={12} md={8} lg={9}> 
                   <Paper
                     sx={{
-                      // p: 2,
+                      p: 1,
                       display: 'flex',
                       flexDirection: 'column',
                       height: '300px',
