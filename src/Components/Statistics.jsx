@@ -12,6 +12,7 @@ const StatBox = ({ title, value, growth }) => {
     const [displayValue, setDisplayValue] = useState(0);
     const [loading, setLoading] = useState(true);
 
+
     useEffect(() => {
         if (value !== undefined) {
             setLoading(false);
@@ -79,6 +80,12 @@ const Statistics = () => {
         return ((current - previous) / (previous || 1) * 100).toFixed(1);
     };
 
+    const currentDate = new Date();
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const currentMonthName = monthNames[currentDate.getMonth()];
     const totalLoanRepaidAmountGrowth = calculateGrowth(currentMonthLoanRepaidStats.totalLoanRepaidAmount, previousMonthLoanRepaidStats.totalLoanRepaidAmount);
     const customerCountGrowth = calculateGrowth(currentMonth.customerCount, previousMonth.customerCount);
     const totalLoanTakenAmountGrowth = calculateGrowth(currentMonth.totalLoanTakenAmount, previousMonth.totalLoanTakenAmount);
@@ -92,17 +99,17 @@ const Statistics = () => {
             sx={{ display: 'flex', gap: 3, overflowX: 'auto', whiteSpace: 'nowrap', padding: 3 }}
         >
             <StatBox
-                title="Total Loan Repaid Amount"
+                title={`${currentMonthName}'s Repaid Amount`}
                 value={currentMonthLoanRepaidStats?.totalLoanRepaidAmount}
                 growth={totalLoanRepaidAmountGrowth}
             />
             <StatBox
-                title="Customer Count"
+                title={`${currentMonthName}'s Customer Count`}
                 value={currentMonth?.customerCount}
                 growth={customerCountGrowth}
             />
             <StatBox
-                title="Total Loan Taken Amount"
+                title={`${currentMonthName}'s Loan Issued`}
                 value={currentMonth?.totalLoanTakenAmount}
                 growth={totalLoanTakenAmountGrowth}
             />

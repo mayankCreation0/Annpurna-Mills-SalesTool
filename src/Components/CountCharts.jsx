@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { LineChart, axisClasses } from '@mui/x-charts';
-import { Button, ToggleButton, ToggleButtonGroup, Typography, Box } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup, Typography, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
 import { motion } from 'framer-motion';
@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 export default function Chart() {
     const theme = useTheme();
     const [data, setData] = useState({ yearly: [], monthly: [] });
-    const [chartType, setChartType] = useState('yearly'); // 'monthly' or 'yearly'
+    const [chartType, setChartType] = useState('yearly'); 
 
     const loading = useSelector(state => state.loading);
     const analytics = useSelector(state => state.analytics);
@@ -36,7 +36,14 @@ export default function Chart() {
 
     const createChartData = (data, type) => {
         if (type === 'yearly') {
-            return (data.yearly || []).map(item => ({ time: item._id.year, amount: item.customerCount }));
+            const currentYear = new Date().getFullYear();
+            const last7Years = Array.from({ length: 7 }, (_, i) => currentYear - i).reverse();
+            const yearlyDataMap = new Map(data.yearly.map(item => [item._id.year, item.customerCount]));
+
+            return last7Years.map(year => ({
+                time: year,
+                amount: yearlyDataMap.get(year) || 0,
+            }));
         }
         return (data.monthly || []).map(item => ({
             time: `${item.year}-${item.month}`,
@@ -46,23 +53,17 @@ export default function Chart() {
 
     const chartData = createChartData(data, chartType);
 
-    const last7Years = new Date().getFullYear() - 6;
-    const filteredChartData = chartData.filter(item => {
-        const year = chartType === 'yearly' ? item.time : parseInt(item.time.split('-')[0]);
-        return year >= last7Years;
-    });
-
     return (
         <React.Fragment>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
-                    Customer Counts Data
+                <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'left', mb: 3 }}>
+                Customer Count
                 </Typography>
                 <ToggleButtonGroup
                     value={chartType}
                     exclusive
                     onChange={(e, newType) => newType && setChartType(newType)}
-                    sx={{ mb: 2,mt:1, height:'30px' }}
+                    sx={{ mb: 2, mt: 1, height: '30px' }}
                 >
                     <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
                         Monthly
@@ -80,14 +81,11 @@ export default function Chart() {
                     width: '100%',
                     flexGrow: 1,
                     overflow: 'hidden',
-                    // padding: '16px',
                     background: theme.palette.background.paper,
-                    // borderRadius: '8px',
-                    // boxShadow: theme.shadows[3]
                 }}
             >
                 <LineChart
-                    dataset={filteredChartData}
+                    dataset={chartData}
                     margin={{
                         top: 5,
                         right: 20,
