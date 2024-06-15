@@ -58,20 +58,28 @@ export default function LoanAmountBarChart() {
 
     return (
         <React.Fragment>
-            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}>
-                <Typography variant="h5" component="h2" gutterBottom>
-                Loan Repayment
-                </Typography>
+           <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2,mt:'0' }}>
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: 'center' }}>
+                    <lord-icon
+                        src="https://cdn.lordicon.com/jtiihjyw.json"
+                        trigger="loop"
+                        delay="1500"
+                        style={{ width: '30px', height: '30px', marginRight: '3px' }}
+                    />
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
+                        Loan Repaid
+                    </Typography>
+                </Box>
                 <ToggleButtonGroup
                     value={chartType}
                     exclusive
                     onChange={(e, newType) => newType && setChartType(newType)}
-                    sx={{ mb: 2, mt: 1, height: '30px' }}
+                    sx={{ height: '24px', mt: 1 }}
                 >
-                    <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+                    <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.7rem', padding: '3px 8px' }}>
                         Monthly
                     </ToggleButton>
-                    <ToggleButton value="yearly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+                    <ToggleButton value="yearly" sx={{ textTransform: 'none', fontSize: '0.7rem', padding: '3px 8px' }}>
                         Yearly
                     </ToggleButton>
                 </ToggleButtonGroup>
@@ -84,10 +92,10 @@ export default function LoanAmountBarChart() {
                     width: '100%',
                     flexGrow: 1,
                     overflow: 'hidden',
-                    // padding: '16px',
+                    padding: '6px',
                     background: theme.palette.background.paper,
-                    // borderRadius: '8px',
-                    // boxShadow: theme.shadows[3]
+                    borderRadius: '8px',
+                    boxShadow: theme.shadows[3]
                 }}
             >
                 <BarChart
@@ -95,7 +103,7 @@ export default function LoanAmountBarChart() {
                     margin={{
                         top: 5,
                         right: 0,
-                        left: 50,
+                        left: 40,
                         bottom: 30,
                     }}
                     xAxis={[

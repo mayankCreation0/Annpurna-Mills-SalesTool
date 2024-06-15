@@ -19,7 +19,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://annpurna-mills.vercel.app/">
-       Annpurna Mills
+        Annpurna Mills
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -31,7 +31,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const storeData = useSelector(state => state.analytics);
   const navigate = useNavigate();
-  
+
   React.useEffect(() => {
     const fetchData = async () => {
       await getAnalytics(dispatch, navigate);
@@ -39,61 +39,58 @@ const Home = () => {
     if (Object.keys(storeData).length <= 0) {
       fetchData();
     }
-  }, [dispatch,navigate,storeData]);
+  }, [dispatch, navigate, storeData]);
 
   return (
     <div>
-      { Object.keys(storeData).length > 0 ? (
-        <Box sx={{ display: 'flex' ,bgcolor:"applicationTheme.primary"}}>
-            <Container maxWidth="lg">
-              <Grid container spacing={3} justifyContent="center">
-                <Grid item xs={12}>
-                  <Statistics />
-                </Grid>
-                <Grid item xs={12} md={8} lg={9}> 
-                  <Paper
-                    sx={{
-                      p: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: '300px',
-                      width: '100%',
-                      margin: '0 auto',
-                    }}
-                  >
-                    <Chart />
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={8} lg={9}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: 'auto',
-                    }}
-                  >
-                    <LoanAmountBarChart />
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={8} lg={9}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: 'auto',
-                    }}
-                  >
-                    <LoanBookChart />
-                  </Paper>
-                </Grid>
+      {Object.keys(storeData).length > 0 ? (
+        <Box sx={{ display: 'flex', bgcolor: "applicationTheme.primary" }}>
+          <Container maxWidth="lg" sx={{ paddingLeft: "5px", paddingRight: "5px" }}>
+            <Grid container spacing={3} justifyContent="center">
+              <Grid item xs={12}>
+                <Statistics />
               </Grid>
-              <Copyright sx={{ pt: 4 }} />
-            </Container>
-          </Box>
-      ):<Loading/>}
-      
+              <Grid item xs={12} md={8} lg={9}>
+                <Paper
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '300px',
+                    width: '100%',
+                    margin: '0 auto',
+                  }}
+                >
+                  <Chart />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={8} lg={9}>
+                <Paper
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 'auto',
+                  }}
+                >
+                  <LoanAmountBarChart />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={8} lg={9}>
+                <Paper
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 'auto',
+                  }}
+                >
+                  <LoanBookChart />
+                </Paper>
+              </Grid>
+            </Grid>
+            <Copyright sx={{ pt: 4 }} />
+          </Container>
+        </Box>
+      ) : <Loading />}
+
     </div>
   );
 };

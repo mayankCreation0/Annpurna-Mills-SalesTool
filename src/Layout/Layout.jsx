@@ -10,8 +10,8 @@ import GoldSilverRatesComponent from '../Components/Gold&SIlverRates';
 const Navbar = lazy(() => import('../Components/Navbar'));
 
 const Layout = () => {
-  const location = useLocation(); // Access the current location object
-  const overflow =location.pathname.toLowerCase().includes('customerlists')
+  const location = useLocation();
+  const overflow = location.pathname.toLowerCase().includes('customerlists')
     ? 'hidden'
     : 'auto';
 
@@ -21,9 +21,9 @@ const Layout = () => {
         <Suspense fallback={<div><Loading /></div>}>
           <Navbar />
           {/* Conditionally render GoldSilverRatesComponent */}
-          {!location.pathname.toLowerCase().includes('customerlists') ? <GoldSilverRatesComponent /> : null}
+          {location.pathname === '/' ? <GoldSilverRatesComponent /> : null}
         </Suspense>
-        <Paper component={'div'} className="w-full flex-grow  !shadow-none p-2" sx={{ bgcolor: 'applicationTheme.primary', backgroundImage: "none",padding:'0px',overflowY:overflow }}>
+        <Paper component={'div'} className="w-full flex-grow  !shadow-none p-2" sx={{ bgcolor: 'applicationTheme.primary', backgroundImage: "none", padding: '0px', overflowY: overflow }}>
           <Outlet />
           <Box component={'div'} sx={{ display: { xs: 'block', md: 'none' }, height: "80px", width: "100%" }} />
         </Paper>

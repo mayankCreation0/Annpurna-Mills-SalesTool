@@ -5,13 +5,14 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import GroupIcon from '@mui/icons-material/Group';
 import { motion, useAnimation } from 'framer-motion';
 
-const StatBox = ({ title, value, growth }) => {
+const StatBox = ({ title, value, growth, delay, icon }) => {
     const controls = useAnimation();
     const [displayValue, setDisplayValue] = useState(0);
     const [loading, setLoading] = useState(true);
-
 
     useEffect(() => {
         if (value !== undefined) {
@@ -35,6 +36,9 @@ const StatBox = ({ title, value, growth }) => {
     return (
         <Paper
             component={motion.div}
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay, duration: 0.5, ease: "easeOut" }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             sx={{
@@ -50,6 +54,16 @@ const StatBox = ({ title, value, growth }) => {
                 minWidth: 300,
             }}
         >
+            {icon && (
+                <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: delay + 0.2, duration: 0.5 }}
+                    style={{ marginBottom: 8 }}
+                >
+                    {icon}
+                </motion.div>
+            )}
             <Typography variant="h6" sx={{ fontWeight: 600, marginBottom: 1 }}>{title}</Typography>
             {loading ? (
                 <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 1 }}>Loading...</Typography>
@@ -58,7 +72,9 @@ const StatBox = ({ title, value, growth }) => {
                     initial={{ displayValue: 0 }}
                     animate={controls}
                 >
-                    <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 1 }}>{displayValue}</Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 1 }}>
+                        {title.includes('Customer') ? displayValue : `₹ ${displayValue}`}
+                    </Typography>
                 </motion.div>
             )}
             <Box sx={{ display: 'flex', alignItems: 'center', color: growth >= 0 ? 'success.main' : 'error.main' }}>
@@ -99,19 +115,25 @@ const Statistics = () => {
             sx={{ display: 'flex', gap: 3, overflowX: 'auto', whiteSpace: 'nowrap', padding: 3 }}
         >
             <StatBox
+                title={`${currentMonthName}'s Loan Issued`}
+                value={currentMonth?.totalLoanTakenAmount}
+                growth={totalLoanTakenAmountGrowth}
+                delay={0.2}
+                icon={<AttachMoneyIcon sx={{ fontSize: 40 }} />}
+            />
+            <StatBox
                 title={`${currentMonthName}'s Repaid Amount`}
                 value={currentMonthLoanRepaidStats?.totalLoanRepaidAmount}
                 growth={totalLoanRepaidAmountGrowth}
+                delay={0.4}
+                icon={<TrendingUpIcon sx={{ fontSize: 40 }} />}
             />
             <StatBox
                 title={`${currentMonthName}'s Customer Count`}
                 value={currentMonth?.customerCount}
                 growth={customerCountGrowth}
-            />
-            <StatBox
-                title={`${currentMonthName}'s Loan Issued`}
-                value={currentMonth?.totalLoanTakenAmount}
-                growth={totalLoanTakenAmountGrowth}
+                delay={0.6}
+                icon={<GroupIcon sx={{ fontSize: 40 }} />}
             />
         </Box>
     );
