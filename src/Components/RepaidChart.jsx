@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, axisClasses } from '@mui/x-charts';
-import { Button, ToggleButton, ToggleButtonGroup, Typography, Box, useTheme } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup, Typography, Box, useTheme, useMediaQuery } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
 import { motion } from 'framer-motion';
@@ -13,6 +13,7 @@ export default function LoanAmountBarChart() {
     const analytics = useSelector(state => state.analytics);
     const dispatch = useDispatch();
     const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const fetchData = async () => {
         const response = await getAnalytics(dispatch);
@@ -33,6 +34,11 @@ export default function LoanAmountBarChart() {
         return <div>Loading...</div>;
     }
 
+    const formatDate = (year, month) => {
+        const date = new Date(year, month - 1); // JavaScript months are 0-indexed
+        return date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+    };
+
     const createChartData = (data, type) => {
         if (type === 'yearly') {
             const currentYear = new Date().getFullYear();
@@ -49,7 +55,7 @@ export default function LoanAmountBarChart() {
             }));
         }
         return data.map(item => ({
-            time: `${item.year}-${item.month}`,
+            time: formatDate(item.year, item.month),
             amount: item.totalLoanRepaidAmount
         }));
     };
@@ -58,7 +64,7 @@ export default function LoanAmountBarChart() {
 
     return (
         <React.Fragment>
-           <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2,mt:'0' }}>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2, mt: '0' }}>
                 <Box sx={{ display: "flex", flexDirection: "row", alignItems: 'center' }}>
                     <lord-icon
                         src="https://cdn.lordicon.com/jtiihjyw.json"
@@ -104,16 +110,44 @@ export default function LoanAmountBarChart() {
                         top: 5,
                         right: 0,
                         left: 40,
-                        bottom: 30,
+                        bottom: 50,
                     }}
                     xAxis={[
-                        { scaleType: 'band', dataKey: 'time', tickPlacement: 'middle', tickLabelPlacement: 'middle', tickLabelStyle: theme.typography.body2 }
+                        {
+                            scaleType: 'band',
+                            dataKey: 'time',
+                            tickPlacement: 'middle',
+                            tickLabelPlacement: 'middle',
+                            tickLabelStyle: {
+                                ...theme.typography.body2,
+                                transform: 'rotate(-45deg)',
+                                textAnchor: 'end',
+                                fontSize: isSmallScreen ? '0.7rem' : '0.8rem'
+                            },
+                            ticks: isSmallScreen ? chartData.filter((_, index) => index % 2 === 0) : chartData
+                        }
                     ]}
                     yAxis={[
                         { labelStyle: theme.typography.body1, tickLabelStyle: theme.typography.body2 }
                     ]}
                     series={[
-                        { dataKey: 'amount', color: theme.palette.primary.main }
+                        {
+                            dataKey: 'amount',
+                            color: theme.palette.primary.main,
+                            TooltipComponent: ({ x, y, dataPoint }) => (
+                                <Box sx={{
+                                    background: theme.palette.background.paper,
+                                    borderRadius: '4px',
+                                    boxShadow: theme.shadows[3],
+                                    padding: '8px',
+                                    fontSize: '0.75rem',
+                                    color: theme.palette.text.primary
+                                }}>
+                                    <Typography variant="body2"><strong></strong></Typography>
+                                    <Typography variant="body2">Loan Repaid: ₹{dataPoint.amount.toLocaleString()}</Typography>
+                                </Box>
+                            )
+                        }
                     ]}
                     height={300}
                     sx={{

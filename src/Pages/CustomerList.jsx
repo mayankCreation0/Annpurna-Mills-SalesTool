@@ -14,12 +14,12 @@ import {
   Select,
   TextField,
   InputAdornment,
-  Box} from '@mui/material';
+  Box
+} from '@mui/material';
 import {
   Edit as EditIcon,
   Visibility as VisibilityIcon,
   Delete as DeleteIcon,
-  Search as SearchIcon,
   AccessTime as AccessTimeIcon,
   ArrowUpward,
   ArrowDownward,
@@ -222,7 +222,7 @@ export default function CustomerList() {
 
   return (
     <>
-      <Paper sx={{padding:'0px',overflowY: 'hidden',   }}>
+      <Paper sx={{ padding: '0px', overflowY: 'hidden', }}>
         <Box
           sx={{
             display: 'flex',
@@ -256,7 +256,13 @@ export default function CustomerList() {
                     aria-label="search"
                     onClick={handleSearch}
                   >
-                    <SearchIcon />
+                    <lord-icon
+                      src="https://cdn.lordicon.com/anqzffqz.json"
+                      trigger="loop"
+                      state="loop-spin"
+                      delay="1500"
+                      style={{ width: '30px', height: '30px', marginRight: '3px' }}>
+                    </lord-icon>
                   </IconButton>
                 </InputAdornment>
               ),
@@ -299,7 +305,7 @@ export default function CustomerList() {
         ) : (
           <>
             <TableContainer
-            component={'div'} className='max-sm:h-[72vh] h-[77vh]'
+              component={'div'} className='max-sm:h-[72vh] h-[77vh]'
               sx={{
                 border: '1px solid black',
                 overflowX: 'scroll',
@@ -344,7 +350,7 @@ export default function CustomerList() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {Array.isArray(filteredCustomers) &&
+                  {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? (
                     filteredCustomers
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((customer, index) => (
@@ -429,32 +435,47 @@ export default function CustomerList() {
                                         <DeleteIcon sx={{ fontSize: '1rem' }} />
                                       </IconButton>
                                     </motion.div>
-                                    ) : (
+                                  ) : (
                                     customer[column.id]
                                   )}
                             </TableCell>
                           ))}
                         </TableRow>
-                      ))}
+                      ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} align="center" sx={{ height: '60vh' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}>
+                          <iframe
+                            title='no data available'
+                            src="https://lottie.host/embed/d47386c6-aef0-4de0-98dc-a294ec763487/6t4uVY89AD.json"
+                            style={{ border: 'none', width: '100%', height: '100%' }}
+                          ></iframe>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
+
               </Table>
             </TableContainer>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}> 
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={filteredCustomers.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              sx={{  xs: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', padding: '0px',overflow: 'hidden',paddingX:'0px' }}
-            />
-            <TransitionsModal
-              open={open}
-              handleClose={() => setOpen(false)}
-              handleConfirm={handleConfirm}
-            />
+
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={filteredCustomers.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{ xs: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', padding: '0px', overflow: 'hidden', paddingX: '0px' }}
+              />
+              <TransitionsModal
+                open={open}
+                handleClose={() => setOpen(false)}
+                handleConfirm={handleConfirm}
+              />
             </Box>
           </>)}
       </Paper>
