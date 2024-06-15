@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 export default function Chart() {
     const theme = useTheme();
     const [data, setData] = useState({ yearly: [], monthly: [] });
-    const [chartType, setChartType] = useState('yearly'); 
+    const [chartType, setChartType] = useState('yearly');
 
     const loading = useSelector(state => state.loading);
     const analytics = useSelector(state => state.analytics);
@@ -55,20 +55,28 @@ export default function Chart() {
 
     return (
         <React.Fragment>
-            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                <Typography variant="h5" component="h2" gutterBottom sx={{ textAlign: 'left', mb: 3 }}>
-                Customer Count
-                </Typography>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 2, mt: '0' }}>
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: 'center' }}>
+                    <lord-icon
+                        src="https://cdn.lordicon.com/piolrlvu.json"
+                        trigger="loop"
+                        delay="1500"
+                        style={{ width: '30px', height: '30px', marginRight: '3px' }}
+                    />
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
+                        Customer Count
+                    </Typography>
+                </Box>
                 <ToggleButtonGroup
                     value={chartType}
                     exclusive
                     onChange={(e, newType) => newType && setChartType(newType)}
-                    sx={{ mb: 2, mt: 1, height: '30px' }}
+                    sx={{ height: '24px', mt: 1 }}
                 >
-                    <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+                    <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.7rem', padding: '3px 8px' }}>
                         Monthly
                     </ToggleButton>
-                    <ToggleButton value="yearly" sx={{ textTransform: 'none', fontSize: '0.75rem' }}>
+                    <ToggleButton value="yearly" sx={{ textTransform: 'none', fontSize: '0.7rem', padding: '3px 8px' }}>
                         Yearly
                     </ToggleButton>
                 </ToggleButtonGroup>
@@ -81,7 +89,10 @@ export default function Chart() {
                     width: '100%',
                     flexGrow: 1,
                     overflow: 'hidden',
+                    padding: '6px',
                     background: theme.palette.background.paper,
+                    borderRadius: '8px',
+                    boxShadow: theme.shadows[3]
                 }}
             >
                 <LineChart
@@ -89,7 +100,7 @@ export default function Chart() {
                     margin={{
                         top: 5,
                         right: 20,
-                        left: 35,
+                        left: 25,
                         bottom: 30,
                     }}
                     xAxis={[

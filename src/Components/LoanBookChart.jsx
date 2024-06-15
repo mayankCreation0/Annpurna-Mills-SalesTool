@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, axisClasses } from '@mui/x-charts';
-import { Button, ButtonGroup, Box, Typography, useTheme } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup, Box, Typography, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAnalytics } from '../Api/Apis';
+import { motion } from 'framer-motion';
+
 
 export default function LoanBookChart() {
     const [data, setData] = useState({ yearly: [], monthly: [] });
@@ -33,10 +35,14 @@ export default function LoanBookChart() {
 
     const createChartData = (data, type) => {
         if (type === 'yearly') {
-            // Only keep the last 7 years of data
             const currentYear = new Date().getFullYear();
-            return data.filter(item => item._id.year >= currentYear - 7)
-                .map(item => ({ time: item._id.year, amount: item.totalLoanTakenAmount }));
+            const last7Years = Array.from({ length: 7 }, (_, i) => currentYear - i).reverse();
+            const yearlyDataMap = new Map(data.map(item => [item._id.year, item.totalLoanTakenAmount]));
+
+            return last7Years.map(year => ({
+                time: year,
+                amount: yearlyDataMap.get(year) || 0,
+            }));
         }
         return data.map(item => ({
             time: `${item.year}-${item.month}`,
@@ -48,60 +54,51 @@ export default function LoanBookChart() {
 
     return (
         <React.Fragment>
-            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center' }}>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: 'center', mb: 1 }}>
                 <Box sx={{ display: "flex", flexDirection: "row", alignItems: 'center' }}>
                     <lord-icon
                         src="https://cdn.lordicon.com/ofcynlwa.json"
-                        trigger="hover"
-                        style={{ width: '24px', height: '24px', marginRight: '8px' }}
+                        trigger="loop"
+                        delay="1500"
+                        style={{ width: '30px', height: '30px', marginRight: '3px' }}
                     />
-                    <Typography variant="h5" component="h2" gutterBottom>
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', fontSize: '1rem' }}>
                         Loan Issued
                     </Typography>
                 </Box>
-                <ButtonGroup
-                    variant="contained"
-                    aria-label="outlined primary button group"
-                    sx={{ mb: 2 }}
+                <ToggleButtonGroup
+                    value={chartType}
+                    exclusive
+                    onChange={(e, newType) => newType && setChartType(newType)}
+                    sx={{ height: '24px', mt: 1 }}
                 >
-                    <Button
-                        onClick={() => setChartType('monthly')}
-                        sx={{
-                            textTransform: 'none',
-                            fontSize: '0.75rem',
-                            borderRadius: '8px',
-                            bgcolor: chartType === 'monthly' ? theme.palette.primary.main : theme.palette.grey[300],
-                            color: chartType === 'monthly' ? 'white' : theme.palette.text.primary,
-                            '&:hover': {
-                                bgcolor: chartType === 'monthly' ? theme.palette.primary.dark : theme.palette.grey[400]
-                            }
-                        }}
-                    >
+                    <ToggleButton value="monthly" sx={{ textTransform: 'none', fontSize: '0.7rem', padding: '3px 8px' }}>
                         Monthly
-                    </Button>
-                    <Button
-                        onClick={() => setChartType('yearly')}
-                        sx={{
-                            textTransform: 'none',
-                            fontSize: '0.75rem',
-                            borderRadius: '8px',
-                            bgcolor: chartType === 'yearly' ? theme.palette.primary.main : theme.palette.grey[300],
-                            color: chartType === 'yearly' ? 'white' : theme.palette.text.primary,
-                            '&:hover': {
-                                bgcolor: chartType === 'yearly' ? theme.palette.primary.dark : theme.palette.grey[400]
-                            }
-                        }}
-                    >
+                    </ToggleButton>
+                    <ToggleButton value="yearly" sx={{ textTransform: 'none', fontSize: '0.7rem', padding: '3px 8px' }}>
                         Yearly
-                    </Button>
-                </ButtonGroup>
+                    </ToggleButton>
+                </ToggleButtonGroup>
             </Box>
-            <div style={{ width: '100%', flexGrow: 1, overflow: 'hidden', padding: '16px', background: theme.palette.background.paper, borderRadius: '8px', boxShadow: theme.shadows[3] }}>
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                style={{
+                    width: '100%',
+                    flexGrow: 1,
+                    overflow: 'hidden',
+                    padding: '6px',
+                    background: theme.palette.background.paper,
+                    borderRadius: '8px',
+                    boxShadow: theme.shadows[3]
+                }}
+            >
                 <BarChart
                     dataset={chartData}
                     margin={{
                         top: 5,
-                        right: 20,
+                        right: 10,
                         left: 50,
                         bottom: 30,
                     }}
@@ -126,7 +123,7 @@ export default function LoanBookChart() {
                         },
                     }}
                 />
-            </div>
+            </motion.div>
         </React.Fragment>
     );
 }
