@@ -358,6 +358,7 @@ export default function CustomerList() {
                           {columns.map((column) => (
                             <TableCell
                               key={column.id}
+                              onClick={() => handleView(customer._id)}
                               sx={{
                                 minWidth: column.minWidth,
                                 fontSize: '0.875rem',
@@ -365,6 +366,7 @@ export default function CustomerList() {
                                 backgroundColor: '#f5f5f5',
                                 color: '#333',
                                 padding: '6px',
+                                cursor:'pointer'
                               }}
                               align={column.align || 'left'}
                             >
