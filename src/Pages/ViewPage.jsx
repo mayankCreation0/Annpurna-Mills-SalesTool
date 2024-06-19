@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Grid,Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Table, TableBody, TableRow, TableCell, Autocomplete } from '@mui/material';
+import { Typography, Grid,Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Autocomplete } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDetailsById, updateData } from '../Api/Apis';
 import MaleImg from '../Assets/Profile/Ava_Male.jpg';
@@ -9,9 +11,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
-import MovingIcon from '@mui/icons-material/Moving';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import { categoriesOptions, statusOptions } from '../Utilis/Utilis';
+import { categoriesOptions } from '../Utilis/Utilis';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 const ViewPage = () => {
@@ -257,7 +257,7 @@ const ViewPage = () => {
                                 <Grid item xs={12} sm={6}>
                                     {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
                                         <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Remarks :
+                                            Product Details :
                                         </Typography>
                                         <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
                                             {customer.Remarks ?  customer.Remarks : '-'}
@@ -269,7 +269,7 @@ const ViewPage = () => {
                                         fullWidth
                                         value={customer.Remarks}
                                         id="remarks"
-                                        label="Remarks"
+                                        label="Product Details"
                                         name="remarks"
                                         autoComplete="remarks"
                                     />}
@@ -342,10 +342,10 @@ const ViewPage = () => {
                             <Grid item xs={12} sm={6}>
                                     {!isLoanEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
                                         <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Amount :
+                                            Loan Amount :
                                         </Typography>
                                         <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Amount}
+                                            ₹{customer.Amount}
                                         </Typography>
                                     </Stack>}
                                     {isLoanEdit && <TextField
@@ -371,7 +371,7 @@ const ViewPage = () => {
                                             Rate :
                                         </Typography>
                                         <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Rate}
+                                            {customer.Rate}%
                                         </Typography>
                                     </Stack>}
                                     {isLoanEdit && <TextField
@@ -393,7 +393,7 @@ const ViewPage = () => {
                                             Duration :
                                         </Typography>
                                         <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            -
+                                               {month}months ({calculateExactTimePeriod(customer.Date)})
                                         </Typography>
                                     </Stack>}
                                     {isLoanEdit && <TextField

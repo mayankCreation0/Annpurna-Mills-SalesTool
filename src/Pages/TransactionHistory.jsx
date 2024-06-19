@@ -94,6 +94,9 @@ const TransactionHistory = () => {
       return transactionEntries;
     });
 
+    // Sort all transactions by date in descending order
+    allTransactions.sort((a, b) => moment(b.Date).valueOf() - moment(a.Date).valueOf());
+
     return allTransactions.reduce((acc, transaction) => {
       const month = moment(transaction.Date).format('MMMM YYYY');
       if (!acc[month]) acc[month] = [];
@@ -169,6 +172,7 @@ const TransactionHistory = () => {
           </Box>
           <Divider sx={{ mb: 2 }} />
           <List>
+            {/* Render sorted transactions */}
             {groupedTransactions[month].map(transaction => renderTransaction(transaction))}
           </List>
         </Box>

@@ -29,7 +29,7 @@ const logoStyle = {
 const menuItems = [
     { text: 'Home', icon: <HomeIcon />, path: '/' },
     { text: 'Customer List', icon: <ListIcon />, path: '/customerLists' },
-    { text: 'Transaction', icon: <ListIcon />, path: '/transaction' },
+    { text: 'Transaction', icon: <ListIcon />, path: '/history' },
     { text: 'Add Customer', icon: <AddIcon />, path: '/form' },
     { text: 'Staff', icon: <AddIcon />, path: '/staff' },
 ];
@@ -111,7 +111,7 @@ function Navbar({ sx }) {
                 <ThemeToggle />
             </Box>
 
-            <Box display={{ xs: 'flex', md: 'none' }} component="div" sx={{ justifyContent: 'space-between', alignItems: 'center', gap: "20px", width: "100%" }}>
+            <Box display={{ xs: 'flex', md: 'none' }} component="div" sx={{ justifyContent: 'space-between', alignItems: 'center', gap: "20px", width: "100%" ,height:'4vh'}}>
               <img
                     src={logoSrc}
                     style={logoStyle}

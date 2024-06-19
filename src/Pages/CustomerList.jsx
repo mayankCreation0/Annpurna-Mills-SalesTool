@@ -222,7 +222,7 @@ export default function CustomerList() {
 
   return (
     <>
-      <Paper sx={{ padding: '0px', overflowY: 'hidden', }}>
+      <Paper sx={{ padding: '0px', overflowY: 'hidden'}}>
         <Box
           sx={{
             display: 'flex',
@@ -305,11 +305,12 @@ export default function CustomerList() {
         ) : (
           <>
             <TableContainer
-              component={'div'} className='max-sm:h-[72vh] h-[77vh]'
+              component={'div'}
               sx={{
                 border: '1px solid black',
                 overflowX: 'scroll',
-                scrollBehavior: 'smooth'
+                scrollBehavior: 'smooth',
+                height: `72vh`,
               }}
             >
               <Table stickyHeader aria-label="sticky table">
@@ -433,7 +434,7 @@ export default function CustomerList() {
                                       <IconButton color="secondary" onClick={() => handleView(customer._id)}>
                                         <VisibilityIcon sx={{ fontSize: '1rem' }} />
                                       </IconButton>
-                                      <IconButton color="error" onClick={() => handleDelete(customer._id)}>
+                                          <IconButton color="error" onClick={(e) => { e.stopPropagation() ;handleDelete(customer._id)}}>
                                         <DeleteIcon sx={{ fontSize: '1rem' }} />
                                       </IconButton>
                                     </motion.div>
@@ -460,25 +461,26 @@ export default function CustomerList() {
                 </TableBody>
 
               </Table>
+              
             </TableContainer>
-
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={filteredCustomers.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                sx={{ xs: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', padding: '0px', overflow: 'hidden', paddingX: '0px' }}
-              />
-              <TransitionsModal
-                open={open}
-                handleClose={() => setOpen(false)}
-                handleConfirm={handleConfirm}
-              />
-            </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column',height:'6vh' }}>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 100]}
+                  component="div"
+                  count={filteredCustomers.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  sx={{ xs: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', padding: '0px', overflow: 'hidden', paddingX: '0px' }}
+                />
+                <TransitionsModal
+                  open={open}
+                  handleClose={() => setOpen(false)}
+                  handleConfirm={handleConfirm}
+                />
+              </Box>
+          
           </>)}
       </Paper>
     </>
