@@ -25,7 +25,7 @@ const Layout = () => {
         </Suspense>
         <Paper component={'div'} className="w-full flex-grow  !shadow-none p-2" sx={{ bgcolor: 'applicationTheme.primary', backgroundImage: "none", padding: '0px', overflowY: overflow }}>
           <Outlet />
-          <Box component={'div'} sx={{ display: { xs: 'block', md: 'none' }, height: "80px", width: "100%" }} />
+          <Box component={'div'} sx={{ display: { xs: 'block', md: 'none' }, height: "80px", width: "100%",border:'1px solid red' }} />
         </Paper>
         <BottomNav sx={{ position: 'fixed', bottom: '0', zIndex: 100 }} />
       </Box>

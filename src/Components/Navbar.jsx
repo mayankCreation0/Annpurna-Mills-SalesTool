@@ -29,6 +29,7 @@ const logoStyle = {
 const menuItems = [
     { text: 'Home', icon: <HomeIcon />, path: '/' },
     { text: 'Customer List', icon: <ListIcon />, path: '/customerLists' },
+    { text: 'Transaction', icon: <ListIcon />, path: '/history' },
     { text: 'Add Customer', icon: <AddIcon />, path: '/form' },
     { text: 'Staff', icon: <AddIcon />, path: '/staff' },
 ];
@@ -110,14 +111,14 @@ function Navbar({ sx }) {
                 <ThemeToggle />
             </Box>
 
-            <Box display={{ xs: 'flex', md: 'none' }} component="div" sx={{ justifyContent: 'space-between', alignItems: 'center', gap: "20px", width: "100%" }}>
-                <img
+            <Box display={{ xs: 'flex', md: 'none' }} component="div" sx={{ justifyContent: 'space-between', alignItems: 'center', gap: "20px", width: "100%" ,height:'4vh'}}>
+              <img
                     src={logoSrc}
                     style={logoStyle}
                     alt="logo of sitemark"
                     onClick={() => navigate('/')}
-                />
-                <Box component="div" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: "20px" }}>
+                /> 
+                <Box component="div" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: "20px", height:"auto" }}>
                     <ThemeToggle />
                     <Button onClick={handleLogout} sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px", bgcolor: "transparent", color: 'applicationTheme.secondary' }}>
                         Logout <LogoutIcon sx={{ fontSize: "14px" }} />
