@@ -186,7 +186,7 @@ export const updateData = async (formData, dispatch, navigate,id) => {
         const headers = {
             Authorization: `Bearer ${token}`,
         };
-        await axios.post(`${API_BASE_URL}/update/${id}`, formData, { headers });
+        await axios.patch(`${API_BASE_URL}user/update/${id}`, formData, { headers });
         dispatch(handleLoading(false));
         dispatch(showToast({ message: 'Form data updated successfully', type: 'success' }));
         // navigate('/customerLists');
