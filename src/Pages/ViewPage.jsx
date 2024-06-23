@@ -1,9 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Grid,Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Autocomplete } from '@mui/material';
+import { Typography, Grid, Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Accordion, AccordionSummary, AccordionDetails, MenuItem, Divider, Modal } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { SwipeableButton } from 'react-swipeable-button';
 import { getDetailsById, updateData } from '../Api/Apis';
 import MaleImg from '../Assets/Profile/Ava_Male.jpg';
 import FemaleImg from '../Assets/Profile/Ava_Female.jpg';
@@ -11,581 +11,405 @@ import CreateIcon from '@mui/icons-material/Create';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
-import { categoriesOptions } from '../Utilis/Utilis';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 const ViewPage = () => {
     const [customer, setCustomer] = useState(null);
     const [interest, setInterest] = useState(0);
     const [month, setMonth] = useState(0);
+    const [paidAmount, setPaidAmount] = useState(0);
+    const [paidDate, setPaidDate] = useState(new Date().toISOString().substr(0, 10));
     const { id } = useParams();
     const dispatch = useDispatch();
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const mode = useSelector((state) => state.mode);
-    const [isEdit, setIsEdit] = React.useState(false);
-    const [isLoanEdit, setIsLoanEdit] = React.useState(false);
-    const [gender, setGender] = React.useState();
+    const [isEdit, setIsEdit] = useState(false);
+    const [isLoanEdit, setIsLoanEdit] = useState(false);
+    const [gender, setGender] = useState('');
 
     const fetchData = async () => {
         const res = await getDetailsById(id, dispatch, navigate);
-        console.log(res.data);
         setCustomer(res.data);
         setGender(res.data.Gender);
         calculateMonthlySimpleInterest(res.data.Amount, res.data.Rate, res.data.Date);
-        calculateExactTimePeriod(res.data.Date)
+        calculateExactTimePeriod(res.data.Date);
+        setPaidAmount((parseFloat(res.data.Amount) + parseFloat(interest)).toFixed(2));
     };
+
     function calculateExactTimePeriod(startDate) {
         const start = new Date(startDate);
         const end = new Date();
-
         const years = end.getFullYear() - start.getFullYear();
         const months = end.getMonth() - start.getMonth();
         const days = end.getDate() - start.getDate();
-
         return `${years} years, ${months} months, ${days} days`;
     }
 
     function calculateMonthlySimpleInterest(principal, monthlyRate, startDate) {
         const start = new Date(startDate);
         const end = new Date();
-    
         const years = end.getFullYear() - start.getFullYear();
         const months = end.getMonth() - start.getMonth();
         const days = end.getDate() - start.getDate();
-    
         let totalMonths = years * 12 + months;
-    
-        // Adjust the days to the total months
         if (days > 10) {
             totalMonths += 1;
         }
-    
-        // Ensure the minimum time period is 1 month
         if (totalMonths < 1) {
             totalMonths = 1;
         }
-    
-        // Calculate the simple interest for the total months
         const simpleInterest = (principal * monthlyRate * totalMonths) / 100;
-    
-        // Assuming setMonth and setInterest are defined elsewhere
         setMonth(totalMonths);
         setInterest(simpleInterest);
-    
-        // Return the simple interest if needed
         return simpleInterest;
     }
+    const handleModalOpen = () => {
+        setPaidAmount(customer.Amount + interest);
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
 
 
     useEffect(() => {
         fetchData();
-    }, [id, dispatch]);
+    }, [id, dispatch, updateData]);
 
     if (!customer) {
         return <div className='flex justify-center items-center h-full w-full text-xl'>Loading...</div>;
     }
-    const handleUpdate = async(data) => {
-        await updateData(data,dispatch,navigate,id)
-    }
 
+    const handleUpdate = async () => {
+        await updateData(customer, dispatch, navigate, id);
+        setIsEdit(false);
+        setIsLoanEdit(false);
+        window.location.reload();
+    };
+    const handleSwipeSuccess = async () => {
+        const updatedPaidLoan = [...customer.PaidLoan, { loanPaidAmount: paidAmount, loanPaidDate: paidDate }];
+        const updatedCustomer = { ...customer, PaidLoan: updatedPaidLoan, Status: 'Completed' };
+        await updateData(updatedCustomer, dispatch, navigate, id);
+        setCustomer(updatedCustomer);
+        setIsModalOpen(false);
+        window.location.reload();
+    };
 
     return (
-        <>
-            <Grid spacing={{xs:'30',lg:'0'}} container sx={{ width: "100%", flexDirection: { xs: 'column-reverse', lg: 'row' } }} className='mt-0 lg:!mt-10 w-full'>
-                <Grid item xs={'12'} sm='12' md={11} lg={6} xl={7}>
-                    <Box component={'div'} sx={{ padding: "0px 20px" }}>
-                        <Stack flexDirection={'row'} justifyContent={"space-between"} alignItems={'center'} className='mb-6 lg:!mb-12'>
-                            <Typography component={'h4'} variant='h4' sx={{ fontWeight: "600", color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                {!isEdit ? 'Personal Details :' : 'Edit :'}
-                            </Typography>
+        <Box sx={{ padding: '20px', width: '100%', maxWidth: '1200px', margin: 'auto', backgroundColor: '#f7f9fc' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', padding: '15px', backgroundColor: 'white', borderRadius: '10px', boxShadow: '0 0 10px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
+                <img src={customer.Gender !== 'male' ? FemaleImg : MaleImg} alt='Profile' style={{ borderRadius: '50%', width: '100px', height: '100px', marginRight: '20px' }} />
+                <Stack spacing={0.5}>
+                    <Typography variant="h5" sx={{ fontWeight: '600', textTransform: 'capitalize' }}>
+                        {customer.Name}
+                    </Typography>
+                    <Typography variant="body1" sx={{ color: mode === 'light' ? 'black' : 'white', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <Box component={'span'} sx={{ position: 'relative', width: '13px', height: '7px' }}>
+                            <Box component={'span'} className={`dot ${customer.Status.toLowerCase()}`} />
+                        </Box>
+                        {customer.Status}
+                    </Typography>
+                </Stack>
+            </Box>
 
-                            <Stack flexDirection={'row'} justifyContent={'start'} alignItems={'center'} gap={'10px'}>
-                                {!isEdit && <Button className='flex justify-center items-center gap-2 ] !px-5' onClick={() => setIsEdit(!isEdit)}>
-                                    Edit
-                                    <CreateIcon sx={{ fontSize: "15px" }} />
-                                </Button>}
-
-                                {isEdit &&
-                                    <>
-                                        <Button sx={{
-                                            backgroundColor: "grey", opacity: ".9", color: mode !== 'light' ? 'applicationTheme.secondaryColor_1' : 'applicationTheme.primaryColor_1', "&:hover": {
-                                                backgroundColor: "grey", color: mode !== 'light' ? 'applicationTheme.secondaryColor_1' : 'applicationTheme.primaryColor_1'
-                                            }
-                                        }} className='!bg-opacity-5 !bg-blend-darken !px-5' onClick={() => setIsEdit(!isEdit)}>
-                                            Reset
-                                        </Button>
-
-                                        <Button sx={{ backgroundColor: "applicationTheme.main" }} className='flex justify-center items-center gap-2 !px-5' onClick={() => setIsEdit(!isEdit)}>
-                                            Save
-                                            <AutoFixHighIcon sx={{ fontSize: "15px" }} />
-                                        </Button>
-                                    </>
-                                }
-
+            <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                    <Accordion defaultExpanded sx={{ borderLeft: '4px solid', borderColor: 'primary.main' }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="h6" sx={{ fontWeight: '600' }}>Loan Details</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ marginBottom: '10px' }}>
+                                <Button onClick={() => setIsLoanEdit(!isLoanEdit)} startIcon={<CreateIcon />}>
+                                    {isLoanEdit ? 'Cancel' : 'Edit'}
+                                </Button>
                             </Stack>
-                        </Stack>
-                        <Box component="form" onSubmit={() => handleUpdate()} noValidate>
-                            <Grid container rowSpacing={{ xs: !isEdit ? '30px' : '10px', sm: !isEdit ? '30px' : '10px', md: '20px' }} columnSpacing={'20px'}>
-                                <Grid item xs={11} sm={6} md={5} lg={6} xl={!isEdit ? 6 : 8} >
-                                    {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Name :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Name ? customer.Name : '-'}
-                                        </Typography>
-                                    </Stack>}
-                                    {isEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        value={customer.Name}
-                                        id="username"
-                                        label="Username"
-                                        name="username"
-                                        autoComplete="username"
-
-
-                                    />}
-                                </Grid>
-                                <Grid item xs={'11'} sm={'6'} md={'7'} lg={6} xl={!isEdit ? 6 : 4} >
-
-                                    {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Gender :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Gender ? customer.Gender : '-'}
-                                        </Typography>
-                                    </Stack>}
-                                    {
-                                        isEdit &&
-                                        <Box component={'div'} className='flex flex-col justify-center items-start h-full !p-0'>
-
-                                            <ToggleButtonGroup
-                                                value={gender}
-                                                exclusive
-                                                onChange={(event, value) => setGender(value)}
-                                                aria-label="gender"
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Category:</Typography>
+                                        {isLoanEdit ? (
+                                            <TextField
+                                                select
+                                                value={customer.Category}
+                                                onChange={(e) => setCustomer({ ...customer, Category: e.target.value })}
+                                                fullWidth
+                                                label="Category"
                                             >
-                                                <ToggleButton value="male" aria-label="male">
-                                                    Male
-                                                    <MaleIcon />
+                                                <MenuItem value="Gold">Gold</MenuItem>
+                                                <MenuItem value="Silver">Silver</MenuItem>
+                                                <MenuItem value="Bronze">Kansa</MenuItem>
+                                                <MenuItem value="Bike">Bike</MenuItem>
+                                                <MenuItem value="Cycle">Cycle</MenuItem>
+                                                <MenuItem value="Others">Others</MenuItem>
+                                            </TextField>
+                                        ) : (
+                                            <Typography variant="body2" sx={{ textTransform: 'capitalize' }}>
+                                                {customer.Category}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Product Details:</Typography>
+                                        {isLoanEdit ? (
+                                            <TextField
+                                                value={customer.Remarks}
+                                                onChange={(e) => setCustomer({ ...customer, Remarks: e.target.value })}
+                                                fullWidth
+                                                label="Product Details"
+                                            />
+                                        ) : (
+                                            <Typography variant="body2">
+                                                {customer.Remarks || '-'}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Loan Date:</Typography>
+                                        {isLoanEdit ? (
+                                            <TextField
+                                                type="date"
+                                                value={customer.Date.substr(0, 10)}
+                                                onChange={(e) => setCustomer({ ...customer, Date: e.target.value })}
+                                                fullWidth
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        ) : (
+                                            <Typography variant="body2">
+                                                {customer.Date.substr(0, 10)}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Loan Amount:</Typography>
+                                        {isLoanEdit ? (
+                                            <TextField
+                                                value={customer.Amount}
+                                                onChange={(e) => setCustomer({ ...customer, Amount: e.target.value })}
+                                                fullWidth
+                                                label="Loan Amount"
+                                            />
+                                        ) : (
+                                            <Typography variant="body2">
+                                                ₹{customer.Amount}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Rate:</Typography>
+                                        {isLoanEdit ? (
+                                            <TextField
+                                                value={customer.Rate}
+                                                onChange={(e) => setCustomer({ ...customer, Rate: e.target.value })}
+                                                fullWidth
+                                                label="Rate"
+                                            />
+                                        ) : (
+                                            <Typography variant="body2">
+                                                {customer.Rate}%
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Time Period:</Typography>
+                                        <Typography variant="body2">
+                                            {month} months ~({calculateExactTimePeriod(customer.Date)})
+                                        </Typography>
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Interest:</Typography>
+                                        <Typography variant="body2">
+                                            ₹{interest.toFixed(2)}
+                                        </Typography>
+                                    </Stack>
+                                </Grid>
+                                {customer.Status !== 'Completed' ? <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>Due Amount:</Typography>
+                                        <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
+                                            ₹{customer.Amount} + ₹{interest.toFixed(2)} = {(parseFloat(customer.Amount) + parseFloat(interest)).toFixed(2)}
+                                        </Typography>
+                                    </Stack>
+                                </Grid> : null}
+
+
+                                <Box sx={{ marginTop: '20px', display: 'flex', justifyContent: 'center', width: '100%' }}>
+                                    {customer.Status === 'Completed' ? (
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                                            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                                                Loan Paid: ₹ {customer.PaidLoan[0].loanPaidAmount}
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
+                                                Paid Date: {new Date(customer.PaidLoan[0].LoanPaidDate).toISOString().substr(0, 10)}
+                                            </Typography>
+                                        </Box>
+                                    ) : (
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            onClick={handleModalOpen}
+                                            sx={{ width: '100%' }}
+                                        >
+                                            Mark as Paid
+                                        </Button>
+                                    )}
+                                </Box>
+                            </Grid>
+                            {isLoanEdit && (
+                                <Stack direction="row" justifyContent="center" alignItems="center" sx={{ marginTop: '20px' }}>
+                                    <Button onClick={handleUpdate} variant="contained" color="primary" startIcon={<AutoFixHighIcon />}>
+                                        Update
+                                    </Button>
+                                </Stack>
+                            )}
+                        </AccordionDetails>
+                    </Accordion>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <Accordion defaultExpanded sx={{ borderLeft: '4px solid', borderColor: 'secondary.main' }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="h6" sx={{ fontWeight: '600' }}>Personal Details</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ marginBottom: '10px' }}>
+                                <Button onClick={() => setIsEdit(!isEdit)} startIcon={<CreateIcon />}>
+                                    {isEdit ? 'Cancel' : 'Edit'}
+                                </Button>
+                            </Stack>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Phone:</Typography>
+                                        {isEdit ? (
+                                            <TextField
+                                                value={customer.Phone}
+                                                onChange={(e) => setCustomer({ ...customer, Phone: e.target.value })}
+                                                fullWidth
+                                                label="Phone"
+                                            />
+                                        ) : (
+                                            <Typography variant="body2">
+                                                {customer.PhoneNumber}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Address:</Typography>
+                                        {isEdit ? (
+                                            <TextField
+                                                value={customer.Address}
+                                                onChange={(e) => setCustomer({ ...customer, Address: e.target.value })}
+                                                fullWidth
+                                                label="Address"
+                                            />
+                                        ) : (
+                                            <Typography variant="body2">
+                                                {customer.Address}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                        <Typography variant="body1">Gender:</Typography>
+                                        {isEdit ? (
+                                            <ToggleButtonGroup
+                                                value={customer.Gender}
+                                                exclusive
+                                                onChange={(e, value) => {
+                                                    if (value !== null) {
+                                                        setCustomer({ ...customer, Gender: value });
+                                                        setGender(value);
+                                                    }
+                                                }}
+                                            >
+                                                <ToggleButton value="male">
+                                                    <MaleIcon /> Male
                                                 </ToggleButton>
-                                                <ToggleButton value="female" aria-label="female">
-                                                    Female
-                                                    <FemaleIcon />
+                                                <ToggleButton value="female">
+                                                    <FemaleIcon /> Female
                                                 </ToggleButton>
                                             </ToggleButtonGroup>
-                                        </Box>
-                                    }
-
-                                </Grid>
-                                <Grid item xs={'11'}>
-                                    {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Address :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Address ? customer.Address : '-'}
-                                        </Typography>
-                                    </Stack>}
-                                    {isEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        value={customer.Address}
-                                        id="address"
-                                        label="Address"
-                                        name="address"
-                                        autoComplete="address"
-
-                                        multiline
-                                        minRows={'4'}
-
-                                    />}
-
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Phone Number :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.PhoneNumber ?  customer.PhoneNumber : '-'}
-                                        </Typography>
-                                    </Stack>}
-                                    {isEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        value={customer.PhoneNumber}
-                                        id="phnumber"
-                                        label="Ph Number"
-                                        name="phnumber"
-                                        autoComplete="phnumber"
-                                    />}
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Date :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Date ? customer.Date.substr(0, 10) : '-'}
-                                        </Typography>
-                                    </Stack>}
-                                    {isEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        type='date'
-                                        id="date"
-                                        label="Date"
-                                        name="date"
-                                        value={customer.Date.substr(0, 10)}
-                                        autoComplete="date"
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-
-                                    />}
-                                </Grid>
-                                 
-                                
-                                
-                                <Grid item xs={12} sm={6}>
-                                    {!isEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Product Details :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Remarks ?  customer.Remarks : '-'}
-                                        </Typography>
-                                    </Stack>}
-                                    {isEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        value={customer.Remarks}
-                                        id="remarks"
-                                        label="Product Details"
-                                        name="remarks"
-                                        autoComplete="remarks"
-                                    />}
-                                </Grid>
-                                 
-
-                            </Grid>
-                        </Box>
-                    </Box>
-                </Grid>
-                <Grid item xs={'12'} sm='12' md={11} lg={6} xl={5}>
-                    <Stack flexDirection={{ xs: 'column' }} justifyContent={{ xs: 'space-between', md: 'start' }} gap={{ sm: '40px', md: '10px' }} alignItems={{ xs: 'start', sm: 'center', lg: "start" }} component={'div'} sx={{ borderLeftWidth: { xs: 'none', sm: "none", lg: "1px" }, borderLeftStyle: "solid", borderLeftColor: "applicationTheme.primaryColor_2", padding: "0px 0px" , width:"100%"}}>
-
-                        <Box component={'div'} sx={{ display: 'flex', justifyContent: "start", alignItems: "center", gap: "15px", padding:"10px 20px" }} className='mb-5'>
-                            
-                            <img src={customer.Gender !== 'male' ? FemaleImg : MaleImg} alt='Male' className='h-28 w-28 sm:h-40 sm:w-40 rounded-[50%] ' />
-                            <Box component={'div'} sx={{display:'flex', flexDirection:'column', justifyContent:'start', alignItems:'start', gap:'1px'}}>
-                                <Typography component={'h4'} variant='h4' sx={{ color: 'applicationTheme.secondaryColor_1', }} className=' capitalize'>
-                                    {customer.Name}
-                                </Typography>  
-
-                                <Typography component={'p'} variant='p' sx={{ color:  mode === 'light' ? 'black' : 'white', backgroundColor: 'transparent', borderRadius: "30px", width: "fit-content", padding: "5px 0px", textTransform:'lowercase', display:'flex', justifyContent:'center', alignItems:'center', gap: '2px' }} className=' capitalize'>
-                                   
-                                   <Box component={'span'} sx={{position:'relative', width:'13px', height:'7px'}}>
-                                      { customer.Status.toLowerCase() === 'active' ? <Box component={'span'} class="dot active"></Box> : <Box component={'span'} class="dot completed"></Box> }
-                                   </Box>
-
-                                    {customer.Status}
-                                </Typography>       
-
-                            </Box>
-                        </Box>
-
-                        
-                        <Box component={'div'} sx={{ padding: "0px 20px" , width:"100%", marginBottom:"30px"}}>
-                        <Stack flexDirection={'row'} justifyContent={"space-between"} alignItems={'center'} className='mb-6 lg:!mb-12'>
-                            <Typography component={'h4'} variant='h4' sx={{ fontWeight: "600", color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                {!isLoanEdit ? 'Loan Details :' : 'Edit :'}
-                            </Typography>
-
-                            <Stack flexDirection={'row'} justifyContent={'start'} alignItems={'center'} gap={'10px'}>
-                                {!isLoanEdit && <Button className='flex justify-center items-center gap-2 ] !px-5' onClick={() => setIsLoanEdit(!isLoanEdit)}>
-                                    Edit
-                                    <CreateIcon sx={{ fontSize: "15px" }} />
-                                </Button>}
-
-                                {isLoanEdit &&
-                                    <>
-                                        <Button sx={{
-                                            backgroundColor: "grey", opacity: ".9", color: mode !== 'light' ? 'applicationTheme.secondaryColor_1' : 'applicationTheme.primaryColor_1', "&:hover": {
-                                                backgroundColor: "grey", color: mode !== 'light' ? 'applicationTheme.secondaryColor_1' : 'applicationTheme.primaryColor_1'
-                                            }
-                                        }} className='!bg-opacity-5 !bg-blend-darken !px-5' onClick={() => setIsLoanEdit(!isLoanEdit)}>
-                                            Reset
-                                        </Button>
-
-                                        <Button sx={{ backgroundColor: "applicationTheme.main" }} className='flex justify-center items-center gap-2 !px-5' onClick={() => setIsLoanEdit(!isLoanEdit)}>
-                                            Save
-                                            <AutoFixHighIcon sx={{ fontSize: "15px" }} />
-                                        </Button>
-                                    </>
-                                }
-
-                            </Stack>
-                        </Stack>
-                        <Box component="form" onSubmit={() => handleUpdate()} noValidate>
-                            <Grid container rowSpacing={{ xs: !isEdit ? '30px' : '10px', sm: !isEdit ? '30px' : '10px', md: '20px' }} columnSpacing={'20px'}>
-                               
-                                
-                            <Grid item xs={12} sm={6}>
-                                    {!isLoanEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Loan Amount :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            ₹{customer.Amount}
-                                        </Typography>
-                                    </Stack>}
-                                    {isLoanEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        value={customer.Amount}
-                                        id="amount"
-                                        label="Amount"
-                                        name="amount"
-                                        autoComplete="amount"
-
-
-                                    />}
-                                </Grid>
-                               
-                             
-                              
-                           
-                                <Grid item xs={12} sm={6}>
-                                    {!isLoanEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Rate :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Rate}%
-                                        </Typography>
-                                    </Stack>}
-                                    {isLoanEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        value={customer.Rate}
-                                        id="rate"
-                                        label="Rate"
-                                        name="rate"
-                                        autoComplete="rate"
-                                    />}
-                                </Grid>
-
-                                     
-                            <Grid item xs={12} sm={6}>
-                                    {!isLoanEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Duration :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                               {month}months ({calculateExactTimePeriod(customer.Date)})
-                                        </Typography>
-                                    </Stack>}
-                                    {isLoanEdit && <TextField
-                                        margin="normal"
-                                        required
-                                        fullWidth
-                                        
-                                        id="duration"
-                                        label="Duration"
-                                        name="duration"
-                                        autoComplete="duration"
-
-
-                                    />}
-                                </Grid>
-
-                                <Grid item xs={12} sm={6}>
-                                    {!isLoanEdit && <Stack flexDirection={{ xs: 'row', md: 'column' }} justifyContent={"start"} alignItems={{ xs: 'center', md: "start" }} gap={"10px"}>
-                                        <Typography component={'label'} variant='p' fontWeight={'700'} sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px" }} >
-                                            Category :
-                                        </Typography>
-                                        <Typography component={'p'} variant='p' sx={{ color: 'applicationTheme.secondaryColor_1', padding: "0px 0px", }} className='capitalize' >
-                                            {customer.Category}
-                                        </Typography>
-                                    </Stack>}
-                                    {isLoanEdit &&
-                                        <Autocomplete
-                                            required
-                                            value={customer.Category}
-                                            id="category"
-                                            options={categoriesOptions}
-                                            sx={{ width: "100%", textTransform: 'capitalize' }}
-                                            renderInput={(params) => <TextField margin="normal"
-                                                required
-                                                fullWidth {...params} sx={{ textTransform: "capitalize" }} label="Category" />}
-                                        />
-                                    }
-                                </Grid>
-
-                            </Grid>
-                        </Box>
-                       </Box>
-
-                        <Box component={'div'} className='w-full px-5 md:px-1'>
-                        
-                            <Stack component={'div'} flexDirection={'column'} justifyContent={'start'} alignItems={'start'}  spacing={'20px'} width={{xs:'100%',md:'90%',xl:'60%'}} sx={{padding: "10px 20px", borderWidth:'1px',borderStyle:"solid", borderColor:"applicationTheme.primaryColor_2", marginLeft:{xs:'0px',lg:'10px'} }}>
-                                    <Box component={'div'} sx={{width:"100%", display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center', }} >
-                                             <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
-                                                Interest :
+                                        ) : (
+                                            <Typography variant="body2">
+                                                {customer.Gender}
                                             </Typography>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                               {interest}
-                                            </Typography>
-                                    </Box>
-                                    <Stack flexDirection={'column'} justifyContent={'start'} alignItems={'end'} width={'100%'} spacing={'10px'}>
-
-                                        <Box component={'div'} sx={{width:"100%", display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'center', bgcolor: customer.Status.toLowerCase() === 'active' ? 'transparent' :'#ffff99', padding: customer.Status.toLowerCase() !== 'active' && '5px 10px' }} >
-                                                <Typography component={'h6'} variant='h6' sx={{ fontWeight: "500", color:  customer.Status.toLowerCase() === 'active'  ?  'applicationTheme.secondaryColor_1' : 'black' }} className=' capitalize'>
-                                                { customer.Status.toLowerCase() === 'active' ?  'Amount to be Paid :' : 'Paid :' }
-                                                </Typography>
-                                                <Typography component={'h6'} variant='h6' sx={{ fontWeight: "500", color: customer.Status.toLowerCase() === 'active'  ?  'applicationTheme.secondaryColor_1' : 'black', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                <CurrencyRupeeIcon sx={{fontSize:'18px'}}/>  {customer.Amount + interest}
-                                                </Typography>
-                                        </Box>
-
-                              {customer.Status.toLowerCase() === 'active'  &&  <Button className='flex justify-center items-center !px-5'>
-                                            Mark as Paid
-                                        </Button> }
-
-
-
-
+                                        )}
                                     </Stack>
-                                  
-
-                            </Stack>
-
-
-                            </Box>
- {/*                         <Stack display={{ xs: 'none', sm: 'flex' }} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} gap={'10px'} className='w-fit p-3'>
-
-                            <Table>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottomColor: "applicationTheme.primaryColor_2", borderRightWidth: "1px", borderRightStyle: "solid", borderRightColor: "applicationTheme.primaryColor_2" }}>
-                                           
-                                        </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottomColor: "applicationTheme.primaryColor_2" }}>
-                                         
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottom: "none", borderRightWidth: "1px", borderRightStyle: "solid", borderRightColor: "applicationTheme.primaryColor_2" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
-                                                Month
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell width={'120px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {month}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottom: "none", borderRightWidth: "1px", borderRightStyle: "solid", borderRightColor: "applicationTheme.primaryColor_2" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
-                                                Amount to be Paid
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {Math.sign(customer.Amount + interest) !== -1 ? <MovingIcon /> : <TrendingDownIcon sx={{ fontSize: "25px", color: "#ff4d4d" }} />}  {customer.Amount + interest}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottom: "none", borderRightWidth: "1px", borderRightStyle: "solid", borderRightColor: "applicationTheme.primaryColor_2" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
-                                                Exact Time Period
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {calculateExactTimePeriod}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-                        </Stack> */}
-
-                      {/* <Stack display={{ xs: 'flex', sm: 'none' }} flexDirection={'column'} justifyContent={'center'} alignItems={'center'} gap={'10px'} className='w-full p-3'>
-
-                            <Table>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottomColor: "applicationTheme.primaryColor_2" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: ' .secondaryColor_1' }} className=' capitalize'>
-                                                Interest
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottomColor: "applicationTheme.primaryColor_2" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {Math.sign(interest) !== -1 ? <MovingIcon /> : <TrendingDownIcon sx={{ fontSize: "25px", color: "#ff4d4d" }} />} {interest}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
-                                                Month
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {month} months ~ exact duration({calculateExactTimePeriod(customer.Date)})
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
-                                                Amount to be Paid
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {Math.sign(customer.Amount + interest) !== -1 ? <MovingIcon /> : <TrendingDownIcon sx={{ fontSize: "25px", color: "#ff4d4d" }} />}  {customer.Amount + interest}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell width={'120px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'h6'} variant='h6' sx={{ fontWeight: "400", color: 'applicationTheme.secondaryColor_1' }} className=' capitalize'>
-                                                Exact Time Period
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell width={'150px'} sx={{ borderBottom: "none" }}>
-                                            <Typography component={'p'} variant='p' sx={{ fontWeight: "300", color: 'applicationTheme.secondaryColor_1', display: "flex", justifyContent: "center", alignItems: "center", gap: "5px" }} className=' capitalize'>
-                                                {calculateExactTimePeriod(customer.Date)}
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow> 
-                                </TableBody>
-                            </Table>
-                        </Stack> */}
-                    </Stack>
+                                </Grid>
+                            </Grid>
+                            {isEdit && (
+                                <Stack direction="row" justifyContent="center" alignItems="center" sx={{ marginTop: '20px' }}>
+                                    <Button onClick={handleUpdate} variant="contained" color="primary" startIcon={<AutoFixHighIcon />}>
+                                        Update
+                                    </Button>
+                                </Stack>
+                            )}
+                        </AccordionDetails>
+                    </Accordion>
                 </Grid>
-
             </Grid>
-        </>
+            <Modal
+                open={isModalOpen}
+                onClose={handleModalClose}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box sx={{ ...modalStyle }}>
+                    <Typography id="modal-title" variant="h6" component="h2">
+                        Confirm Payment
+                    </Typography>
+                    <TextField
+                        label="Paid Amount"
+                        value={paidAmount}
+                        onChange={(e) => setPaidAmount(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Paid Date"
+                        type="date"
+                        value={paidDate}
+                        onChange={(e) => setPaidDate(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        InputLabelProps={{ shrink: true }}
+                    />
+                    <SwipeableButton
+                        text='Swipe to confirm payment'
+                        color='#4CAF50'
+                        onSuccess={handleSwipeSuccess}
+                    />
+                </Box>
+            </Modal>
+        </Box>
     );
 };
 
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 export default ViewPage;
