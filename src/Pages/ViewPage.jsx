@@ -26,6 +26,10 @@ const ViewPage = () => {
     const [isEdit, setIsEdit] = useState(false);
     const [isLoanEdit, setIsLoanEdit] = useState(false);
     const [gender, setGender] = useState('');
+    const [previousPayments, setPreviousPayments] = useState([]);
+    const [editingPayment, setEditingPayment] = useState(null);
+
+
 
     const fetchData = async () => {
         const res = await getDetailsById(id, dispatch, navigate);
@@ -34,6 +38,7 @@ const ViewPage = () => {
         calculateMonthlySimpleInterest(res.data.Amount, res.data.Rate, res.data.Date);
         calculateExactTimePeriod(res.data.Date);
         setPaidAmount((parseFloat(res.data.Amount) + parseFloat(interest)).toFixed(2));
+        setPreviousPayments(customer.PreviousPayments);
     };
 
     function calculateExactTimePeriod(startDate) {
@@ -70,6 +75,35 @@ const ViewPage = () => {
 
     const handleModalClose = () => {
         setIsModalOpen(false);
+    };
+    const handlePaymentChange = (e, index, field) => {
+        const updatedPayments = [...previousPayments];
+        updatedPayments[index][field] = field === 'PaidAmount' ? parseFloat(e.target.value) : new Date(e.target.value);
+        setPreviousPayments(updatedPayments);
+    };
+
+    const savePayment = (index) => {
+        setEditingPayment(null);
+        // Update the backend if needed
+    };
+
+    const cancelEditPayment = () => {
+        setEditingPayment(null);
+    };
+
+    const editPayment = (index) => {
+        setEditingPayment(index);
+    };
+
+    const deletePayment = (index) => {
+        const updatedPayments = previousPayments.filter((_, i) => i !== index);
+        setPreviousPayments(updatedPayments);
+        // Update the backend if needed
+    };
+
+    const addNewPayment = () => {
+        setPreviousPayments([...previousPayments, { PaidAmount: 0, PaidDate: new Date() }]);
+        setEditingPayment(previousPayments.length);
     };
 
 
@@ -236,6 +270,53 @@ const ViewPage = () => {
                                         </Typography>
                                     </Stack>
                                 </Grid>
+
+
+                                <Grid item xs={12}>
+                                    <Accordion>
+                                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                            <Typography variant="h6" sx={{ fontWeight: '600' }}>Previous Payments</Typography>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            {previousPayments.map((payment, index) => (
+                                                <Stack key={index} direction="row" justifyContent="space-between" alignItems="center" sx={{ marginBottom: '10px' }}>
+                                                    {editingPayment === index ? (
+                                                        <>
+                                                            <TextField
+                                                                value={payment.PaidAmount}
+                                                                onChange={(e) => handlePaymentChange(e, index, 'PaidAmount')}
+                                                                label="Amount"
+                                                                sx={{ marginRight: '10px' }}
+                                                            />
+                                                            <TextField
+                                                                type="date"
+                                                                value={new Date(payment.PaidDate).toISOString().substr(0, 10)}
+                                                                onChange={(e) => handlePaymentChange(e, index, 'PaidDate')}
+                                                                label="Date"
+                                                                InputLabelProps={{ shrink: true }}
+                                                                sx={{ marginRight: '10px' }}
+                                                            />
+                                                            <Button onClick={() => savePayment(index)}>Save</Button>
+                                                            <Button onClick={() => cancelEditPayment()}>Cancel</Button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Typography variant="body2">Amount: ₹{payment.PaidAmount}</Typography>
+                                                            <Typography variant="body2">Date: {new Date(payment.PaidDate).toISOString().substr(0, 10)}</Typography>
+                                                            <Button onClick={() => editPayment(index)}>Edit</Button>
+                                                            <Button onClick={() => deletePayment(index)}>Delete</Button>
+                                                        </>
+                                                    )}
+                                                </Stack>
+                                            ))}
+                                            {previousPayments === null && previousPayments.length === 0 && (
+                                                <Typography variant="body2">No previous payments available.</Typography>
+                                            )}
+                                            <Button onClick={addNewPayment}>Add Payment</Button>
+                                        </AccordionDetails>
+                                    </Accordion>
+                                </Grid>
+
                                 {customer.Status !== 'Completed' ? <Grid item xs={12}>
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>Due Amount:</Typography>
