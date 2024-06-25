@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Grid, Box, Stack, Button, TextField, ToggleButtonGroup, ToggleButton, Accordion, AccordionSummary, AccordionDetails, MenuItem, Divider, Modal } from '@mui/material';
@@ -11,6 +12,8 @@ import CreateIcon from '@mui/icons-material/Create';
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
 const ViewPage = () => {
     const [customer, setCustomer] = useState(null);
@@ -27,19 +30,26 @@ const ViewPage = () => {
     const [isLoanEdit, setIsLoanEdit] = useState(false);
     const [gender, setGender] = useState('');
     const [previousPayments, setPreviousPayments] = useState([]);
-    const [editingPayment, setEditingPayment] = useState(null);
-
-
+    const [newPayment, setNewPayment] = useState({ PaidAmount: '', PaidDate: '' });
 
     const fetchData = async () => {
-        const res = await getDetailsById(id, dispatch, navigate);
-        setCustomer(res.data);
-        setGender(res.data.Gender);
-        calculateMonthlySimpleInterest(res.data.Amount, res.data.Rate, res.data.Date);
-        calculateExactTimePeriod(res.data.Date);
-        setPaidAmount((parseFloat(res.data.Amount) + parseFloat(interest)).toFixed(2));
-        setPreviousPayments(customer.PreviousPayments);
+        try {
+            const res = await getDetailsById(id, dispatch, navigate);
+            const fetchedCustomer = res.data;
+
+            if (fetchedCustomer) {
+                setCustomer(fetchedCustomer);
+                setGender(fetchedCustomer.Gender);
+                calculateMonthlySimpleInterest(fetchedCustomer.Amount, fetchedCustomer.Rate, fetchedCustomer.Date);
+                calculateExactTimePeriod(fetchedCustomer.Date);
+                setPaidAmount((parseFloat(fetchedCustomer.Amount) + parseFloat(fetchedCustomer.Interest || 0)).toFixed(2));
+                setPreviousPayments(fetchedCustomer.PreviousPayments);
+            }
+        } catch (error) {
+            console.error('Failed to fetch customer data:', error);
+        }
     };
+
 
     function calculateExactTimePeriod(startDate) {
         const start = new Date(startDate);
@@ -76,40 +86,39 @@ const ViewPage = () => {
     const handleModalClose = () => {
         setIsModalOpen(false);
     };
-    const handlePaymentChange = (e, index, field) => {
+    const calculateTotalAmount = () => {
+        let totalAmount = 0;
+        previousPayments.forEach(payment => {
+            totalAmount += payment.PaidAmount || 0;
+        });
+        return totalAmount;
+    };
+
+    const deletePayment = async (index) => {
         const updatedPayments = [...previousPayments];
-        updatedPayments[index][field] = field === 'PaidAmount' ? parseFloat(e.target.value) : new Date(e.target.value);
-        setPreviousPayments(updatedPayments);
+        updatedPayments.splice(index, 1);
+        await updateCustomerData({ ...customer, PreviousPayments: updatedPayments });
     };
 
-    const savePayment = (index) => {
-        setEditingPayment(null);
-        // Update the backend if needed
+    const addNewPayment = async () => {
+        const updatedPayments = [...previousPayments, newPayment];
+        await updateCustomerData({ ...customer, PreviousPayments: updatedPayments });
     };
 
-    const cancelEditPayment = () => {
-        setEditingPayment(null);
+    const updateCustomerData = async (updatedCustomer) => {
+        try {
+            await updateData(updatedCustomer, dispatch, navigate, id);
+            setPreviousPayments(updatedCustomer.PreviousPayments);
+            // Optionally handle success message or state update
+        } catch (error) {
+            console.error('Error updating customer data:', error);
+            // Handle error scenario
+        }
     };
-
-    const editPayment = (index) => {
-        setEditingPayment(index);
-    };
-
-    const deletePayment = (index) => {
-        const updatedPayments = previousPayments.filter((_, i) => i !== index);
-        setPreviousPayments(updatedPayments);
-        // Update the backend if needed
-    };
-
-    const addNewPayment = () => {
-        setPreviousPayments([...previousPayments, { PaidAmount: 0, PaidDate: new Date() }]);
-        setEditingPayment(previousPayments.length);
-    };
-
 
     useEffect(() => {
         fetchData();
-    }, [id, dispatch, updateData]);
+    }, [id, dispatch]);
 
     if (!customer) {
         return <div className='flex justify-center items-center h-full w-full text-xl'>Loading...</div>;
@@ -275,44 +284,56 @@ const ViewPage = () => {
                                 <Grid item xs={12}>
                                     <Accordion>
                                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                            <Typography variant="h6" sx={{ fontWeight: '600' }}>Previous Payments</Typography>
+                                            <Typography variant="h6" sx={{ fontWeight: '600' }}>
+                                                Old Payments
+                                                <span style={{ marginLeft: '15px', color: '#1976d2' }}>
+                                                   net: ₹{calculateTotalAmount()}
+                                                </span>
+                                            </Typography>
                                         </AccordionSummary>
-                                        <AccordionDetails>
+                                        <AccordionDetails sx={{ maxHeight: '300px', overflowY: 'auto' }}>
                                             {previousPayments.map((payment, index) => (
                                                 <Stack key={index} direction="row" justifyContent="space-between" alignItems="center" sx={{ marginBottom: '10px' }}>
-                                                    {editingPayment === index ? (
-                                                        <>
-                                                            <TextField
-                                                                value={payment.PaidAmount}
-                                                                onChange={(e) => handlePaymentChange(e, index, 'PaidAmount')}
-                                                                label="Amount"
-                                                                sx={{ marginRight: '10px' }}
-                                                            />
-                                                            <TextField
-                                                                type="date"
-                                                                value={new Date(payment.PaidDate).toISOString().substr(0, 10)}
-                                                                onChange={(e) => handlePaymentChange(e, index, 'PaidDate')}
-                                                                label="Date"
-                                                                InputLabelProps={{ shrink: true }}
-                                                                sx={{ marginRight: '10px' }}
-                                                            />
-                                                            <Button onClick={() => savePayment(index)}>Save</Button>
-                                                            <Button onClick={() => cancelEditPayment()}>Cancel</Button>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <Typography variant="body2">Amount: ₹{payment.PaidAmount}</Typography>
-                                                            <Typography variant="body2">Date: {new Date(payment.PaidDate).toISOString().substr(0, 10)}</Typography>
-                                                            <Button onClick={() => editPayment(index)}>Edit</Button>
-                                                            <Button onClick={() => deletePayment(index)}>Delete</Button>
-                                                        </>
-                                                    )}
+                                                    <>
+                                                        <Typography variant="body2">Amount: ₹{payment.PaidAmount}</Typography>
+                                                        <Typography variant="body2">Date: {new Date(payment.PaidDate).toISOString().substr(0, 10)}</Typography>
+                                                        <Button
+                                                            variant="outlined"
+                                                            color="error"
+                                                            startIcon={<DeleteIcon />}
+                                                            onClick={() => deletePayment(index)}
+                                                        >
+                                                            
+                                                        </Button>
+                                                    </>
                                                 </Stack>
                                             ))}
-                                            {previousPayments === null && previousPayments.length === 0 && (
+                                            {previousPayments.length === 0 && (
                                                 <Typography variant="body2">No previous payments available.</Typography>
                                             )}
-                                            <Button onClick={addNewPayment}>Add Payment</Button>
+                                            <Stack direction="row" alignItems="center" sx={{ marginTop: '10px' }}>
+                                                <TextField
+                                                    value={newPayment.PaidAmount}
+                                                    onChange={(e) => setNewPayment({ ...newPayment, PaidAmount: e.target.value })}
+                                                    label="Amount"
+                                                    sx={{ marginRight: '10px', width: '120px' }}
+                                                />
+                                                <TextField
+                                                    type="date"
+                                                    value={newPayment.PaidDate}
+                                                    onChange={(e) => setNewPayment({ ...newPayment, PaidDate: e.target.value })}
+                                                    label="Date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    sx={{ marginRight: '10px', width: '120px' }}
+                                                />
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    startIcon={<AddIcon />}
+                                                    onClick={addNewPayment}
+                                                >Add
+                                                </Button>
+                                            </Stack>
                                         </AccordionDetails>
                                     </Accordion>
                                 </Grid>
@@ -321,7 +342,7 @@ const ViewPage = () => {
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>Due Amount:</Typography>
                                         <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
-                                            ₹{customer.Amount} + ₹{interest.toFixed(2)} = {(parseFloat(customer.Amount) + parseFloat(interest)).toFixed(2)}
+                                            ₹{customer.Amount} + ₹{interest.toFixed(2)} - ₹{calculateTotalAmount()} = {((parseFloat(customer.Amount) + parseFloat(interest)).toFixed(2) - parseFloat(calculateTotalAmount())).toFixed(2)}
                                         </Typography>
                                     </Stack>
                                 </Grid> : null}
