@@ -246,10 +246,6 @@ export default function CustomerList() {
     }
   };
 
-  const handleEdit = (id) => {
-    navigate(`/view/${id}`);
-  };
-
   const handleView = (id) => {
     navigate(`/view/${id}`);
   };
@@ -266,7 +262,7 @@ export default function CustomerList() {
 
   return (
     <>
-      <Paper sx={{ paddingTop: '10px', overflowx: 'hidden', bgcolor: "applicationTheme.primary", height: '88%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'start', gap: "10px", boxShadow: 'none', backgroundImage: "none", borderRadius: "0px", }}>
+      <Paper sx={{ paddingTop: '10px', overflowx: 'hidden', bgcolor: "applicationTheme.primary", height: '95%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'start', gap: "10px", boxShadow: 'none', backgroundImage: "none", borderRadius: "0px", }}>
         <Box
           sx={{
             display: 'flex',
@@ -433,15 +429,12 @@ export default function CustomerList() {
                         key={column.id}
                         align={column.align || 'left'}
                         sx={{
-
+                          borderRight:'1px solid white',
                           fontSize: '0.875rem',
                           color: 'applicationTheme.primaryColor_1',
                           backgroundColor: 'applicationTheme.secondaryColor_1',
                           fontWeight: 'bold',
                           padding: index === 0 || index + 1 >= array.length ? "10px 10px" : "10px 5px",
-
-
-
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -503,7 +496,7 @@ export default function CustomerList() {
                                       <div style={{ display: 'inline-block', alignItems: 'center', width: "150px", whiteSpace: "nowrap", textOverflow: 'ellipsis', overflow: 'hidden' }}>
                                         {customer.Name}
                                       </div>
-                                      <div
+                                      {customer.Status === 'Active' && <div
                                         style={{
                                           display: 'flex',
                                           alignItems: 'center',
@@ -524,7 +517,7 @@ export default function CustomerList() {
                                         >
                                           {getShortTenureText(calculateTenure(customer.Date).text)}
                                         </span>
-                                      </div>
+                                      </div>}
                                     </div>
                                   ) : column.id === 'Status' ? (
                                     <span
