@@ -31,6 +31,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import TransitionsModal from '../Components/Modal';
 import { deleteData, getList } from '../Api/Apis';
 import Loading from '../Components/Loading';
+import { useMediaQuery, useTheme } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 const columns = [
   { id: '_id', label: 'ID', minWidth: 50 },
@@ -56,7 +58,48 @@ export default function CustomerList() {
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMediumScreen = useMediaQuery(theme.breakpoints.up('md'));
+  
   const listData = useSelector((state) => state.getData);
+
+  
+  const [placeholder, setPlaceholder] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+  const text = 'Search_name';
+  const typingSpeed = 150; // Adjust typing speed in ms
+  const deletionSpeed = 100; // Adjust deletion speed in ms
+  const pauseDuration = 1000; // Pause duration in ms before retyping
+
+  useEffect(() => {
+    let typingTimeout;
+    let currentIndex = placeholder.length;
+
+    if (isTyping) {
+      if (currentIndex < text.length) {
+        typingTimeout = setTimeout(() => {
+          setPlaceholder((prev) => prev + text[currentIndex]);
+        }, typingSpeed);
+      } else {
+        typingTimeout = setTimeout(() => {
+          setIsTyping(false);
+        }, pauseDuration);
+      }
+    } else {
+      if (currentIndex > 0) {
+        typingTimeout = setTimeout(() => {
+          setPlaceholder((prev) => prev.slice(0, -1));
+        }, deletionSpeed);
+      } else {
+        typingTimeout = setTimeout(() => {
+          setIsTyping(true);
+        }, pauseDuration);
+      }
+    }
+
+    return () => clearTimeout(typingTimeout);
+  }, [placeholder, isTyping]);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -220,54 +263,64 @@ export default function CustomerList() {
     setPage(0);
   };
 
+
   return (
     <>
-      <Paper sx={{ padding: '0px', overflowY: 'hidden'}}>
+      <Paper sx={{ paddingTop: '10px', overflowx: 'hidden',   bgcolor: "applicationTheme.primary", height:'88%', display:'flex',flexDirection:'column', justifyContent:'start', alignItems:'start', gap:"10px", boxShadow:'none', backgroundImage: "none", borderRadius: "0px",}}>
         <Box
           sx={{
             display: 'flex',
+            justifyContent: 'flex-end',    
             alignItems: 'center',
-            padding: '0.1rem   1rem',
-            backgroundColor: 'background.default',
+            width: '100%',
+            backgroundColor: 'applicationTheme.primary',
+            height:'fit-content',
           }}
         >
           <TextField
             // label="Search Name"
             variant="outlined"
+          
             onChange={(e) => setSearchValue(e.target.value)}
             value={searchValue}
-            placeholder='seach name..'
+            placeholder={placeholder}
             sx={{
-              width: '250px',
+              width: isMediumScreen ? '250px' : '100%',
               marginRight: '1rem',
+             
               '.MuiOutlinedInput-root': {
-                height: '2.5rem',
-                borderRadius: '20px',
+                height: isMediumScreen ? '2.5rem' : '3rem',
+                borderRadius:  isMediumScreen ? '30px' :'10px',
               },
               '.MuiInputLabel-outlined': {
                 transform: 'translate(14px, 10px) scale(1)',
               },
+
+              "& input::placeholder": {
+                fontSize: "15px",
+                color: theme.palette.mode === 'light' ? "#333333"  : '#b6b6b6' ,
+                opacity:.9,
+              },
+
+              "& .MuiOutlinedInput-root": {
+                color: theme.palette.mode === 'light' ? "#333333"  : '#b6b6b6' ,
+             "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: 'grey !important',
+                borderWidth: "1px",
+              },
+            }
+              
             }}
             InputProps={{
+             
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    color="primary"
-                    aria-label="search"
-                    onClick={handleSearch}
-                  >
-                    <lord-icon
-                      src="https://cdn.lordicon.com/anqzffqz.json"
-                      trigger="loop"
-                      state="loop-spin"
-                      delay="1500"
-                      style={{ width: '30px', height: '30px', marginRight: '3px' }}>
-                    </lord-icon>
-                  </IconButton>
+                      <SearchIcon/>
                 </InputAdornment>
               ),
             }}
           />
+          {isMediumScreen ?   
           <Select
             variant="outlined"
             // label="Filter"
@@ -279,12 +332,25 @@ export default function CustomerList() {
               height: '2.5rem',
               borderRadius: '20px',
               minWidth: '150px',
+              borderColor:'grey !important',
               '.MuiSelect-icon': {
                 right: '10px',
               },
+              ".MuiOutlinedInput-notchedOutline": {  borderColor:'grey !important', },
+              "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor:'grey !important',
+                },
+              "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderWidth: '1px !important',
+                  borderColor:'grey !important',
+                },
               '.MuiOutlinedInput-root': {
                 borderRadius: '20px',
                 paddingRight: '30px',
+                borderColor:'grey !important',
+                
               },
               '.MuiInputLabel-outlined': {
                 transform: 'translate(14px, 10px) scale(1)',
@@ -298,33 +364,84 @@ export default function CustomerList() {
             <MenuItem value="Bike">Bike</MenuItem>
             <MenuItem value="Cycle">Cycle</MenuItem>
             <MenuItem value="Others">Others</MenuItem>
-          </Select>
+          </Select> : 
+           <Select
+           variant="outlined"
+           // label="Filter"
+
+           onChange={(e) => setFilterValue(e.target.value)}
+           IconComponent={FilterList}
+           displayEmpty
+           sx={{
+             height: '2.7rem',
+             borderRadius: '50%',
+             padding:'0px !important',
+             width: '43px',
+             borderColor:'grey !important',
+             '.MuiSelect-icon': {
+               right: '10px',
+             },
+             ".MuiOutlinedInput-notchedOutline": {  borderColor:'grey !important', },
+             "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+               {
+                 borderColor:'grey !important',
+               },
+             "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+               {
+                 borderWidth: '1px !important',
+                 borderColor:'grey !important',
+               },
+             '.MuiOutlinedInput-root': {
+           
+               padding: '0px',
+               borderColor:'grey !important',
+               
+             },
+             '.MuiInputLabel-outlined': {
+               transform: 'translate(14px, 10px) scale(1)',
+             },
+           }}
+         >
+           <MenuItem value="">All</MenuItem>
+           <MenuItem value="Gold">Gold</MenuItem>
+           <MenuItem value="Silver">Silver</MenuItem>
+           <MenuItem value="Bronze">Kansa</MenuItem>
+           <MenuItem value="Bike">Bike</MenuItem>
+           <MenuItem value="Cycle">Cycle</MenuItem>
+           <MenuItem value="Others">Others</MenuItem>
+         </Select> }
         </Box>
         {loaderOpen ? (
           <Loading />
-        ) : (
-          <>
+        ) : 
+   <>
             <TableContainer
               component={'div'}
               sx={{
-                border: '1px solid black',
+                border: 'none',
+                backgroundColor: 'applicationTheme.primary',
                 overflowX: 'scroll',
                 scrollBehavior: 'smooth',
-                height: `72vh`,
+                height:'100x%',
               }}
             >
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
+              <Table stickyHeader aria-label="sticky table" >
+                <TableHead >
                   <TableRow>
-                    {columns.map((column) => (
+                    {columns.map((column,index,array) => (
                       <TableCell
                         key={column.id}
                         align={column.align || 'left'}
                         sx={{
-                          minWidth: column.minWidth,
+                      
                           fontSize: '0.875rem',
+                          color:  'applicationTheme.primaryColor_1' ,
+                          backgroundColor: 'applicationTheme.secondaryColor_1',
                           fontWeight: 'bold',
-                          height: '30px',
+                          padding: index === 0 || index + 1 >= array.length  ? "10px 10px"  : "10px 5px",
+                         
+                         
+                         
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -335,13 +452,14 @@ export default function CustomerList() {
                                 size="small"
                                 onClick={() => handleSort(column.id)}
                               >
-                                <ArrowUpward sx={{ fontSize: '1rem' }} />
+                                <ArrowUpward sx={{ fontSize: '1rem',  color:  'applicationTheme.primaryColor_1' , }} />
                               </IconButton>
                               <IconButton
-                                size="small"
+                                size="small" 
+                              
                                 onClick={() => handleSort(`-${column.id}`)}
                               >
-                                <ArrowDownward sx={{ fontSize: '1rem' }} />
+                                <ArrowDownward sx={{ fontSize: '1rem',  color:  'applicationTheme.primaryColor_1' , }} />
                               </IconButton>
                             </>
                           )}
@@ -354,20 +472,25 @@ export default function CustomerList() {
                   {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? (
                     filteredCustomers
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((customer, index) => (
-                        <TableRow key={index}>
+                      .map((customer, index,array) => (
+                        <TableRow key={index} >
                           {columns.map((column) => (
                             <TableCell
                               key={column.id}
                               onClick={() => handleView(customer._id)}
+                              className={`sample-customer ${ customer && '!w-52'}`}
                               sx={{
-                                minWidth: column.minWidth,
+                              
+                                
                                 fontSize: '0.875rem',
                                 fontWeight: '600',
-                                backgroundColor: '#f5f5f5',
-                                color: '#333',
-                                padding: '6px',
-                                cursor:'pointer'
+                                backgroundColor: 'trnaparent',
+                                color:  'applicationTheme.secondaryColor_1' ,
+                                padding:"15px 5px",
+                                cursor:'pointer',
+                                
+                                borderBottom: index + 1 >= array.length ? 'none' : '1px solid grey',
+                               
                               }}
                               align={column.align || 'left'}
                             >
@@ -376,8 +499,8 @@ export default function CustomerList() {
                                 : column.id === 'Date'
                                   ? new Date(customer.Date).toLocaleDateString('en-IN')
                                   : column.id === 'Name' ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column',width:'100%' }}>
+                                      <div style={{ display: 'inline-block', alignItems: 'center', width:"150px",whiteSpace:"nowrap", textOverflow:'ellipsis', overflow:'hidden' }}>
                                         {customer.Name}
                                       </div>
                                       <div
@@ -388,6 +511,7 @@ export default function CustomerList() {
                                           borderRadius: '8px',
                                           padding: '2px 4px',
                                           marginTop: '4px',
+                                          width:"70px"
                                         }}
                                       >
                                         <AccessTimeIcon style={{ marginRight: '4px', color: '#757575', fontSize: '1rem' }} />
@@ -463,7 +587,7 @@ export default function CustomerList() {
               </Table>
               
             </TableContainer>
-              <Box sx={{ display: 'flex', flexDirection: 'column',height:'6vh' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row', backgroundColor: 'applicationTheme.primary', justifyContent: isMediumScreen ? 'flex-end' : 'center',alignItems:'center',height:'fit-content', width:"100%", }}>
                 <TablePagination
                   rowsPerPageOptions={[10, 25, 100]}
                   component="div"
@@ -472,7 +596,7 @@ export default function CustomerList() {
                   page={page}
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
-                  sx={{ xs: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', padding: '0px', overflow: 'hidden', paddingX: '0px' }}
+                  sx={{ xs: 'flex', justifyContent: 'flex-end', backgroundColor: 'applicationTheme.primary', fontSize: '0.75rem', padding: '0px', overflow: 'hidden', paddingX: '0px' }}
                 />
                 <TransitionsModal
                   open={open}
@@ -480,8 +604,9 @@ export default function CustomerList() {
                   handleConfirm={handleConfirm}
                 />
               </Box>
-          
-          </>)}
+              </>
+           
+        }
       </Paper>
     </>
   );
