@@ -60,10 +60,10 @@ export default function CustomerList() {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up('md'));
-  
+
   const listData = useSelector((state) => state.getData);
 
-  
+
   const [placeholder, setPlaceholder] = useState('');
   const [isTyping, setIsTyping] = useState(true);
   const text = 'Search_name';
@@ -266,31 +266,31 @@ export default function CustomerList() {
 
   return (
     <>
-      <Paper sx={{ paddingTop: '10px', overflowx: 'hidden',   bgcolor: "applicationTheme.primary", height:'88%', display:'flex',flexDirection:'column', justifyContent:'start', alignItems:'start', gap:"10px", boxShadow:'none', backgroundImage: "none", borderRadius: "0px",}}>
+      <Paper sx={{ paddingTop: '10px', overflowx: 'hidden', bgcolor: "applicationTheme.primary", height: '88%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'start', gap: "10px", boxShadow: 'none', backgroundImage: "none", borderRadius: "0px", }}>
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'flex-end',    
+            justifyContent: 'flex-end',
             alignItems: 'center',
             width: '100%',
             backgroundColor: 'applicationTheme.primary',
-            height:'fit-content',
+            height: 'fit-content',
           }}
         >
           <TextField
             // label="Search Name"
             variant="outlined"
-          
+
             onChange={(e) => setSearchValue(e.target.value)}
             value={searchValue}
             placeholder={placeholder}
             sx={{
               width: isMediumScreen ? '250px' : '100%',
               marginRight: '1rem',
-             
+
               '.MuiOutlinedInput-root': {
                 height: isMediumScreen ? '2.5rem' : '3rem',
-                borderRadius:  isMediumScreen ? '30px' :'10px',
+                borderRadius: isMediumScreen ? '30px' : '10px',
               },
               '.MuiInputLabel-outlined': {
                 transform: 'translate(14px, 10px) scale(1)',
@@ -298,123 +298,123 @@ export default function CustomerList() {
 
               "& input::placeholder": {
                 fontSize: "15px",
-                color: theme.palette.mode === 'light' ? "#333333"  : '#b6b6b6' ,
-                opacity:.9,
+                color: theme.palette.mode === 'light' ? "#333333" : '#b6b6b6',
+                opacity: .9,
               },
 
               "& .MuiOutlinedInput-root": {
-                color: theme.palette.mode === 'light' ? "#333333"  : '#b6b6b6' ,
-             "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: 'grey !important',
-                borderWidth: "1px",
-              },
-            }
-              
+                color: theme.palette.mode === 'light' ? "#333333" : '#b6b6b6',
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: 'grey !important',
+                  borderWidth: "1px",
+                },
+              }
+
             }}
             InputProps={{
-             
+
               endAdornment: (
                 <InputAdornment position="end">
-                      <SearchIcon/>
+                  <SearchIcon />
                 </InputAdornment>
               ),
             }}
           />
-          {isMediumScreen ?   
-          <Select
-            variant="outlined"
-            // label="Filter"
-            value={filterValue}
-            onChange={(e) => setFilterValue(e.target.value)}
-            IconComponent={FilterList}
-            displayEmpty
-            sx={{
-              height: '2.5rem',
-              borderRadius: '20px',
-              minWidth: '150px',
-              borderColor:'grey !important',
-              '.MuiSelect-icon': {
-                right: '10px',
-              },
-              ".MuiOutlinedInput-notchedOutline": {  borderColor:'grey !important', },
-              "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor:'grey !important',
+          {isMediumScreen ?
+            <Select
+              variant="outlined"
+              // label="Filter"
+              value={filterValue}
+              onChange={(e) => setFilterValue(e.target.value)}
+              IconComponent={FilterList}
+              displayEmpty
+              sx={{
+                height: '2.5rem',
+                borderRadius: '20px',
+                minWidth: '150px',
+                borderColor: 'grey !important',
+                '.MuiSelect-icon': {
+                  right: '10px',
                 },
-              "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                ".MuiOutlinedInput-notchedOutline": { borderColor: 'grey !important', },
+                "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: 'grey !important',
+                },
+                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                 {
                   borderWidth: '1px !important',
-                  borderColor:'grey !important',
+                  borderColor: 'grey !important',
                 },
-              '.MuiOutlinedInput-root': {
-                borderRadius: '20px',
-                paddingRight: '30px',
-                borderColor:'grey !important',
-                
-              },
-              '.MuiInputLabel-outlined': {
-                transform: 'translate(14px, 10px) scale(1)',
-              },
-            }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="Gold">Gold</MenuItem>
-            <MenuItem value="Silver">Silver</MenuItem>
-            <MenuItem value="Bronze">Kansa</MenuItem>
-            <MenuItem value="Bike">Bike</MenuItem>
-            <MenuItem value="Cycle">Cycle</MenuItem>
-            <MenuItem value="Others">Others</MenuItem>
-          </Select> : 
-           <Select
-           variant="outlined"
-           // label="Filter"
+                '.MuiOutlinedInput-root': {
+                  borderRadius: '20px',
+                  paddingRight: '30px',
+                  borderColor: 'grey !important',
 
-           onChange={(e) => setFilterValue(e.target.value)}
-           IconComponent={FilterList}
-           displayEmpty
-           sx={{
-             height: '2.7rem',
-             borderRadius: '50%',
-             padding:'0px !important',
-             width: '43px',
-             borderColor:'grey !important',
-             '.MuiSelect-icon': {
-               right: '10px',
-             },
-             ".MuiOutlinedInput-notchedOutline": {  borderColor:'grey !important', },
-             "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-               {
-                 borderColor:'grey !important',
-               },
-             "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-               {
-                 borderWidth: '1px !important',
-                 borderColor:'grey !important',
-               },
-             '.MuiOutlinedInput-root': {
-           
-               padding: '0px',
-               borderColor:'grey !important',
-               
-             },
-             '.MuiInputLabel-outlined': {
-               transform: 'translate(14px, 10px) scale(1)',
-             },
-           }}
-         >
-           <MenuItem value="">All</MenuItem>
-           <MenuItem value="Gold">Gold</MenuItem>
-           <MenuItem value="Silver">Silver</MenuItem>
-           <MenuItem value="Bronze">Kansa</MenuItem>
-           <MenuItem value="Bike">Bike</MenuItem>
-           <MenuItem value="Cycle">Cycle</MenuItem>
-           <MenuItem value="Others">Others</MenuItem>
-         </Select> }
+                },
+                '.MuiInputLabel-outlined': {
+                  transform: 'translate(14px, 10px) scale(1)',
+                },
+              }}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Gold">Gold</MenuItem>
+              <MenuItem value="Silver">Silver</MenuItem>
+              <MenuItem value="Bronze">Kansa</MenuItem>
+              <MenuItem value="Bike">Bike</MenuItem>
+              <MenuItem value="Cycle">Cycle</MenuItem>
+              <MenuItem value="Others">Others</MenuItem>
+            </Select> :
+            <Select
+              variant="outlined"
+              // label="Filter"
+
+              onChange={(e) => setFilterValue(e.target.value)}
+              IconComponent={FilterList}
+              displayEmpty
+              sx={{
+                height: '2.7rem',
+                borderRadius: '50%',
+                padding: '0px !important',
+                width: '43px',
+                borderColor: 'grey !important',
+                '.MuiSelect-icon': {
+                  right: '10px',
+                },
+                ".MuiOutlinedInput-notchedOutline": { borderColor: 'grey !important', },
+                "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: 'grey !important',
+                },
+                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderWidth: '1px !important',
+                  borderColor: 'grey !important',
+                },
+                '.MuiOutlinedInput-root': {
+
+                  padding: '0px',
+                  borderColor: 'grey !important',
+
+                },
+                '.MuiInputLabel-outlined': {
+                  transform: 'translate(14px, 10px) scale(1)',
+                },
+              }}
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Gold">Gold</MenuItem>
+              <MenuItem value="Silver">Silver</MenuItem>
+              <MenuItem value="Bronze">Kansa</MenuItem>
+              <MenuItem value="Bike">Bike</MenuItem>
+              <MenuItem value="Cycle">Cycle</MenuItem>
+              <MenuItem value="Others">Others</MenuItem>
+            </Select>}
         </Box>
         {loaderOpen ? (
           <Loading />
-        ) : 
-   <>
+        ) :
+          <>
             <TableContainer
               component={'div'}
               sx={{
@@ -422,26 +422,26 @@ export default function CustomerList() {
                 backgroundColor: 'applicationTheme.primary',
                 overflowX: 'scroll',
                 scrollBehavior: 'smooth',
-                height:'100x%',
+                height: '100x%',
               }}
             >
               <Table stickyHeader aria-label="sticky table" >
                 <TableHead >
                   <TableRow>
-                    {columns.map((column,index,array) => (
+                    {columns.map((column, index, array) => (
                       <TableCell
                         key={column.id}
                         align={column.align || 'left'}
                         sx={{
-                      
+
                           fontSize: '0.875rem',
-                          color:  'applicationTheme.primaryColor_1' ,
+                          color: 'applicationTheme.primaryColor_1',
                           backgroundColor: 'applicationTheme.secondaryColor_1',
                           fontWeight: 'bold',
-                          padding: index === 0 || index + 1 >= array.length  ? "10px 10px"  : "10px 5px",
-                         
-                         
-                         
+                          padding: index === 0 || index + 1 >= array.length ? "10px 10px" : "10px 5px",
+
+
+
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -452,14 +452,14 @@ export default function CustomerList() {
                                 size="small"
                                 onClick={() => handleSort(column.id)}
                               >
-                                <ArrowUpward sx={{ fontSize: '1rem',  color:  'applicationTheme.primaryColor_1' , }} />
+                                <ArrowUpward sx={{ fontSize: '1rem', color: 'applicationTheme.primaryColor_1', }} />
                               </IconButton>
                               <IconButton
-                                size="small" 
-                              
+                                size="small"
+
                                 onClick={() => handleSort(`-${column.id}`)}
                               >
-                                <ArrowDownward sx={{ fontSize: '1rem',  color:  'applicationTheme.primaryColor_1' , }} />
+                                <ArrowDownward sx={{ fontSize: '1rem', color: 'applicationTheme.primaryColor_1', }} />
                               </IconButton>
                             </>
                           )}
@@ -472,25 +472,25 @@ export default function CustomerList() {
                   {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? (
                     filteredCustomers
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((customer, index,array) => (
+                      .map((customer, index, array) => (
                         <TableRow key={index} >
                           {columns.map((column) => (
                             <TableCell
                               key={column.id}
                               onClick={() => handleView(customer._id)}
-                              className={`sample-customer ${ customer && '!w-52'}`}
+                              className={`sample-customer ${customer && '!w-52'}`}
                               sx={{
-                              
-                                
+
+
                                 fontSize: '0.875rem',
                                 fontWeight: '600',
                                 backgroundColor: 'trnaparent',
-                                color:  'applicationTheme.secondaryColor_1' ,
-                                padding:"15px 5px",
-                                cursor:'pointer',
-                                
+                                color: 'applicationTheme.secondaryColor_1',
+                                padding: "15px 5px",
+                                cursor: 'pointer',
+
                                 borderBottom: index + 1 >= array.length ? 'none' : '1px solid grey',
-                               
+
                               }}
                               align={column.align || 'left'}
                             >
@@ -499,8 +499,8 @@ export default function CustomerList() {
                                 : column.id === 'Date'
                                   ? new Date(customer.Date).toLocaleDateString('en-IN')
                                   : column.id === 'Name' ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column',width:'100%' }}>
-                                      <div style={{ display: 'inline-block', alignItems: 'center', width:"150px",whiteSpace:"nowrap", textOverflow:'ellipsis', overflow:'hidden' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                                      <div style={{ display: 'inline-block', alignItems: 'center', width: "150px", whiteSpace: "nowrap", textOverflow: 'ellipsis', overflow: 'hidden' }}>
                                         {customer.Name}
                                       </div>
                                       <div
@@ -511,7 +511,7 @@ export default function CustomerList() {
                                           borderRadius: '8px',
                                           padding: '2px 4px',
                                           marginTop: '4px',
-                                          width:"70px"
+                                          width: "70px"
                                         }}
                                       >
                                         <AccessTimeIcon style={{ marginRight: '4px', color: '#757575', fontSize: '1rem' }} />
@@ -552,14 +552,16 @@ export default function CustomerList() {
                                       whileTap={{ scale: 0.9 }}
                                       style={{ display: 'flex', justifyContent: 'left', gap: '8px' }}
                                     >
-                                      <IconButton color="primary" onClick={() => handleEdit(customer._id)}>
-                                        <EditIcon sx={{ fontSize: '1rem' }} />
-                                      </IconButton>
-                                      <IconButton color="secondary" onClick={() => handleView(customer._id)}>
-                                        <VisibilityIcon sx={{ fontSize: '1rem' }} />
-                                      </IconButton>
-                                          <IconButton color="error" onClick={(e) => { e.stopPropagation() ;handleDelete(customer._id)}}>
+                                      <IconButton
+                                        color="error"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDelete(customer._id);
+                                        }}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: '#f8d7da', padding: '4px 8px', borderRadius: '4px' }}
+                                      >
                                         <DeleteIcon sx={{ fontSize: '1rem' }} />
+                                        <Typography variant="body2">Delete</Typography>
                                       </IconButton>
                                     </motion.div>
                                   ) : (
@@ -585,27 +587,27 @@ export default function CustomerList() {
                 </TableBody>
 
               </Table>
-              
+
             </TableContainer>
-              <Box sx={{ display: 'flex', flexDirection: 'row', backgroundColor: 'applicationTheme.primary', justifyContent: isMediumScreen ? 'flex-end' : 'center',alignItems:'center',height:'fit-content', width:"100%", }}>
-                <TablePagination
-                  rowsPerPageOptions={[10, 25, 100]}
-                  component="div"
-                  count={filteredCustomers.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  sx={{ xs: 'flex', justifyContent: 'flex-end', backgroundColor: 'applicationTheme.primary', fontSize: '0.75rem', padding: '0px', overflow: 'hidden', paddingX: '0px' }}
-                />
-                <TransitionsModal
-                  open={open}
-                  handleClose={() => setOpen(false)}
-                  handleConfirm={handleConfirm}
-                />
-              </Box>
-              </>
-           
+            <Box sx={{ display: 'flex', flexDirection: 'row', backgroundColor: 'applicationTheme.primary', justifyContent: isMediumScreen ? 'flex-end' : 'center', alignItems: 'center', height: 'fit-content', width: "100%", }}>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={filteredCustomers.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                sx={{ xs: 'flex', justifyContent: 'flex-end', backgroundColor: 'applicationTheme.primary', fontSize: '0.75rem', padding: '0px', overflow: 'hidden', paddingX: '0px' }}
+              />
+              <TransitionsModal
+                open={open}
+                handleClose={() => setOpen(false)}
+                handleConfirm={handleConfirm}
+              />
+            </Box>
+          </>
+
         }
       </Paper>
     </>

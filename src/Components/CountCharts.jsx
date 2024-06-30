@@ -9,7 +9,7 @@ import { motion } from 'framer-motion';
 export default function Chart() {
     const theme = useTheme();
     const [data, setData] = useState({ yearly: [], monthly: [] });
-    const [chartType, setChartType] = useState('yearly');
+    const [chartType, setChartType] = useState('monthly');
 
     const loading = useSelector(state => state.loading);
     const analytics = useSelector(state => state.analytics);
@@ -46,9 +46,15 @@ export default function Chart() {
             }));
         }
         return (data.monthly || []).map(item => ({
-            time: `${item.year}-${item.month}`,
+            time: `${formatMonth(item.month)}-${item.year % 100}`,
             amount: item.customerCount
         }));
+    };
+
+    const formatMonth = (month) => {
+        const date = new Date(0);
+        date.setMonth(month - 1);
+        return date.toLocaleString('default', { month: 'short' });
     };
 
     const chartData = createChartData(data, chartType);
@@ -101,15 +107,31 @@ export default function Chart() {
                         top: 5,
                         right: 20,
                         left: 25,
-                        bottom: 30,
+                        bottom: 50,
                     }}
                     xAxis={[
                         {
-                            scaleType: 'point',
+                            scaleType: 'band',
                             dataKey: 'time',
-                            tickNumber: 7,
-                            tickLabelStyle: theme.typography.body2,
-                            tickLabelProps: { style: { transition: '0.3s', ':hover': { fill: theme.palette.primary.main } } }
+                            tickPlacement: 'middle',
+                            tickLabelPlacement: 'middle',
+                            tickLabelStyle: {
+                                ...theme.typography.body2,
+                                transition: '0.3s',
+                                ':hover': { fill: theme.palette.primary.main },
+                                transform: 'rotate(-45deg)',
+                                textAnchor: 'end',
+                                fontSize: '0.7rem'
+                            },
+                            // tickLabelProps: { 
+                            //     style: { 
+                            //         transition: '0.3s', 
+                            //         ':hover': { fill: theme.palette.primary.main },
+                            //         transform: 'rotate(-45deg)',
+                            //         textAnchor: 'end',
+                            //         fontSize: '0.7rem'
+                            //     } 
+                            // }
                         },
                     ]}
                     yAxis={[
