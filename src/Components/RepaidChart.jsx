@@ -109,7 +109,7 @@ export default function LoanAmountBarChart() {
                     margin={{
                         top: 5,
                         right: 0,
-                        left: 40,
+                        left: 50,
                         bottom: 50,
                     }}
                     xAxis={[

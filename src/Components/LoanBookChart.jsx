@@ -100,10 +100,20 @@ export default function LoanBookChart() {
                         top: 5,
                         right: 10,
                         left: 50,
-                        bottom: 30,
+                        bottom: 50,
                     }}
                     xAxis={[
-                        { scaleType: 'band', dataKey: 'time', tickPlacement: 'middle', tickLabelPlacement: 'middle', tickLabelStyle: theme.typography.body2 }
+                        {
+                            scaleType: 'band',
+                            dataKey: 'time',
+                            tickPlacement: 'middle',
+                            tickLabelPlacement: 'middle',
+                            tickLabelStyle: {
+                                ...theme.typography.body2,
+                                transform: 'rotate(-45deg)',
+                                textAnchor: 'end',
+                            },
+                        }
                     ]}
                     yAxis={[
                         { labelStyle: theme.typography.body1, tickLabelStyle: theme.typography.body2 }

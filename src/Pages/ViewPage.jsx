@@ -40,8 +40,9 @@ const ViewPage = () => {
             if (fetchedCustomer) {
                 setCustomer(fetchedCustomer);
                 setGender(fetchedCustomer.Gender);
-                calculateMonthlySimpleInterest(fetchedCustomer.Amount, fetchedCustomer.Rate, fetchedCustomer.Date);
-                calculateExactTimePeriod(fetchedCustomer.Date);
+                const endDate = fetchedCustomer.Status === 'Completed' ? fetchedCustomer.PaidLoan[0].LoanPaidDate : new Date();
+                calculateMonthlySimpleInterest(fetchedCustomer.Amount, fetchedCustomer.Rate, fetchedCustomer.Date, endDate);
+                calculateExactTimePeriod(fetchedCustomer.Date, endDate);
                 setPaidAmount((parseFloat(fetchedCustomer.Amount) + parseFloat(fetchedCustomer.Interest || 0)).toFixed(2));
                 setPreviousPayments(fetchedCustomer.PreviousPayments);
             }
@@ -51,18 +52,20 @@ const ViewPage = () => {
     };
 
 
-    function calculateExactTimePeriod(startDate) {
+
+    function calculateExactTimePeriod(startDate, endDate = new Date()) {
         const start = new Date(startDate);
-        const end = new Date();
+        const end = new Date(endDate);
         const years = end.getFullYear() - start.getFullYear();
         const months = end.getMonth() - start.getMonth();
         const days = end.getDate() - start.getDate();
         return `${years} years, ${months} months, ${days} days`;
     }
 
-    function calculateMonthlySimpleInterest(principal, monthlyRate, startDate) {
+
+    function calculateMonthlySimpleInterest(principal, monthlyRate, startDate, endDate = new Date()) {
         const start = new Date(startDate);
-        const end = new Date();
+        const end = new Date(endDate);
         const years = end.getFullYear() - start.getFullYear();
         const months = end.getMonth() - start.getMonth();
         const days = end.getDate() - start.getDate();
@@ -78,6 +81,7 @@ const ViewPage = () => {
         setInterest(simpleInterest);
         return simpleInterest;
     }
+
     const handleModalOpen = () => {
         setPaidAmount(customer.Amount + interest);
         setIsModalOpen(true);
@@ -267,7 +271,7 @@ const ViewPage = () => {
                                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                                         <Typography variant="body1">Time Period:</Typography>
                                         <Typography variant="body2">
-                                            {month} months ~({calculateExactTimePeriod(customer.Date)})
+                                            {month} months ~({calculateExactTimePeriod(customer.Date, customer.Status === 'Completed' ? customer.PaidLoan[0].LoanPaidDate : new Date())})
                                         </Typography>
                                     </Stack>
                                 </Grid>
@@ -281,13 +285,14 @@ const ViewPage = () => {
                                 </Grid>
 
 
+
                                 <Grid item xs={12}>
                                     <Accordion>
                                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                             <Typography variant="h6" sx={{ fontWeight: '600' }}>
                                                 Old Payments
                                                 <span style={{ marginLeft: '15px', color: '#1976d2' }}>
-                                                   net: ₹{calculateTotalAmount()}
+                                                    net: ₹{calculateTotalAmount()}
                                                 </span>
                                             </Typography>
                                         </AccordionSummary>
@@ -303,7 +308,7 @@ const ViewPage = () => {
                                                             startIcon={<DeleteIcon />}
                                                             onClick={() => deletePayment(index)}
                                                         >
-                                                            
+
                                                         </Button>
                                                     </>
                                                 </Stack>
