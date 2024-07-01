@@ -262,7 +262,7 @@ export default function CustomerList() {
 
   return (
     <>
-      <Paper sx={{ paddingTop: '10px', overflowx: 'hidden', bgcolor: "applicationTheme.primary", height: '95%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'start', gap: "10px", boxShadow: 'none', backgroundImage: "none", borderRadius: "0px", }}>
+      <Paper sx={{ paddingTop: '10px', overflowx: 'hidden', bgcolor: "applicationTheme.primary", height: '95%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'start', gap: "10px", boxShadow: 'none', backgroundImage: "none", borderRadius: "0px",overflow:'hidden' }}>
         <Box
           sx={{
             display: 'flex',
@@ -466,24 +466,35 @@ export default function CustomerList() {
                     filteredCustomers
                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((customer, index, array) => (
-                        <TableRow key={index} >
+                        <TableRow
+                          key={index}
+                          sx={{
+                            '&:hover': {
+                              backgroundColor: '#f5f5f5',
+                              transition: 'background-color 0.3s ease',
+                            },
+                            '&:last-child td, &:last-child th': {
+                              borderBottom: 0,
+                            },
+                          }}
+                        >
                           {columns.map((column) => (
                             <TableCell
                               key={column.id}
                               onClick={() => handleView(customer._id)}
                               className={`sample-customer ${customer && '!w-52'}`}
                               sx={{
-
-
                                 fontSize: '0.875rem',
                                 fontWeight: '600',
-                                backgroundColor: 'trnaparent',
+                                backgroundColor: 'transparent',
                                 color: 'applicationTheme.secondaryColor_1',
-                                padding: "15px 5px",
+                                padding: "10px 5px",
                                 cursor: 'pointer',
-
-                                borderBottom: index + 1 >= array.length ? 'none' : '1px solid grey',
-
+                                borderBottom: index + 1 >= array.length ? 'none' : '1px solid #ddd',
+                                transition: 'color 0.3s ease, background-color 0.3s ease',
+                                '&:hover': {
+                                  color: '#333',
+                                },
                               }}
                               align={column.align || 'left'}
                             >
@@ -566,7 +577,7 @@ export default function CustomerList() {
                       ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={columns.length} align="center" sx={{ height: '60vh' }}>
+                      <TableCell colSpan={columns.length} align="center" sx={{ height: '40vh' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}>
                           <iframe
                             title='no data available'
@@ -578,6 +589,7 @@ export default function CustomerList() {
                     </TableRow>
                   )}
                 </TableBody>
+
 
               </Table>
 

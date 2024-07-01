@@ -11,7 +11,7 @@ import {
     CircularProgress,
 } from '@mui/material';
 import { styled } from '@mui/system';
-import { motion } from 'framer-motion'; // Import framer-motion
+import { motion } from 'framer-motion';
 import { postFormData } from '../Api/Apis';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -196,6 +196,7 @@ const FormPage = () => {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
+                                type="number"
                                 name="Weight"
                                 label="Weight"
                                 variant="outlined"
@@ -223,6 +224,7 @@ const FormPage = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                type="number"
                                 name="PhoneNumber"
                                 label="Phone Number"
                                 variant="outlined"
